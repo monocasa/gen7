@@ -1,0 +1,46 @@
+#ifndef GEN7_HOST_SUBSYSTEM_H
+#define GEN7_HOST_SUBSYSTEM_H
+
+#include <cstdarg>
+#include <cstdio>
+
+namespace Gen7 {
+
+class MachineContext;
+
+class Subsystem
+{
+protected:
+	MachineContext& context;
+
+public:
+	enum class InitPhase : int {
+		ALLOCATION = 0,
+		APP_1 = 1,
+
+		FIRST = ALLOCATION,
+		LAST = APP_1,
+	};
+
+	virtual void Init( InitPhase phase ) = 0;
+
+	virtual const char * GetName() const = 0;
+	virtual const char * GetShortName() const = 0;
+
+	virtual void DPRINT( const char * format, ... ) const {
+		printf( "%s:  ", GetShortName() );
+		va_list args;
+		va_start( args, format );
+		vprintf( format, args );
+		va_end( args );
+	}
+
+	Subsystem( MachineContext& context )
+	  : context( context )
+	{ }
+};
+
+} //namespace Gen7
+
+#endif //GEN7_HOST_SUBSYSTEM_H
+
