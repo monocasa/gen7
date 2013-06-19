@@ -89,7 +89,7 @@ void ElfLoader::Load( PhysicalMemory& physMem )
 		programHeaders.push_back( phdr );
 	}
 
-	for( auto phdr : programHeaders ) {
+	for( const auto &phdr : programHeaders ) {
 		if( PHdr::PT_LOAD == phdr.type ) {
 			DPRINT( TAG, " : %lx bytes %08lx -> %08lx\n", phdr.filesz, phdr.offset, phdr.paddr );
 			file.Seek( phdr.offset );
