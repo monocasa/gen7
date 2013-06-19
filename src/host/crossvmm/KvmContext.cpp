@@ -266,6 +266,10 @@ void KvmContext::Run()
 				throw Sys::Exception( "KVM_EXIT_FAIL_ENTRY -> 0x%08x", kvmRun->hw.hardware_exit_reason );
 			}
 
+			case KVM_EXIT_INTERNAL_ERROR: {
+				throw Sys::Exception( "KVM_EXIT_INTERNAL_ERROR:  %d", kvmRun->internal.suberror );
+			}
+
 			default: {
 				DumpRegisters();
 				throw Sys::Exception( "Unknown KVM_RUN exit reason %d", kvmRun->exit_reason );
