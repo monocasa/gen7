@@ -7,10 +7,10 @@ XenonRealMemory xenonReal;
 
 void XenonRealMemory::MapUpperRealSpace()
 {
-	for( int i = 0; i < 8; i++ ) {
+	for( uint64_t i = 0; i < 8; i++ ) {
 		pml2s[ i ] = reinterpret_cast<uint64_t*>( mm.AllocatePage() );
 
-		for( int j = 0; j < 512; j++ ) {
+		for( uint64_t j = 0; j < 512; j++ ) {
 			uint64_t offset = (j * (2 * 1024 * 1024)) + (i * (1024 * 1024 * 1024));
 			uint64_t physaddr = XENON_RAM_PHYS_BASE | offset;
 			pml2s[ i ][ j ] = physaddr | 0x83;
