@@ -128,13 +128,14 @@ MemoryManager::Page* MemoryManager::AllocatePage()
 void MemoryManager::SetPml2Page( uint64_t *page, uint64_t virtAddr )
 {
 	uint64_t physPageAddr = reinterpret_cast<uint64_t>( VmmVirtToPhys( page ) );
-	uint64_t offset = (virtAddr & 0x000007FFFFFFFFFUL) / (1 * GIB);
+	uint64_t offset = (virtAddr & 0x000007FFFFFFFFFUL) / (1UL * GIB);
 
 	if( virtAddr >= 0xFFFFFF8000000000 ) {
 		higherPml3[ offset ] = physPageAddr | 1;
 		InvalidateAllPages();
 		printf( "mapping %p (0x%016lx) to 0x%016lx (%03lx)\n", page, physPageAddr, virtAddr, offset );
-		PrintPage( page );
+
+		//PrintPage( page );
 	}
 	else {
 		printf( "mapping %p (0x%016lx) to 0x%016lx (%03lx)\n", page, physPageAddr, virtAddr, offset );
