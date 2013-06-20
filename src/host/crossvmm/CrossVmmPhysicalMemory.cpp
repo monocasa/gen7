@@ -30,22 +30,15 @@ uint32_t CrossVmmPhysicalMemory::ReadPhys32( uint64_t addr )
 	int region = (addr >> 32) & 0xF;
 	uint32_t regionOffset = (uint32_t)addr;
 
-	switch( region ) {
-		case 0: {
-			if( addr < VMM_RAM_SIZE ) {
-				return ram32[ addr / sizeof(uint32_t) ];
-			}
-			throw Sys::Exception( "Read from VMMPHYS%016lx", addr );
+	//TODO:  make this branch unlikely
+	if( VMM_REGION == region ) {
+		if( addr < VMM_RAM_SIZE ) {
+			return ram32[ addr / sizeof(uint32_t) ];
 		}
-
-		case 1:
-		case 2: {
-			return nativeMem.ReadRegion32( region, regionOffset );
-		}
-
-		default: {
-			throw Sys::Exception( "Implement CrossVmmPhysicalMemory::ReadPhys32( 0x%lx )", addr );
-		}
+		throw Sys::Exception( "Read from VMMPHYS%016lx", addr );
+	}
+	else {
+		return nativeMem.ReadRegion32( region, regionOffset );
 	}
 }
 
