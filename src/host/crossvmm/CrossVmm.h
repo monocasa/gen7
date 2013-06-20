@@ -20,15 +20,16 @@ public:
 	virtual void Init( InitPhase phase );
 
 	virtual const char * GetName() const {
-		return "CrossVMM";
+		return "CrossVmm";
 	}
 
 	virtual const char * GetShortName() const {
-		return "CRVM";
+		return "CRSVMM";
 	}
 
-	CrossVmm( MachineContext &context )
+	CrossVmm( MachineContext &context, NativePhysicalMemory &nativeMem )
 	  : Subsystem( context )
+	  , physMem( context, nativeMem )
 	  , kvmContext( physMem )
 	{ }
 };

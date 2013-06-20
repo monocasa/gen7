@@ -67,6 +67,8 @@ private:
 	}
 
 	void ProcessHypercall();
+	void HandleTrappedWrite( uint64_t addr, void *data, int len );
+	void HandleTrappedRead( uint64_t addr, void *data, int len );
 
 public:
 	void Init();

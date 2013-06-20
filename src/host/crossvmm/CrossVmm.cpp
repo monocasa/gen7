@@ -12,17 +12,17 @@ void CrossVmm::Run()
 void CrossVmm::Init( InitPhase phase )
 {
 	switch( phase ) {
-		case InitPhase::ALLOCATION: {
-			physMem.Init();
-
+		case InitPhase::APP_1: {
+			// dependent on CrossVmmPhysicalMemory::Init( ALLOCATION )
 			ElfLoader elfLoader( "crossvmm.bin", ElfLoader::X86_64 );
 			elfLoader.Load( physMem );
 
 			break;
 		}
 
-		case InitPhase::APP_1: {
-			kvmContext.Init(); // dependent on ALLOCATION
+		case InitPhase::APP_2: {
+			// dependent on CrossVmmPhysicalMemory::Init( APP_1 )
+			kvmContext.Init();
 			break;
 		}
 

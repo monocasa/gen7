@@ -40,12 +40,14 @@ void KvmContext::MmapKvmRun()
 void KvmContext::SetupMemory()
 {
 	int slotNum = 0;
-	for( const CrossVmmPhysicalMemory::MemoryEntry& entry : physMem.GetMemoryEntries() ) {
+	for( const auto& entry : physMem.GetMemoryEntries() ) {
+		uint64_t vmmLocation = (entry.memRegion * 0x100000000UL) + entry.regionOffset;
+
 		struct kvm_userspace_memory_region region;
 
 		region.slot = slotNum;
 		region.flags = 0;
-		region.guest_phys_addr = entry.vmmLocation;
+		region.guest_phys_addr = vmmLocation;
 		region.memory_size = entry.size;
 		region.userspace_addr = reinterpret_cast<unsigned long>( entry.addr );
 
@@ -259,6 +261,28 @@ void KvmContext::Run()
 		switch( kvmRun->exit_reason ) {
 			case KVM_EXIT_IO: {
 				ProcessHypercall();
+				break;
+			}
+
+			case KVM_EXIT_MMIO: {
+				int len = kvmRun->mmio.len;
+				uint64_t addr = kvmRun->mmio.phys_addr;
+				uint32_t* data32 = reinterpret_cast<uint32_t*>( kvmRun->mmio.data );
+
+				if( kvmRun->mmio.is_write ) {
+					throw Sys::Exception( "Implement mmio write" );
+				}
+				else {
+					switch( len ) {
+						case 4: {
+							*data32 = physMem.ReadPhys32( addr );
+							break;
+						}
+						default: {
+							throw Sys::Exception( "Implement mmio read for len %d", len );
+						}
+					}
+				}
 				break;
 			}
 

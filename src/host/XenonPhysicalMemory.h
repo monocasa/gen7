@@ -6,15 +6,31 @@
 
 namespace Gen7 {
 
-class XenonPhysicalMemory : public PhysicalMemory, public Subsystem
+class XenonPhysicalMemory : public NativePhysicalMemory, public Subsystem
 {
 private:
 	static const int PAGE_SIZE = 1024;
 
+	static const int RAM_REGION = 1;
+	static const int SOC_REGION = 2;
+
 	static const uint64_t BANNED_PHYS_BITS_MASK = 0xFFFFFCFF00000000UL;
 
-	void * ram;
+	static const size_t SRAM_SIZE =        64 * 1024;
+	static const size_t NAND_SIZE = 16 * 1024 * 1024;
+	static const size_t BROM_SIZE =        32 * 1024;
+
+	static const char * BROM_FILE_NAME;
+
+	void * dram;
 	uint32_t ramSize;
+
+	void * sram;
+	void * nand;
+	void * brom;
+
+	void LoadNand();
+	void LoadBrom();
 
 	void WriteRam32( uint32_t addr, uint32_t data );
 	void WriteSoc32( uint32_t addr, uint32_t data );
@@ -50,15 +66,23 @@ public:
 		WritePhys32( addr + 4, lower );
 	}
 
+	virtual void WriteRegion32( int region, uint32_t addr, uint32_t data );
+	virtual uint32_t ReadRegion32( int region, uint32_t addr );
+
 	XenonPhysicalMemory( MachineContext &context )
-	  : PhysicalMemory()
-	  , Subsystem( context )
-	  , ram( nullptr )
+	  : Subsystem( context )
+	  , dram( nullptr )
+	  , sram( nullptr )
+	  , nand( nullptr )
+	  , brom( nullptr )
 	{ }
 
 	virtual ~XenonPhysicalMemory()
 	{
-		free( ram );
+		free( dram );
+		free( sram );
+		free( nand );
+		free( brom );
 	}
 };
 

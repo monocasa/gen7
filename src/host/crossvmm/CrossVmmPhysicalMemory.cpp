@@ -26,11 +26,26 @@ void CrossVmmPhysicalMemory::WritePhys32( uint64_t addr, uint32_t data )
 
 uint32_t CrossVmmPhysicalMemory::ReadPhys32( uint64_t addr )
 {
-	if( addr < VMM_RAM_SIZE ) {
-		return ram32[ addr / sizeof(uint32_t) ];
-	}
-	else {
-		throw Sys::Exception( "Implement CrossVmmPhysicalMemory::ReadPhys32( 0x%lx )", addr );
+	//TODO: assert on top 7 nybbles not being zero
+	int region = (addr >> 32) & 0xF;
+	uint32_t regionOffset = (uint32_t)addr;
+
+	switch( region ) {
+		case 0: {
+			if( addr < VMM_RAM_SIZE ) {
+				return ram32[ addr / sizeof(uint32_t) ];
+			}
+			throw Sys::Exception( "Read from VMMPHYS%016lx", addr );
+		}
+
+		case 1:
+		case 2: {
+			return nativeMem.ReadRegion32( region, regionOffset );
+		}
+
+		default: {
+			throw Sys::Exception( "Implement CrossVmmPhysicalMemory::ReadPhys32( 0x%lx )", addr );
+		}
 	}
 }
 
@@ -39,22 +54,32 @@ void CrossVmmPhysicalMemory::WritePhys64( uint64_t addr, uint64_t data )
 	throw Sys::Exception( "Implement CrossVmmPhysicalMemory::WritePhys64( 0x%lx, 0x%lx )", addr, data );
 }
 
-void CrossVmmPhysicalMemory::Init()
+void CrossVmmPhysicalMemory::Init( InitPhase phase )
 {
-	ram = Sys::AllocatePageMem( VMM_RAM_SIZE );
-	ram8 = reinterpret_cast<uint8_t*>( ram );
-	ram32 = reinterpret_cast<uint32_t*>( ram );
+	switch( phase ) {
+		case InitPhase::ALLOCATION: {
+			ram = Sys::AllocatePageMem( VMM_RAM_SIZE );
+			ram8 = reinterpret_cast<uint8_t*>( ram );
+			ram32 = reinterpret_cast<uint32_t*>( ram );
 
-	dram = Sys::AllocatePageMem( DRAM_SIZE );
-	sram = Sys::AllocatePageMem( SRAM_SIZE );
-	nand = Sys::AllocatePageMem( NAND_SIZE );
-	brom = Sys::AllocatePageMem( BROM_SIZE );
+			AddMemoryEntry( "WRAM",  ram, 0, 0x000000000, VMM_RAM_SIZE, false );
 
-	AddMemoryEntry( "WRAM",  ram, 0x000000000UL, VMM_RAM_SIZE, false );
-	AddMemoryEntry( "DRAM", dram, 0x100000000UL,    DRAM_SIZE, false );
-	AddMemoryEntry( "SRAM", sram, 0x1C0000000UL,    SRAM_SIZE, false );
-	AddMemoryEntry( "NAND", nand, 0x1C8000000UL,    NAND_SIZE, true );
-	AddMemoryEntry( "BROM", brom, 0x200000000UL,    BROM_SIZE, true );
+			break;
+		}
+
+		case InitPhase::APP_1: {
+			//dependent on nativeMem::Init( ALLOCATION )
+			for( const auto& nativeMemEntry : nativeMem.GetMemoryEntries() ) {
+				memoryEntries.push_back( nativeMemEntry );
+			}
+
+			break;
+		}
+
+		default: {
+			break;
+		}
+	}
 }
 
 } //namespace Gen7

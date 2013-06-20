@@ -17,9 +17,10 @@ public:
 	enum class InitPhase : int {
 		ALLOCATION = 0,
 		APP_1 = 1,
+		APP_2 = 2,
 
 		FIRST = ALLOCATION,
-		LAST = APP_1,
+		LAST = APP_2,
 	};
 
 	virtual void Init( InitPhase phase ) = 0;
@@ -35,9 +36,7 @@ public:
 		va_end( args );
 	}
 
-	Subsystem( MachineContext& context )
-	  : context( context )
-	{ }
+	Subsystem( MachineContext& context );
 };
 
 } //namespace Gen7

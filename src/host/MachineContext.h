@@ -14,13 +14,13 @@ namespace Gen7 {
 class MachineContext
 {
 private:
+	std::vector<Subsystem*> subsystems;
+
 	const ConsoleType consoleType;
 
 	XenonPhysicalMemory physMem;
 
 	CrossVmm crossVmm;
-
-	std::vector<Subsystem*> subsystems;
 
 public:
 	void Init();
@@ -28,6 +28,8 @@ public:
 	void DumpState();
 
 	void LoadLibXenonExecutable( const char *exePath );
+
+	void RegisterSubsystem( Subsystem* subsystem );
 
 	ConsoleType GetConsoleType() const
 	{
@@ -37,11 +39,8 @@ public:
 	MachineContext( ConsoleType consoleType )
 	  : consoleType( consoleType )
 	  , physMem( *this )
-	  , crossVmm( *this )
-	{
-		subsystems.push_back( &physMem );
-		subsystems.push_back( &crossVmm );
-	}
+	  , crossVmm( *this, physMem )
+	{ }
 };
 
 } //namespace Gen7

@@ -12,5 +12,6 @@ ADD_EXECUTABLE( gen7 crossvmm/CrossVmm.cpp
                      InterpCpu.cpp
                      MachineContext.cpp
                      Main.cpp
+                     Subsystem.cpp
                      XenonPhysicalMemory.cpp )
 

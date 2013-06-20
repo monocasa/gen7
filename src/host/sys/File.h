@@ -103,6 +103,18 @@ public:
 		return value;
 	}
 
+	size_t Size() {
+		long current = ftell( file );
+
+		fseek( file, 0, SEEK_END );
+
+		long last = ftell( file );
+
+		fseek( file, current, SEEK_SET );
+
+		return last;
+	}
+
 	File( const char * path )
 	  : path( path )
 	  , file( fopen( path, "rb" ) )
