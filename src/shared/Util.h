@@ -4,7 +4,7 @@
 namespace Util {
 
 template <typename T, unsigned B>
-inline T SignExtend( const T x )
+static inline T SignExtend( const T x )
 {
 	struct {
 		T x:B;
