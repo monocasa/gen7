@@ -10,7 +10,8 @@ private:
 	static const uint64_t XENON_RAM_VIRT_BASE = 0xFFFFFFFD00000000UL;
 	static const uint64_t XENON_SOC_VIRT_BASE = 0xFFFFFFFE00000000UL;
 
-	uint64_t* pml2s[8];
+	uint64_t* ramPml2[4];
+	uint64_t* socPml2[4];
 
 	void MapUpperRealSpace();
 
