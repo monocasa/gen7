@@ -6,7 +6,7 @@
 
 void Usage()
 {
-	fprintf( stderr, "\tgen7 XELL_EXECUTABLE\n" );
+	fprintf( stderr, "\tgen7-cli XELL_EXECUTABLE\n" );
 }
 
 void PrintBanner()

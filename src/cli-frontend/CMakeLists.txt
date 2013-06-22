@@ -1,0 +1,9 @@
+ADD_DEFINITIONS( -g -Wall -Wextra -Werror -std=c++0x )
+
+INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/host )
+INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR} )
+
+ADD_EXECUTABLE( gen7-cli Main.cpp )
+
+TARGET_LINK_LIBRARIES( gen7-cli gen7 )
+
