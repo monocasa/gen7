@@ -1,5 +1,5 @@
-#ifndef GEN7_HOST_XENONPHYSICALMEMORY_H
-#define GEN7_HOST_XENONPHYSICALMEMORY_H
+#ifndef GEN7_HOST_XENON_XENONPHYSICALMEMORY_H
+#define GEN7_HOST_XENON_XENONPHYSICALMEMORY_H
 
 #include "Subsystem.h"
 #include "PhysicalMemory.h"
@@ -16,15 +16,14 @@ private:
 
 	static const uint64_t BANNED_PHYS_BITS_MASK = 0xFFFFFCFF00000000UL;
 
-	static const size_t SRAM_SIZE =        64 * 1024;
-	static const size_t NAND_SIZE = 16 * 1024 * 1024;
-	static const size_t BROM_SIZE =        32 * 1024;
+	static const size_t DRAM_SIZE = 512 * 1024 * 1024;
+	static const size_t SRAM_SIZE =         64 * 1024;
+	static const size_t NAND_SIZE =  16 * 1024 * 1024;
+	static const size_t BROM_SIZE =         32 * 1024;
 
 	static const char * BROM_FILE_NAME;
 
 	void * dram;
-	uint32_t ramSize;
-
 	void * sram;
 	void * nand;
 	void * brom;
@@ -50,8 +49,6 @@ public:
 	{
 		return "XEPHYS";
 	}
-
-	uint32_t GetRamSize() const;
 
 	virtual void WritePhys8( uint64_t addr, uint8_t data );
 
@@ -88,5 +85,5 @@ public:
 
 } //namespace Gen7
 
-#endif //GEN7_HOST_XENONPHYSICALMEMORY_H
+#endif //GEN7_HOST_XENON_XENONPHYSICALMEMORY_H
 

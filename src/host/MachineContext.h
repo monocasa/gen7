@@ -3,9 +3,7 @@
 
 #include "crossvmm/CrossVmm.h"
 #include "InterpCpu.h"
-#include "XenonPhysicalMemory.h"
-
-#include "shared/Types.h"
+#include "PhysicalMemory.h"
 
 #include <vector>
 
@@ -16,9 +14,7 @@ class MachineContext
 private:
 	std::vector<Subsystem*> subsystems;
 
-	const ConsoleType consoleType;
-
-	XenonPhysicalMemory physMem;
+	NativePhysicalMemory &physMem;
 
 	CrossVmm crossVmm;
 
@@ -27,18 +23,10 @@ public:
 	void Run();
 	void DumpState();
 
-	void LoadLibXenonExecutable( const char *exePath );
-
 	void RegisterSubsystem( Subsystem* subsystem );
 
-	ConsoleType GetConsoleType() const
-	{
-		return consoleType;
-	}
-
-	MachineContext( ConsoleType consoleType )
-	  : consoleType( consoleType )
-	  , physMem( *this )
+	MachineContext( NativePhysicalMemory &physMem )
+	  : physMem( physMem )
 	  , crossVmm( *this, physMem )
 	{ }
 };

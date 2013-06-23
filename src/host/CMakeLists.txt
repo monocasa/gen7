@@ -7,10 +7,11 @@ ADD_LIBRARY( gen7 SHARED crossvmm/CrossVmm.cpp
                          crossvmm/CrossVmmPhysicalMemory.cpp
                          crossvmm/KvmContext.cpp
                          sys/Mem.cpp
+                         xenon/XenonMachineContext.cpp
+                         xenon/XenonPhysicalMemory.cpp
                          Cpu.cpp
                          ElfLoader.cpp
                          InterpCpu.cpp
                          MachineContext.cpp
-                         Subsystem.cpp
-                         XenonPhysicalMemory.cpp )
+                         Subsystem.cpp )
 

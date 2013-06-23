@@ -24,15 +24,6 @@ void MachineContext::DumpState()
 //	cpu.DumpState();
 }
 
-void MachineContext::LoadLibXenonExecutable( const char * exePath )
-{
-	ElfLoader elfLoader( exePath, ElfLoader::POWERPC32 );
-	elfLoader.Load( physMem );
-
-//	cpu.Reset();
-//	cpu.SetPc( elfLoader.GetEntry() );
-}
-
 void MachineContext::RegisterSubsystem( Subsystem *subsystem )
 {
 	printf( "Registering %p\n", subsystem );

@@ -1,8 +1,8 @@
 #include "sys/File.h"
 #include "sys/Exception.h"
 #include "sys/Mem.h"
+#include "xenon/XenonPhysicalMemory.h"
 #include "MachineContext.h"
-#include "XenonPhysicalMemory.h"
 
 #include <cassert>
 #include <cstdio>
@@ -43,7 +43,7 @@ void XenonPhysicalMemory::LoadBrom()
 
 void XenonPhysicalMemory::WriteRam32( uint32_t addr, uint32_t data )
 {
-	if( addr < ramSize ) {
+	if( addr < DRAM_SIZE ) {
 		((uint32_t*)dram)[ addr / sizeof(uint32_t) ] = data;
 	}
 	else {
@@ -58,7 +58,7 @@ void XenonPhysicalMemory::WriteSoc32( uint32_t addr, uint32_t data )
 
 uint32_t XenonPhysicalMemory::ReadRam32( uint32_t addr )
 {
-	if( addr < ramSize ) {
+	if( addr < DRAM_SIZE ) {
 		return ((uint32_t*)dram)[ addr / sizeof(uint32_t) ];
 	}
 	else {
@@ -78,11 +78,7 @@ void XenonPhysicalMemory::Init( InitPhase phase )
 {
 	switch( phase ) {
 		case InitPhase::ALLOCATION: {
-			ramSize = GetRamSize();
-
-			DPRINT( "Allocating %dMiB for DRAM\n", ramSize / 1024 / 1024);
-
-			dram = Sys::AllocatePageMem( ramSize );
+			dram = Sys::AllocatePageMem( DRAM_SIZE );
 
 			sram = Sys::AllocatePageMem( SRAM_SIZE );
 
@@ -90,7 +86,7 @@ void XenonPhysicalMemory::Init( InitPhase phase )
 
 			LoadBrom();
 
-			AddMemoryEntry( "DRAM", dram, RAM_REGION, 0x00000000,   ramSize, false );
+			AddMemoryEntry( "DRAM", dram, RAM_REGION, 0x00000000, DRAM_SIZE, false );
 			AddMemoryEntry( "SRAM", sram, RAM_REGION, 0xC0000000, SRAM_SIZE, false );
 			AddMemoryEntry( "NAND", nand, RAM_REGION, 0xC8000000, NAND_SIZE, true );
 			AddMemoryEntry( "BROM", brom, SOC_REGION, 0x00000000, BROM_SIZE, true );
@@ -99,24 +95,6 @@ void XenonPhysicalMemory::Init( InitPhase phase )
 
 		default:
 		break;
-	}
-}
-
-uint32_t XenonPhysicalMemory::GetRamSize() const
-{
-	switch( context.GetConsoleType() ) {
-		case ConsoleType::RETAIL:
-		case ConsoleType::DEVKIT: {
-			return 512 * 1024 * 1024;
-		}
-
-		case ConsoleType::ADK: {
-			return 1024 * 1024 * 1024;
-		}
-
-		default: {
-			throw Sys::Exception( "Unknown Console Type %d in PhysicalMemory::GetRamSize()", context.GetConsoleType() );
-		}
 	}
 }
 

@@ -2,7 +2,7 @@
 #define GEN7_HOST_CPU_H
 
 #include "sys/Exception.h"
-#include "XenonPhysicalMemory.h"
+#include "PhysicalMemory.h"
 
 #include "shared/Util.h"
 
@@ -803,7 +803,7 @@ protected:
 		}
 	};
 
-	XenonPhysicalMemory &physMem;
+	NativePhysicalMemory &physMem;
 
 	uint64_t gpr[64];
 	uint64_t pc;
@@ -867,7 +867,7 @@ public:
 
 	virtual void Execute() = 0;
 
-	Cpu( XenonPhysicalMemory& physMem )
+	Cpu( NativePhysicalMemory& physMem )
 	  : physMem( physMem )
 	  , mem( physMem )
 	  , traceBuilder( mem )

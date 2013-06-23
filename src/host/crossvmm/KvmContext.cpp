@@ -52,7 +52,7 @@ void KvmContext::SetupMemory()
 		region.userspace_addr = reinterpret_cast<unsigned long>( entry.addr );
 
 		if( !VmIoctl( KVM_SET_USER_MEMORY_REGION, &region ) ) {
-			throw Sys::Exception( "Unable to map region %s(%d)", entry.name, slotNum );
+			throw Sys::Exception( "Unable to map region %s(slot=%d, vmmLocation=0x%016lx, hostLocation=%p)", entry.name, slotNum, vmmLocation, entry.addr );
 		}
 
 		slotNum++;

@@ -12,7 +12,7 @@ private:
 
 	static const uint64_t HRMOR_MASK = 0x000003FFFFFFFFFFUL;
 
-	XenonPhysicalMemory& physMem;
+	NativePhysicalMemory& physMem;
 
 	uint64_t hrmor;
 
@@ -95,7 +95,7 @@ public:
 		is32Bit = is32;
 	}
 
-	TableMmu( XenonPhysicalMemory &physMem )
+	TableMmu( NativePhysicalMemory &physMem )
 	  : physMem( physMem )
 	  , hrmor( 0 )
 	  , instructionRelocate( false )
@@ -167,7 +167,7 @@ protected:
 public:
 	virtual void Execute();
 
-	InterpCpu( XenonPhysicalMemory& physMem, int threadNum )
+	InterpCpu( NativePhysicalMemory& physMem, int threadNum )
 	  : Cpu( physMem )
 	  , threadNum( threadNum )
 	  , is32Bit( false )
