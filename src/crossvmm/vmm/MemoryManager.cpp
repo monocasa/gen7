@@ -133,7 +133,6 @@ void MemoryManager::SetPml2Page( uint64_t *page, uint64_t virtAddr )
 	if( virtAddr >= 0xFFFFFF8000000000 ) {
 		higherPml3[ offset ] = physPageAddr | 1;
 		InvalidateAllPages();
-		printf( "mapping %p (0x%016lx) to 0x%016lx (%03lx)\n", page, physPageAddr, virtAddr, offset );
 
 		//PrintPage( page );
 	}
