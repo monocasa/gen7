@@ -5,17 +5,17 @@ namespace Gen7 {
 
 void Ps3PhysicalMemory::Init( InitPhase /*phase*/ )
 {
-	switch( phase ) {
-		case InitPhase::ALLOCATION: {
-			xram = Sys::AllocatePageMem( XRAM_SIZE );
-
-			vram = Sys::AllocatePageMem( VRAM_SIZE );
-
-			for( int i = 0; i < NUM_SPES; i++ ) {
-				speLocalRam[i] = Sys::AllocatePageMem( SPELOCALRAM_SIZE );
-			}
-		}
-	}
+//	switch( phase ) {
+//		case InitPhase::ALLOCATION: {
+//			xram = Sys::AllocatePageMem( XRAM_SIZE );
+//
+//			vram = Sys::AllocatePageMem( VRAM_SIZE );
+//
+//			for( int i = 0; i < NUM_SPES; i++ ) {
+//				speLocalRam[i] = Sys::AllocatePageMem( SPELOCALRAM_SIZE );
+//			}
+//		}
+//	}
 }
 
 void Ps3PhysicalMemory::WritePhys8( uint64_t /*addr*/, uint8_t /*data*/ )
