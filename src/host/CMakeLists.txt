@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 ADD_LIBRARY( gen7 SHARED crossvmm/CrossVmm.cpp
                          crossvmm/CrossVmmPhysicalMemory.cpp
                          crossvmm/KvmContext.cpp
+                         ps3/Ps3PhysicalMemory.cpp
                          sys/Mem.cpp
                          xenon/XenonMachineContext.cpp
                          xenon/XenonPhysicalMemory.cpp

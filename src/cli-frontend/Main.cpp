@@ -1,4 +1,5 @@
 #include "crossvmm/CrossVmm.h"
+#include "ps3/Ps3MachineContext.h"
 #include "sys/Exception.h"
 #include "xenon/XenonMachineContext.h"
 #include "MachineContext.h"
@@ -56,6 +57,9 @@ std::istream& operator>>( std::istream &in, Platform &platform )
 	}
 	else if( "xenon" == token ) {
 		platform = XENON;
+	}
+	else if( "ps3" == token ) {
+		platform = PS3;
 	}
 	else {
 		throw po::validation_error( po::validation_error::invalid_option_value, token, "m" );
@@ -122,6 +126,7 @@ int main( int argc, char* argv[] )
 			}
 
 			case PS3: {
+				context = new Gen7::Ps3MachineContext();
 				break;
 			}
 
