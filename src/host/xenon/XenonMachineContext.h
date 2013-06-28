@@ -14,6 +14,8 @@ private:
 public:
 	void LoadLibXenonExecutable( const char *exePath );
 
+	virtual void Load( const char *path );
+
 	XenonMachineContext()
 	  : MachineContext( xenonPhysMem )
 	  , xenonPhysMem( *this )

@@ -37,6 +37,7 @@ enum Platform
 
 Platform platform;
 bool showBanner = true;
+std::string execString = "";
 
 void PrintMachineList()
 {
@@ -81,8 +82,9 @@ void ParseArgs( int argc, char *argv[] )
 	desc.add_options()
 		( "help",        "Print this help message" )
 		( "no-banner,n", "Don't display a banner" )
-		( "machine,m", po::value<Platform>( &platform )->required(), 
-		               "The machine to emulate (? to list)" );
+		( "machine,m", po::value<Platform>( &platform ), 
+		               "The machine to emulate (? to list)" )
+		( "exec,e", po::value<std::string>( &execString ), "Executable to run" );
 
 	try {
 
@@ -138,6 +140,10 @@ int main( int argc, char* argv[] )
 		}
 
 		context->Init();
+
+		if( execString != "" ) {
+			context->Load( execString.c_str() );
+		}
 		context->Run();
 
 	} catch( Sys::Exception& ex ) {

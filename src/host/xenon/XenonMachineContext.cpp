@@ -12,5 +12,10 @@ void XenonMachineContext::LoadLibXenonExecutable( const char * exePath )
 //	cpu.SetPc( elfLoader.GetEntry() );
 }
 
+void XenonMachineContext::Load( const char *path )
+{
+	LoadLibXenonExecutable( path );
+}
+
 } //namespace Gen7
 

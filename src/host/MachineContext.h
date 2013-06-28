@@ -23,6 +23,8 @@ public:
 	void Run();
 	void DumpState();
 
+	virtual void Load( const char *path ) = 0;
+
 	void RegisterSubsystem( Subsystem* subsystem );
 
 	MachineContext( NativePhysicalMemory &physMem )
