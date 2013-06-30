@@ -45,8 +45,6 @@ void PpcCpu::MmuContext::MapFull()
 
 	uint64_t virtAddr = 0x0000000000000000UL;
 
-	printf( "Mapping %p to 0x%016lx\n", hvRealModePml3s[ 0 ], virtAddr );
-
 	mm.SetLowerPml3( hvRealModePml3s[ 0 ], 0x0000000000000000UL );
 	mm.SetLowerPml3( hvRealModePml3s[ 1 ], 0x0000010000000000UL );
 	mm.SetLowerPml3( hvRealModePml3s[ 2 ], 0x0000020000000000UL );
