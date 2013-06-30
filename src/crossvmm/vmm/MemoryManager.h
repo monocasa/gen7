@@ -60,6 +60,8 @@ public:
 
 	void SetPml2Page( uint64_t *page, uint64_t addr );
 
+	void SetLowerPml3( uint64_t *page, uint64_t addr );
+
 	void Init();
 };
 

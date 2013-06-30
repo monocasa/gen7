@@ -16,6 +16,14 @@ private:
 	void MapUpperRealSpace();
 
 public:
+	uint64_t* GetRamPml2( int num ) {
+		return ramPml2[ num ];
+	}
+
+	uint64_t* GetSocPml2( int num ) {
+		return ramPml2[ num ];
+	}
+
 	void Init();
 };
 

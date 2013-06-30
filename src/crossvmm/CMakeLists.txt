@@ -8,6 +8,7 @@ ADD_LIBRARY( crossvmm STATIC vmm/Boot.asm
                              vmm/Hypercall.asm
                              vmm/Main.cpp
                              vmm/MemoryManager.cpp
+                             vmm/PpcCpu.cpp
                              vmm/printf.cpp
                              vmm/Shtuff.asm
                              vmm/XenonRealMemory.cpp )

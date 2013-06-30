@@ -142,6 +142,16 @@ void MemoryManager::SetPml2Page( uint64_t *page, uint64_t virtAddr )
 	}
 }
 
+void MemoryManager::SetLowerPml3( uint64_t *page, uint64_t virtAddr )
+{
+	uint64_t physPageAddr = reinterpret_cast<uint64_t>( VmmVirtToPhys( page ) );
+	uint64_t offset = virtAddr / 0x0000008000000000UL;
+
+	printf( "pml4[%ld] is set %lx\n", offset, physPageAddr );
+	pml4[ offset ] = physPageAddr | 1;
+	InvalidateAllPages();
+}
+
 void MemoryManager::Init()
 {
 	pml4 = reinterpret_cast<uint64_t*>( PhysToVmmVirt( __boot_pml4 ) );
