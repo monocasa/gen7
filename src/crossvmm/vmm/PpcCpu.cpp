@@ -59,17 +59,22 @@ void PpcCpu::Init()
 
 void PpcCpu::Execute()
 {
-	uint32_t* pc = (uint32_t*)(context.pc);
+	struct XenonUartRegs {
+		uint32_t txData;
+		uint32_t rxData;
+		uint32_t status;
+		uint32_t config;
+	};
 
-	for( int i = 0; i < 16; i++ ) {
-		printf( "%p : 0x%08x\n", pc, *pc );
-		pc++;
-	}
+	volatile XenonUartRegs* uart = reinterpret_cast<volatile XenonUartRegs*>( 0x00000200EA001010 );
+	uart->config = 0xE6010000;  // Set to 115200, 8, N, 1
 
-	uint32_t* bootRom = (uint32_t*)( 0x0000020000000100 );
-	for( int i = 0; i < 16; i++ ) {
-		printf( "%p : 0x%08x\n", bootRom, *bootRom );
-		bootRom++;
+	const char * str = "Hello Xenon UART";
+
+	while( *str ) {
+		while ( !(uart->status & 0x02000000) );
+		uart->txData = ((*str) % 0xFF) << 24;
+		str++;
 	}
 }
 

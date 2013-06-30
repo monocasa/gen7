@@ -21,7 +21,7 @@ public:
 	}
 
 	uint64_t* GetSocPml2( int num ) {
-		return ramPml2[ num ];
+		return socPml2[ num ];
 	}
 
 	void Init();

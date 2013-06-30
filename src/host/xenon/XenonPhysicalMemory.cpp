@@ -53,7 +53,29 @@ void XenonPhysicalMemory::WriteRam32( uint32_t addr, uint32_t data )
 
 void XenonPhysicalMemory::WriteSoc32( uint32_t addr, uint32_t data )
 {
-	throw Sys::Exception( "Write of %08x to unknown SoC address %08x", data, addr );
+	// UART Config
+	if( 0xEA00101C == addr ) {
+		switch( data ) {
+			case 0xE6010000: {
+				DPRINT( "XenonUart set to 115200,8,N,1\n" );
+				return;
+			}
+
+			default: {
+				DPRINT( "XenonUart set to unknown config %08x\n", data );
+				return;
+			}
+		}
+	}
+
+	// UART TxData
+	else if( 0xEA001010 == addr ) {
+		DPRINT( "XenonUart << \'%c\'\n", (data >> 24) & 0xFF );
+	}
+
+	else {
+		throw Sys::Exception( "Write of %08x to unknown SoC address %08x", data, addr );
+	}
 }
 
 uint32_t XenonPhysicalMemory::ReadRam32( uint32_t addr )
@@ -71,6 +93,12 @@ uint32_t XenonPhysicalMemory::ReadSoc32( uint32_t addr )
 	if( addr < BROM_SIZE ) {
 		return ((uint32_t*)brom)[ addr / sizeof(uint32_t) ];
 	}
+
+	// UART Status
+	else if( 0xEA001018 == addr ) {
+		return 0x02000000;
+	}
+
 	throw Sys::Exception( "Read from unknown SoC address %08x", addr );
 }
 

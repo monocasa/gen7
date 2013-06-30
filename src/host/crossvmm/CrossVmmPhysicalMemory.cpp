@@ -16,11 +16,21 @@ void CrossVmmPhysicalMemory::WritePhys8( uint64_t addr, uint8_t data )
 
 void CrossVmmPhysicalMemory::WritePhys32( uint64_t addr, uint32_t data )
 {
-	if( addr < VMM_RAM_SIZE ) {
-		ram32[ addr / sizeof(uint32_t) ] = data;
+	//TODO: assert on top 7 nybbles not being zero
+	int region = (addr >> 32) & 0xF;
+	uint32_t regionOffset = (uint32_t)addr;
+
+	//TODO:  make this branch unlikely
+	if( VMM_REGION == region ) {
+		if( addr < VMM_RAM_SIZE ) {
+			ram32[ addr / sizeof(uint32_t) ] = data;
+		}
+		else {
+			throw Sys::Exception( "Write to VMMPHYS%016lx(%08x)", addr, data );
+		}
 	}
 	else {
-		throw Sys::Exception( "Implement CrossVmmPhysicalMemory::WritePhys32( 0x%lx, 0x%x )", addr, data );
+		return nativeMem.WriteRegion32( region, regionOffset, data );
 	}
 }
 

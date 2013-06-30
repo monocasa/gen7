@@ -270,7 +270,15 @@ void KvmContext::Run()
 				uint32_t* data32 = reinterpret_cast<uint32_t*>( kvmRun->mmio.data );
 
 				if( kvmRun->mmio.is_write ) {
-					throw Sys::Exception( "Implement mmio write" );
+					switch( len ) {
+						case 4: {
+							physMem.WritePhys32( addr, *data32 );
+							break;
+						}
+						default: {
+							throw Sys::Exception( "Implment mmio write for len %d (data = %08x)\n", len, *data32 );
+						}
+					}
 				}
 				else {
 					switch( len ) {
