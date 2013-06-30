@@ -11,9 +11,9 @@ class XenonMachineContext : public MachineContext
 private:
 	XenonPhysicalMemory xenonPhysMem;
 
-public:
-	void LoadLibXenonExecutable( const char *exePath );
+	void LoadLibXenonExecutable( const char *exePath, uint64_t *entry );
 
+public:
 	virtual void Load( const char *path );
 
 	XenonMachineContext()

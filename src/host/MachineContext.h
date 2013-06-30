@@ -14,6 +14,7 @@ class MachineContext
 private:
 	std::vector<Subsystem*> subsystems;
 
+protected:
 	NativePhysicalMemory &physMem;
 
 	CrossVmm crossVmm;

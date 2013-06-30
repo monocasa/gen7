@@ -13,6 +13,8 @@ class CrossVmmPhysicalMemory : public PhysicalMemory, public Subsystem
 private:
 	static const size_t VMM_RAM_SIZE = 512 * 1024 * 1024;
 
+	static const size_t PER_THREAD_START = 0x3000;
+
 	void * ram;
 	uint8_t  * ram8;
 	uint32_t * ram32;
@@ -20,6 +22,11 @@ private:
 	NativePhysicalMemory &nativeMem;
 
 public:
+	template<typename T>
+	T* GetPerThreadBase() {
+		return reinterpret_cast<T*>( &ram8[ PER_THREAD_START ] );
+	}
+
 	virtual void WritePhys8( uint64_t addr, uint8_t data );
 
 	virtual void WritePhys32( uint64_t addr, uint32_t data );

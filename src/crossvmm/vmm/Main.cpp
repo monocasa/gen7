@@ -1,6 +1,8 @@
 #include "MemoryManager.h"
 #include "XenonRealMemory.h"
 
+#include "shared/Types.h"
+
 #include <cstdint>
 #include <cstdio>
 
@@ -39,6 +41,8 @@ extern "C" void kmain()
 	printf( "~~~~~~~~ Initializing VMM ~~~~~~~~\n" );
 	mm.Init();
 	xenonReal.Init();
+	Gen7::XenonPpcContext *ppcContext = reinterpret_cast<Gen7::XenonPpcContext*>( 0xFFFFFFFF80003000UL );
+	printf( "PowerPC pc = 0x%016lx\n", ppcContext->pc );
 	printf( "~~~~~~~~ VMM Initialization Complete ~~~~~~~~\n" );
 
 	hyper_quit();

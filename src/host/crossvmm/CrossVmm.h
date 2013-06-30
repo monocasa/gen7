@@ -17,6 +17,11 @@ private:
 public:
 	void Run();
 
+	template<typename T>
+	T* GetPerThreadBase() {
+		return physMem.GetPerThreadBase<T>();
+	}
+
 	virtual void Init( InitPhase phase );
 
 	virtual const char * GetName() const {
