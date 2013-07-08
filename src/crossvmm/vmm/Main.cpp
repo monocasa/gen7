@@ -1,5 +1,7 @@
+#include "DcRealMemory.h"
 #include "MemoryManager.h"
 #include "PpcCpu.h"
+#include "Sh4aCpu.h"
 #include "XenonRealMemory.h"
 
 #include "shared/Types.h"
@@ -41,13 +43,31 @@ extern "C" void kmain()
 {
 	printf( "~~~~~~~~ Initializing VMM ~~~~~~~~\n" );
 	mm.Init();
-	xenonReal.Init();
-	Gen7::XenonPpcContext *ppcContext = reinterpret_cast<Gen7::XenonPpcContext*>( 0xFFFFFFFF80003000UL );
-	PpcCpu cpu( *ppcContext );
-	cpu.Init();
-	printf( "~~~~~~~~ VMM Initialization Complete ~~~~~~~~\n" );
 
-	cpu.Execute();
+	Gen7::CpuContext *cpuContext = reinterpret_cast<Gen7::CpuContext*>( 0xFFFFFFFF80003000UL );
+	switch( cpuContext->type )
+	{
+		case Gen7::CpuType::XENON: {
+			xenonReal.Init();
+			PpcCpu cpu( *static_cast<Gen7::XenonPpcContext*>( cpuContext ) );
+			cpu.Init();
+			cpu.Execute();
+			break;
+		}
+
+		case Gen7::CpuType::SH4A: {
+			dcReal.Init();
+			Sh4aCpu cpu( *static_cast<Gen7::Sh4aContext*>( cpuContext ) );
+			cpu.Init();
+			cpu.Execute();
+			break;
+		}
+
+		default: {
+			printf( "ERROR:  Unknown cpuType:  %d\n", cpuContext->type );
+			hyper_quit();
+		}
+	}
 
 	hyper_quit();
 }

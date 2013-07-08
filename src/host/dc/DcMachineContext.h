@@ -6,16 +6,20 @@
 
 namespace Gen7 {
 
+struct Sh4aContext;
+
 class DcMachineContext : public MachineContext
 {
 private:
 	DcPhysicalMemory dcPhysMem;
 
+	void LoadBios( Sh4aContext &context );
+
 public:
-	virtual void Load( const char */*path*/ ) { }
+	virtual void Load( const char *path );
 
 	DcMachineContext()
-	  : MachineContext( xenonPhysMem )
+	  : MachineContext( dcPhysMem )
 	  , dcPhysMem( *this )
 	{ }
 };

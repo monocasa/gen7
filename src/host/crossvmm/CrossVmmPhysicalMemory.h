@@ -22,9 +22,8 @@ private:
 	NativePhysicalMemory &nativeMem;
 
 public:
-	template<typename T>
-	T* GetPerThreadBase() {
-		return reinterpret_cast<T*>( &ram8[ PER_THREAD_START ] );
+	void* GetPerThreadBase() {
+		return reinterpret_cast<void*>( &ram8[ PER_THREAD_START ] );
 	}
 
 	virtual void WritePhys8( uint64_t addr, uint8_t data );

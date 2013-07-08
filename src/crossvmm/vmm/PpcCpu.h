@@ -1,9 +1,11 @@
 #ifndef GEN7_CROSSVMM_VMM_PPCCPU_H
 #define GEN7_CROSSVMM_VMM_PPCCPU_H
 
+#include "Cpu.h"
+
 #include "shared/Types.h"
 
-class PpcCpu
+class PpcCpu : public Cpu
 {
 private:
 	Gen7::XenonPpcContext &context;
@@ -36,9 +38,9 @@ private:
 	} mmuContext;
 
 public:
-	void Init();
+	virtual void Init();
 
-	void Execute();
+	virtual void Execute();
 
 	PpcCpu( Gen7::XenonPpcContext &context )
 	  : context( context )

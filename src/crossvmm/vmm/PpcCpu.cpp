@@ -57,24 +57,33 @@ void PpcCpu::Init()
 	mmuContext.MapFull();
 }
 
+#define PC ((uint32_t*)context.pc)
+
 void PpcCpu::Execute()
 {
-	struct XenonUartRegs {
-		uint32_t txData;
-		uint32_t rxData;
-		uint32_t status;
-		uint32_t config;
-	};
+	bool running = true;
 
-	volatile XenonUartRegs* uart = reinterpret_cast<volatile XenonUartRegs*>( 0x00000200EA001010 );
-	uart->config = 0xE6010000;  // Set to 115200, 8, N, 1
+	while( running ) {
+		const uint32_t instruction = *PC;
 
-	const char * str = "Hello Xenon UART";
+		int opcode = instruction >> 26;
 
-	while( *str ) {
-		while ( !(uart->status & 0x02000000) );
-		uart->txData = ((*str) % 0xFF) << 24;
-		str++;
+		switch( opcode ) {
+			case 18: {
+				uint64_t target = (instruction & 0x03FFFFFC) + context.pc;
+				printf( "%08lx : %08x : b        loc_%lx\n", context.pc, instruction, target ); 
+				context.pc = target - sizeof(uint32_t);
+				break;
+			}
+
+			default: {
+				printf( "%08lx : %08x : <UNKNOWN_%d>\n", context.pc, instruction, opcode );
+				running = false;
+				break;
+			}
+		}
+
+		context.pc += sizeof(uint32_t);
 	}
 }
 

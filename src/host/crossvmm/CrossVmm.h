@@ -17,9 +17,8 @@ private:
 public:
 	void Run();
 
-	template<typename T>
-	T* GetPerThreadBase() {
-		return physMem.GetPerThreadBase<T>();
+	void* GetPerThreadBase() {
+		return physMem.GetPerThreadBase();
 	}
 
 	virtual void Init( InitPhase phase );

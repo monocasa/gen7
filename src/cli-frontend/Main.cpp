@@ -1,4 +1,5 @@
 #include "crossvmm/CrossVmm.h"
+#include "dc/DcMachineContext.h"
 #include "ps3/Ps3MachineContext.h"
 #include "sys/Exception.h"
 #include "xenon/XenonMachineContext.h"
@@ -33,6 +34,7 @@ enum Platform
 	UNSPECIFIED,
 	XENON,
 	PS3,
+	DC,
 };
 
 Platform platform;
@@ -44,6 +46,7 @@ void PrintMachineList()
 	std::cerr << "Valid Machines:" << std::endl;
 	std::cerr << "\txenon - Xbox360" << std::endl;
 	std::cerr << "\tps3   - PlayStation3" << std::endl;
+	std::cerr << "\tdc    - Dreamcast" << std::endl;
 }
 
 std::istream& operator>>( std::istream &in, Platform &platform )
@@ -61,6 +64,9 @@ std::istream& operator>>( std::istream &in, Platform &platform )
 	}
 	else if( "ps3" == token ) {
 		platform = PS3;
+	}
+	else if( "dc" == token ) {
+		platform = DC;
 	}
 	else {
 		throw po::validation_error( po::validation_error::invalid_option_value, token, "m" );
@@ -132,6 +138,11 @@ int main( int argc, char* argv[] )
 				break;
 			}
 
+			case DC: {
+				context = new Gen7::DcMachineContext();
+				break;
+			}
+
 			default:
 			case UNSPECIFIED: {
 				std::cerr << "ERROR:\t" << std::endl << "No platform specified" << std::endl;
@@ -141,9 +152,8 @@ int main( int argc, char* argv[] )
 
 		context->Init();
 
-		if( execString != "" ) {
-			context->Load( execString.c_str() );
-		}
+		context->Load( execString.c_str() );
+
 		context->Run();
 
 	} catch( Sys::Exception& ex ) {

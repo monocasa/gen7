@@ -17,9 +17,8 @@ void XenonMachineContext::LoadLibXenonExecutable( const char * exePath, uint64_t
 
 void XenonMachineContext::Load( const char *path )
 {
-	XenonPpcContext *ppcContext = crossVmm.GetPerThreadBase<XenonPpcContext>();
-
-	std::memset( ppcContext, 0, sizeof(XenonPpcContext) );
+	void * perThreadContext = crossVmm.GetPerThreadBase();
+	XenonPpcContext *ppcContext = new (perThreadContext) XenonPpcContext( 0 );
 
 	LoadLibXenonExecutable( path, &(ppcContext->pc) );
 }

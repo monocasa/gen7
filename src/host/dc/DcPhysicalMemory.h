@@ -9,6 +9,19 @@ namespace Gen7 {
 class DcPhysicalMemory : public NativePhysicalMemory, public Subsystem
 {
 private:
+	static const int PHYS_REGION = 1;
+
+	static const size_t BIOS_SIZE =  2 * 1024 * 1024;
+	static const size_t DRAM_SIZE = 16 * 1024 * 1024;
+	static const size_t VRAM_SIZE =  8 * 1024 * 1024;
+
+	static const char * BIOS_FILE_NAME;
+
+	void *bios;
+	void *dram;
+	void *vram;
+
+	void LoadBios();
 
 public:
 	virtual void Init( InitPhase phase );
