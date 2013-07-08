@@ -1,5 +1,6 @@
 #include "DcRealMemory.h"
 #include "MemoryManager.h"
+#include "InterruptManager.h"
 #include "PpcCpu.h"
 #include "Sh4aCpu.h"
 #include "XenonRealMemory.h"
@@ -43,6 +44,7 @@ extern "C" void kmain()
 {
 	printf( "~~~~~~~~ Initializing VMM ~~~~~~~~\n" );
 	mm.Init();
+	intm.Init();
 
 	Gen7::CpuContext *cpuContext = reinterpret_cast<Gen7::CpuContext*>( 0xFFFFFFFF80003000UL );
 	switch( cpuContext->type )

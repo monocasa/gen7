@@ -8,6 +8,8 @@ ADD_LIBRARY( crossvmm STATIC vmm/Boot.asm
                              vmm/cxxabiv1.cpp
                              vmm/DcRealMemory.cpp
                              vmm/Hypercall.asm
+                             vmm/InterruptManager.cpp
+                             vmm/Isr.asm
                              vmm/Main.cpp
                              vmm/MemoryManager.cpp
                              vmm/PpcCpu.cpp
