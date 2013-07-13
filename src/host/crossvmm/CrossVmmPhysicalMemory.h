@@ -17,6 +17,7 @@ private:
 
 	void * ram;
 	uint8_t  * ram8;
+	uint16_t * ram16;
 	uint32_t * ram32;
 
 	NativePhysicalMemory &nativeMem;
@@ -27,6 +28,8 @@ public:
 	}
 
 	virtual void WritePhys8( uint64_t addr, uint8_t data );
+
+	virtual void WritePhys16( uint64_t addr, uint16_t data );
 
 	virtual void WritePhys32( uint64_t addr, uint32_t data );
 	virtual uint32_t ReadPhys32( uint64_t addr );
@@ -47,15 +50,17 @@ public:
 	  : Subsystem( context )
 	  , ram( nullptr )
 	  , ram8( nullptr )
+	  , ram16( nullptr )
 	  , ram32( nullptr )
 	  , nativeMem( nativeMem )
 	{ }
 
 	virtual ~CrossVmmPhysicalMemory()
 	{
+		ram8 = nullptr;
+		ram16 = nullptr;
+		ram32 = nullptr;
 		free( ram );
-		// ram8 points to ram
-		// ram32 points to ram
 	}
 };
 

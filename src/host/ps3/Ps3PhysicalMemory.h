@@ -25,6 +25,8 @@ public:
 
 	virtual void WritePhys8( uint64_t addr, uint8_t data );
 
+	virtual void WritePhys16( uint64_t addr, uint16_t data );
+
 	virtual void WritePhys32( uint64_t addr, uint32_t data );
 	virtual uint32_t ReadPhys32( uint64_t addr );
 
@@ -35,6 +37,8 @@ public:
 		WritePhys32( addr + 0, upper );
 		WritePhys32( addr + 4, lower );
 	}
+
+	virtual void WriteRegion16( int region, uint32_t addr, uint16_t data );
 
 	virtual void WriteRegion32( int region, uint32_t addr, uint32_t data );
 	virtual uint32_t ReadRegion32( int region, uint32_t addr );

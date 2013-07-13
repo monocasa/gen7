@@ -267,10 +267,16 @@ void KvmContext::Run()
 			case KVM_EXIT_MMIO: {
 				int len = kvmRun->mmio.len;
 				uint64_t addr = kvmRun->mmio.phys_addr;
+				uint16_t* data16 = reinterpret_cast<uint16_t*>( kvmRun->mmio.data );
 				uint32_t* data32 = reinterpret_cast<uint32_t*>( kvmRun->mmio.data );
 
 				if( kvmRun->mmio.is_write ) {
 					switch( len ) {
+						case 2: {
+							physMem.WritePhys16( addr, *data16 );
+							break;
+						}
+
 						case 4: {
 							physMem.WritePhys32( addr, *data32 );
 							break;

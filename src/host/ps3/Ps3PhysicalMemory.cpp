@@ -22,6 +22,10 @@ void Ps3PhysicalMemory::WritePhys8( uint64_t /*addr*/, uint8_t /*data*/ )
 {
 }
 
+void Ps3PhysicalMemory::WritePhys16( uint64_t /*addr*/, uint16_t /*data*/ )
+{
+}
+
 void Ps3PhysicalMemory::WritePhys32( uint64_t /*addr*/, uint32_t /*data*/ )
 {
 }
@@ -29,6 +33,10 @@ void Ps3PhysicalMemory::WritePhys32( uint64_t /*addr*/, uint32_t /*data*/ )
 uint32_t Ps3PhysicalMemory::ReadPhys32( uint64_t /*addr*/ )
 {
 	return 0;
+}
+
+void Ps3PhysicalMemory::WriteRegion16( int /*region*/, uint32_t /*addr*/, uint16_t /*data*/ )
+{
 }
 
 void Ps3PhysicalMemory::WriteRegion32( int /*region*/, uint32_t /*addr*/, uint32_t /*data*/ )

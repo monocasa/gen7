@@ -2,6 +2,8 @@
 #include "sys/Mem.h"
 #include "sys/File.h"
 
+#include <cassert>
+
 namespace Gen7 {
 
 const char * DcPhysicalMemory::BIOS_FILE_NAME = "/opt/gen7/roms/dc/bios.bin";
@@ -49,26 +51,45 @@ void DcPhysicalMemory::Init( InitPhase phase )
 	}
 }
 
-void DcPhysicalMemory::WritePhys8( uint64_t /*addr*/, uint8_t /*data*/ )
+void DcPhysicalMemory::WritePhys8( uint64_t addr, uint8_t data )
 {
+	throw Sys::Exception( "Implement DcPhysicalMemory::WritePhys8( addr=%08x, data=%02x )", addr, data );
 }
 
-void DcPhysicalMemory::WritePhys32( uint64_t /*addr*/, uint32_t /*data*/ )
+void DcPhysicalMemory::WritePhys16( uint64_t addr, uint16_t data )
 {
+	throw Sys::Exception( "Implement DcPhysicalMemory::WritePhys32( addr=%08x, data=%04x )", addr, data );
 }
 
-uint32_t DcPhysicalMemory::ReadPhys32( uint64_t /*addr*/ )
+void DcPhysicalMemory::WritePhys32( uint64_t addr, uint32_t data )
 {
-	return 0;
+	throw Sys::Exception( "Implement DcPhysicalMemory::WritePhys32( addr=%08x, data=%08x )", addr, data );
 }
 
-void DcPhysicalMemory::WriteRegion32( int /*region*/, uint32_t /*addr*/, uint32_t /*data*/ )
+uint32_t DcPhysicalMemory::ReadPhys32( uint64_t addr )
 {
+	throw Sys::Exception( "Implement DcPhysicalMemory::ReadPhys32( addr=%08x )", addr );
 }
 
-uint32_t DcPhysicalMemory::ReadRegion32( int /*region*/, uint32_t /*addr*/ )
+void DcPhysicalMemory::WriteRegion16( int region, uint32_t addr, uint16_t data )
 {
-	return 0;
+	assert( 1 == region );
+
+	WritePhys16( addr, data );
+}
+
+void DcPhysicalMemory::WriteRegion32( int region, uint32_t addr, uint32_t data )
+{
+	assert( 1 == region );
+
+	WritePhys32( addr, data );
+}
+
+uint32_t DcPhysicalMemory::ReadRegion32( int region, uint32_t addr )
+{
+	assert( 1 == region );
+
+	return ReadPhys32( addr );
 }
 
 } //namespace Gen7

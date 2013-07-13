@@ -41,6 +41,11 @@ void XenonPhysicalMemory::LoadBrom()
 	}
 }
 
+void XenonPhysicalMemory::WriteRam16( uint32_t addr, uint16_t data )
+{
+	throw Sys::Exception( "Write of %04x to unknown RAM address %08x", data, addr );
+}
+
 void XenonPhysicalMemory::WriteRam32( uint32_t addr, uint32_t data )
 {
 	if( addr < DRAM_SIZE ) {
@@ -49,6 +54,11 @@ void XenonPhysicalMemory::WriteRam32( uint32_t addr, uint32_t data )
 	else {
 		throw Sys::Exception( "Write of %08x to unknown RAM address %08x", data, addr );
 	}
+}
+
+void XenonPhysicalMemory::WriteSoc16( uint32_t addr, uint16_t data )
+{
+	throw Sys::Exception( "Write of %04x to unknown SoC address %08x", data, addr );
 }
 
 void XenonPhysicalMemory::WriteSoc32( uint32_t addr, uint32_t data )
@@ -131,6 +141,30 @@ void XenonPhysicalMemory::WritePhys8( uint64_t addr, uint8_t data )
 	throw Sys::Exception( "Implement XenonPhysicalMemory::WritePhys8( addr=0x%lx, data=%x )", addr, data );
 }
 
+void XenonPhysicalMemory::WritePhys16( uint64_t addr, uint16_t data )
+{
+	assert( 0 == (addr & BANNED_PHYS_BITS_MASK) );  // Check for bits that shouldn't ever be turned on
+	assert( 0 == (addr & 3 ) );  // Check that we're aligned
+
+	switch( (addr >> 40) & 3 ) {
+		case 0:  // Traditional view of RAM
+			WriteRam16( (uint32_t)addr, data );
+			break;
+
+		case 1:  // Encrypted and hashed view of RAM
+			WriteRam16( (uint32_t)addr, data );
+			break;
+
+		case 2:  // SoC space
+			WriteSoc16( (uint32_t)addr, data );
+			break;
+
+		case 3:  // Encrypted view of RAM
+			WriteRam16( (uint32_t)addr, data );
+			break;
+	}
+}
+
 void XenonPhysicalMemory::WritePhys32( uint64_t addr, uint32_t data )
 {
 	assert( 0 == (addr & BANNED_PHYS_BITS_MASK) );  // Check for bits that shouldn't ever be turned on
@@ -175,6 +209,23 @@ uint32_t XenonPhysicalMemory::ReadPhys32( uint64_t addr )
 
 		default:
 			throw Sys::Exception( "We should never get here:  ReadPhys32( %016lx )", addr );
+	}
+}
+
+void XenonPhysicalMemory::WriteRegion16( int region, uint32_t addr, uint16_t data )
+{
+	assert( region == RAM_REGION || region == SOC_REGION );
+
+	switch( region ) {
+		case RAM_REGION: {
+			WriteRam16( addr, data );
+			return;
+		}
+
+		case SOC_REGION: {
+			WriteSoc16( addr, data );
+			return;
+		}
 	}
 }
 

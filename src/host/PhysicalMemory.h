@@ -41,6 +41,8 @@ protected:
 public:	
 	virtual void WritePhys8( uint64_t addr, uint8_t data ) = 0;
 
+	virtual void WritePhys16( uint64_t addr, uint16_t data ) = 0;
+
 	virtual void WritePhys32( uint64_t addr, uint32_t data ) = 0;
 	virtual uint32_t ReadPhys32( uint64_t addr ) = 0;
 
@@ -54,6 +56,8 @@ public:
 class NativePhysicalMemory : public PhysicalMemory
 {
 public:
+	virtual void WriteRegion16( int region, uint32_t addr, uint16_t data ) = 0;
+
 	virtual void WriteRegion32( int region, uint32_t addr, uint32_t data ) = 0;
 	virtual uint32_t ReadRegion32( int region, uint32_t addr ) = 0;
 };
