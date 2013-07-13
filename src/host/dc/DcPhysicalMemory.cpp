@@ -58,7 +58,7 @@ void DcPhysicalMemory::WritePhys8( uint64_t addr, uint8_t data )
 
 void DcPhysicalMemory::WritePhys16( uint64_t addr, uint16_t data )
 {
-	throw Sys::Exception( "Implement DcPhysicalMemory::WritePhys32( addr=%08x, data=%04x )", addr, data );
+	throw Sys::Exception( "Implement DcPhysicalMemory::WritePhys16 addr=%08x, data=%04x )", addr, data );
 }
 
 void DcPhysicalMemory::WritePhys32( uint64_t addr, uint32_t data )
