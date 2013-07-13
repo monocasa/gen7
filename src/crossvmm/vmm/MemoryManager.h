@@ -3,6 +3,23 @@
 
 #include <cstdint>
 
+struct InterruptRegs;
+
+enum PageFaultReason {
+	PAGE_NOT_PRESENT,
+	READ,
+	WRITE,
+	EXECUTE,
+};
+
+extern const char * PageFaultStrs[4];
+
+class PageFaultHandler
+{
+public:
+	virtual void OnPageFault( PageFaultReason reason, uint64_t addr, InterruptRegs *regs ) = 0;
+};
+
 class MemoryManager
 {
 public:
@@ -45,6 +62,8 @@ private:
 	HeapPageInfo *contiguousHeapInfo;
 	uint64_t numContiguousHeapInfoPages;
 
+	PageFaultHandler *lowerHandler;
+
 	void* VmmVirtToPhys( void *phys );
 	void* PhysToVmmVirt( void *phys );
 
@@ -58,9 +77,15 @@ private:
 public:
 	Page* AllocatePage();
 
+	void OnPageFault( uint64_t offendingAddr, InterruptRegs *regs );
+
 	void SetPml2Page( uint64_t *page, uint64_t addr );
 
 	void SetLowerPml3( uint64_t *page, uint64_t addr );
+
+	void RegisterLowerHandler( PageFaultHandler *handler ) {
+		lowerHandler = handler;
+	}
 
 	void Init();
 };

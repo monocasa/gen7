@@ -1,7 +1,15 @@
+#include "InterruptManager.h"
 #include "MemoryManager.h"
 
 #include <cstdint>
 #include <cstdio>
+
+const char * PageFaultStrs[4] = {
+	"PAGE_NOT_PRESENT",
+	"READ",
+	"WRITE",
+	"EXECUTE"
+};
 
 MemoryManager mm;
 
@@ -123,6 +131,49 @@ MemoryManager::Page* MemoryManager::AllocatePage()
 	}
 
 	return nullptr;
+}
+
+extern void hyper_quit();
+
+void MemoryManager::OnPageFault( uint64_t offendingAddr, InterruptRegs *regs )
+{
+	PageFaultReason reason;
+
+	if( regs->errorCode & 0xFFFFFFEC ) {
+		printf( "PAGEFAULT @ 0x%016lx\n", regs->rip );
+		printf( "ADDR      = 0x%016lx\n", offendingAddr );
+		printf( "Error Code = %08x\n", regs->errorCode );
+		hyper_quit();
+	}
+
+	if( regs->errorCode & 0x00000001 ) {
+		reason = PAGE_NOT_PRESENT;
+	}
+	else if( regs->errorCode & 0x00000010 ) {
+		reason = EXECUTE;
+	}
+	else if( regs->errorCode & 0x00000002 ) {
+		reason = WRITE;
+	}
+	else {
+		reason = READ;
+	}
+
+	if( offendingAddr < 0x8000000000000000UL ) {
+		if( lowerHandler ) {
+			lowerHandler->OnPageFault( reason, offendingAddr, regs );
+		}
+		else {
+			printf( "No handler registered for addr 0x%016lx\n", offendingAddr );
+			hyper_quit();
+		}
+	}
+	else {
+		printf( "PAGEFAULT @ 0x%016lx\n", regs->rip );
+		printf( "ADDR      = 0x%016lx\n", offendingAddr );
+		printf( "Error Code = %08x\n", regs->errorCode );
+		hyper_quit();
+	}
 }
 
 void MemoryManager::SetPml2Page( uint64_t *page, uint64_t virtAddr )

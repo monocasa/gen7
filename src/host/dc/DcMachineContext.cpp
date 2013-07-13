@@ -8,7 +8,8 @@ namespace Gen7 {
 
 void DcMachineContext::LoadBios( Sh4aContext &context )
 {
-	context.pc = 0xA0000000;
+	context.pc     = 0xA0000000;
+	context.expevt = 0x00000020;
 }
 
 void DcMachineContext::Load( const char *path )
