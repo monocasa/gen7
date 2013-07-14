@@ -530,7 +530,7 @@ void Sh4aCpu::Execute()
 
 							default: {
 								printf( "Unknown 0x4005 opcode %04x\n", opcode );
-								running = true;
+								running = false;
 								break;
 							}
 						}
@@ -632,6 +632,19 @@ void Sh4aCpu::Execute()
 						int rm = (opcode >> 4) & 0xF;
 
 						context.gpr[rn] = context.gpr[rm];
+
+						break;
+					}
+
+					case 0x5: { //mov.w @rm+, rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						uint16_t *ptr = (uint16_t*)((uint64_t)context.gpr[rm]);
+
+						context.gpr[rn] = Util::SignExtend<int32_t,16>( *ptr );
+
+						context.gpr[rm] += 2;
 
 						break;
 					}
