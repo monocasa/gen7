@@ -815,6 +815,18 @@ void Sh4aCpu::Execute()
 				break;
 			}
 
+			case 0xD000: { //mov.l @(disp,pc),rn
+				int rn = (opcode >> 8) &0xF;
+
+				int disp = (opcode & 0x00FF) * 4;
+
+				uint32_t *ptr = (uint32_t*)((uint64_t)( context.pc + 4 + disp ));
+
+				context.gpr[rn] = *ptr;
+
+				break;
+			}
+
 			case 0xE000: { //mov #imm, reg
 				int32_t imm = Util::SignExtend<int32_t,8>( opcode & 0xFF );
 				int reg = (opcode >> 8) & 0xF;
