@@ -82,7 +82,26 @@ void DcPhysicalMemory::WritePhys16( uint64_t addr, uint16_t data )
 
 void DcPhysicalMemory::WritePhys32( uint64_t addr, uint32_t data )
 {
-	throw Sys::Exception( "Implement DcPhysicalMemory::WritePhys32( addr=%08x, data=%08x )", addr, data );
+	assert( 0 == (addr & 0xE0000000) );
+
+	switch( addr >> 26 ) {
+		case 0: {
+			switch( addr ) {
+				case 0x005F74E4: { //Some mmio register for G1 setup
+					printf( "Write to UNKNOWN_%08lx:  %04x\n", addr, data );
+					return;
+				}
+
+				default: {
+					throw Sys::Exception( "Area 0 write32( addr=%08x, data=%08x )", addr, data );
+				}
+			}
+		}
+
+		default: {
+			throw Sys::Exception( "Implement DcPhysicalMemory::WritePhys32( addr=%08x, data=%08x )", addr, data );
+		}
+	}
 }
 
 uint32_t DcPhysicalMemory::ReadPhys32( uint64_t addr )
