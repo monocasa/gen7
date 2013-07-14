@@ -762,6 +762,19 @@ void Sh4aCpu::Execute()
 						break;
 					}
 
+					case 0x0900: { //bt loc_disp
+						int disp = opcode & 0xFF;
+						disp *= 2;
+						disp = Util::SignExtend<int32_t,9>( disp );
+						uint32_t target = context.pc + disp + 4;
+
+						if( (context.sr & T_BIT) == T_BIT ) {
+							context.pc = target - 2;
+						}
+
+						break;
+					}
+
 					case 0x0B00: { //bf loc_disp
 						int disp = opcode & 0xFF;
 						disp *= 2;
