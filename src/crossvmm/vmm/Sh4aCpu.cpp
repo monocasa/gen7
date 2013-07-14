@@ -690,6 +690,15 @@ void Sh4aCpu::Execute()
 
 			case 0xC000: { 
 				switch( opcode & 0x0F00 ) {
+					case 0x0700: { //mova @(disp,pc),r0
+						int disp = opcode & 0xFF;
+						disp *= 4;
+
+						context.gpr[0] = context.pc + 4 + disp;
+
+						break;
+					}
+
 					case 0x0800: { //tst #imm, r0
 						uint32_t imm = opcode & 0xFF;
 
