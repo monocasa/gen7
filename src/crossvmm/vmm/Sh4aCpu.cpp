@@ -267,6 +267,15 @@ void Sh4aCpu::Execute()
 {
 	bool running = true;
 
+	enum BranchDelayState {
+		NO_DELAY,
+		ENTERING_DELAY,
+		EXITING_DELAY,
+	};
+
+	BranchDelayState delayState = NO_DELAY;
+	uint32_t delayTarget = 0;
+
 	while( running ) {
 		uint16_t opcode = *reinterpret_cast<uint16_t*>( context.pc );
 
@@ -431,6 +440,32 @@ void Sh4aCpu::Execute()
 
 			case 0x4000: {
 				switch( opcode & 0x000F ) {
+					case 0x00: {
+						switch( opcode & 0x00F0 ) {
+							case 0x0010: { //dt rn
+								int rn = (opcode >> 8) & 0xF;
+
+								context.gpr[rn]--;
+
+								if( 0 == context.gpr[rn] ) {
+									context.sr |= T_BIT;
+								}
+								else {
+									context.sr &= ~T_BIT;
+								}
+
+								break;
+							}
+
+							default: {
+								printf( "Unknown 0x4000 opcode %04x\n", opcode );
+								running = false;
+								break;
+							}
+						}
+						break;
+					}
+
 					case 0x01: {
 						switch( opcode & 0x00F0 ) {
 							case 0x0000: {
@@ -536,11 +571,13 @@ void Sh4aCpu::Execute()
 					}
 
 					case 0xB: {
-						switch( opcode & 0x00F0 ) {
+						switch( opcode & 0x00F0 ) { //jmp @rn
 							case 0x0020: {
 								int rn = (opcode >> 8) & 0xF;
 
-								context.pc = context.gpr[rn] - 2;
+								delayTarget = context.gpr[rn];
+
+								delayState = ENTERING_DELAY;
 
 								break;
 							}
@@ -744,7 +781,24 @@ void Sh4aCpu::Execute()
 		}
 		//DumpState();
 		if( running ) {
-			context.pc += 2;
+			switch( delayState ) {
+				case NO_DELAY: {
+					context.pc += 2;
+					break;
+				}
+
+				case ENTERING_DELAY: {
+					context.pc += 2;
+					delayState = EXITING_DELAY;
+					break;
+				}
+
+				case EXITING_DELAY: {
+					context.pc = delayTarget;
+					delayState = NO_DELAY;
+					break;
+				}
+			}
 		}
 	}
 
