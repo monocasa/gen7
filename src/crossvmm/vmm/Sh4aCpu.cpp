@@ -605,6 +605,25 @@ void Sh4aCpu::Execute()
 						break;
 					}
 
+					case 0xA: {
+						switch( opcode & 0x00F0 ) {
+							case 0x00F0: {
+								int rn = (opcode >> 8) & 0xF;
+
+								context.dbr = context.gpr[rn];
+
+								break;
+							}
+
+							default: {
+								printf( "Unknown 0x400A opcode %04x\n", opcode );
+								running = false;
+								break;
+							}
+						}
+						break;
+					}
+
 					case 0xB: {
 						switch( opcode & 0x00F0 ) { //jmp @rn
 							case 0x0020: {
