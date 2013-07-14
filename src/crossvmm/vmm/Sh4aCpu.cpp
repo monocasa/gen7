@@ -639,6 +639,17 @@ void Sh4aCpu::Execute()
 
 			case 0x6000: {
 				switch( opcode & 0x000F ) {
+					case 0x2: { //mov.l @rm, rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						uint32_t *ptr = (uint32_t*)((uint64_t)context.gpr[rm]);
+
+						context.gpr[rn] = *ptr;
+
+						break;
+					}
+
 					case 0x3: { //mov rm, rn
 						int rn = (opcode >> 8) & 0xF;
 						int rm = (opcode >> 4) & 0xF;
