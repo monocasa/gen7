@@ -304,6 +304,19 @@ void Sh4aCpu::Execute()
 						break;
 					}
 
+					case 0x9: {
+						if( opcode == 0x0009 ) { // nop
+							break;
+						}
+
+						else {
+							printf( "Unknown 0x0009 opcode %04x\n", opcode );
+							running = false;
+							break;
+						}
+						break;
+					}
+
 					case 0xA: {
 						switch( opcode & 0x00F0 ) {
 							case 0x0010: { //sts macl, rn
