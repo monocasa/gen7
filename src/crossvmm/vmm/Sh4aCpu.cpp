@@ -127,7 +127,7 @@ void Sh4aCpu::MmuContext::OnPageFault( PageFaultReason reason, uint64_t addr, In
 		P4Access( addr, regs );
 	}
 	else {
-		printf( "Unimplemented access Addr=%016lx", addr );
+		printf( "Unimplemented access Addr=%016lx\n", addr );
 		hyper_quit();
 	}
 }
