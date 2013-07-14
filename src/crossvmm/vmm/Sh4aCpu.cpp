@@ -682,6 +682,19 @@ void Sh4aCpu::Execute()
 						break;
 					}
 
+					case 0x6: { //mov.l @rm+, rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						uint32_t *ptr = (uint32_t*)((uint64_t)context.gpr[rm]);
+
+						context.gpr[rn] = *ptr;
+
+						context.gpr[rm] += 4;
+
+						break;
+					}
+
 					case 0x8: { //swap.b rm, rn	
 						int dest = (opcode >> 8) & 0xF;
 						int src = (opcode >> 4) & 0xF;
