@@ -254,7 +254,7 @@ void Sh4aCpu::DumpState()
 	printf( " r4 %8x |  r5 %8x |  r6 %8x |  r7 %8x\n", context.gpr[ 4], context.gpr[ 5], context.gpr[ 6], context.gpr[ 7] );
 	printf( " r8 %8x |  r9 %8x | r10 %8x | r11 %8x\n", context.gpr[ 8], context.gpr[ 9], context.gpr[10], context.gpr[11] );
 	printf( "r12 %8x | r13 %8x | r14 %8x | r15 %8x\n", context.gpr[12], context.gpr[13], context.gpr[14], context.gpr[15] );
-	printf( " pc %08x |  sr %08x\n", context.pc, context.sr );
+	printf( " pc %08x |  sr %08x |  pr %08x\n", context.pc, context.sr, context.pr );
 }
 
 void Sh4aCpu::Init()
@@ -626,6 +626,18 @@ void Sh4aCpu::Execute()
 
 					case 0xB: {
 						switch( opcode & 0x00F0 ) {
+							case 0x0000: { //jsr @rn
+								int rn = (opcode >> 8) & 0xF;
+
+								context.pr = context.pc + 4;
+
+								delayTarget = context.gpr[rn];
+
+								delayState = ENTERING_DELAY;
+
+								break;
+							}
+
 							case 0x0020: { //jmp @rn
 								int rn = (opcode >> 8) & 0xF;
 
@@ -638,6 +650,25 @@ void Sh4aCpu::Execute()
 
 							default: {
 								printf( "Unknown 0x400B opcode %04x\n", opcode );
+								running = false;
+								break;
+							}
+						}
+						break;
+					}
+
+					case 0xE: {
+						switch( opcode & 0x00F0 ) {
+							case 0x0000: { // ldc rn, sr
+								int rn = (opcode >> 8) & 0xF;
+
+								context.sr = context.gpr[rn];
+
+								break;
+							}
+
+							default: {
+								printf( "Unknown 0x400E opcode %04x\n", opcode );
 								running = false;
 								break;
 							}
