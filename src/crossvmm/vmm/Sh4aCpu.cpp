@@ -607,7 +607,7 @@ void Sh4aCpu::Execute()
 
 					case 0xA: {
 						switch( opcode & 0x00F0 ) {
-							case 0x00F0: {
+							case 0x00F0: { // ldc rn, dbr
 								int rn = (opcode >> 8) & 0xF;
 
 								context.dbr = context.gpr[rn];
@@ -625,8 +625,8 @@ void Sh4aCpu::Execute()
 					}
 
 					case 0xB: {
-						switch( opcode & 0x00F0 ) { //jmp @rn
-							case 0x0020: {
+						switch( opcode & 0x00F0 ) {
+							case 0x0020: { //jmp @rn
 								int rn = (opcode >> 8) & 0xF;
 
 								delayTarget = context.gpr[rn];
