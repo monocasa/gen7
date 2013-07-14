@@ -830,9 +830,10 @@ void Sh4aCpu::Execute()
 
 				int disp = (opcode & 0x00FF) * 4;
 
-				uint32_t *ptr = (uint32_t*)((uint64_t)( context.pc + 4 + disp ));
+				uint64_t ptr = context.pc + disp + 4;
+				ptr &= 0xFFFFFFFC;
 
-				context.gpr[rn] = *ptr;
+				context.gpr[rn] = *((uint32_t*)ptr);
 
 				break;
 			}
