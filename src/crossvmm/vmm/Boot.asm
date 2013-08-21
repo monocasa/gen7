@@ -77,7 +77,7 @@ SetupPagingAndLongMode:
 	or	ax, 3 << 9
 	mov	cr4, eax
 
-	ldmxcsr [InitialMXCSR]
+	ldmxcsr	[InitialMXCSR]
 
 	; Load CR3 with PML4
 	mov	eax, __boot_pml4
