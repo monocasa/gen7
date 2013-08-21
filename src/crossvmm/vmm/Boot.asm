@@ -67,6 +67,18 @@ SetupPagingAndLongMode:
 	mov	dword [__boot_pml2 + 16], 0x400083
 	mov	dword [__boot_pml2 + 24], 0x600083
 
+	; Enable SSR
+	mov eax, cr0
+	and ax, 0xFFFB
+	or  ax, 0x2
+	mov cr0, eax
+
+	mov eax, cr4
+	or  ax, 3 << 9
+	mov cr4, eax
+
+	ldmxcsr [InitialMXCSR]
+
 	; Load CR3 with PML4
 	mov	eax, __boot_pml4
 	mov	cr3, eax
@@ -109,4 +121,7 @@ Gdtr2:
 Gdtr3:
 	DW	23
 	DQ	TmpGdt + 24 + 0xFFFFFFFF80000000
+
+InitialMXCSR:
+	DW 0x1F80
 
