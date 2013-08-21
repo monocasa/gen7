@@ -68,14 +68,14 @@ SetupPagingAndLongMode:
 	mov	dword [__boot_pml2 + 24], 0x600083
 
 	; Enable SSE
-	mov eax, cr0
-	and ax, 0xFFFB
-	or  ax, 0x2
-	mov cr0, eax
+	mov	eax, cr0
+	and	ax, 0xFFFB
+	or	ax, 0x2
+	mov	cr0, eax
 
-	mov eax, cr4
-	or  ax, 3 << 9
-	mov cr4, eax
+	mov	eax, cr4
+	or	ax, 3 << 9
+	mov	cr4, eax
 
 	ldmxcsr [InitialMXCSR]
 
@@ -123,5 +123,5 @@ Gdtr3:
 	DQ	TmpGdt + 24 + 0xFFFFFFFF80000000
 
 InitialMXCSR:
-	DW 0x1F80
+	DW	0x00001F80
 
