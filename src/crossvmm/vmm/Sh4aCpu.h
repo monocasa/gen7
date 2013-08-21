@@ -23,7 +23,16 @@ public:
 class Sh4aCpu : public Cpu
 {
 private:
-	static const uint32_t T_BIT = 0x000000001;
+	static const uint32_t SR_T_BIT  = 0x00000001;
+	static const uint32_t SR_S_BIT  = 0x00000002;
+	static const uint32_t SR_IMASK  = 0x000000F0;
+	static const uint32_t SR_Q_BIT  = 0x00000100;
+	static const uint32_t SR_M_BIT  = 0x00000200;
+	static const uint32_t SR_FD_BIT = 0x00008000;
+	static const uint32_t SR_BL_BIT = 0x10000000;
+	static const uint32_t SR_RB_BIT = 0x20000000;
+	static const uint32_t SR_MD_BIT = 0x40000000;
+	static const uint32_t SR_ALL    = 0x700083F3;
 
 	static const uint32_t FPSCR_SZ_BIT = 0x00100000;
 
@@ -72,6 +81,8 @@ private:
 	} mmu;
 
 	void DumpState();
+
+	void SetSR( uint32_t newValue );
 
 public:
 	virtual void Init();

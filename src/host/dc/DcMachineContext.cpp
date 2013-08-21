@@ -9,6 +9,7 @@ namespace Gen7 {
 void DcMachineContext::LoadBios( Sh4aContext &context )
 {
 	context.pc     = 0xA0000000;
+	context.sr     = 0x700000F0;
 	context.expevt = 0x00000020;
 	context.vbr    = 0x00000000;
 }

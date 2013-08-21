@@ -277,10 +277,42 @@ void Sh4aCpu::DumpState()
 	}
 }
 
+void Sh4aCpu::SetSR( uint32_t newValue )
+{
+	uint32_t reservedBits = newValue & ~SR_ALL;
+
+	if( reservedBits != 0 ) {
+		printf( "Unknown bits set in SR %08x\n", reservedBits );
+		hyper_quit();
+	}
+
+	if( (newValue & SR_MD_BIT) == 0 ) {
+		printf( "Switch to unprivileged mode not implemented\n" );
+		hyper_quit();
+	}
+
+	if( (newValue & SR_BL_BIT) == 0 ) {
+		printf( "Interrupt block disabled not implemented\n" );
+		hyper_quit();
+	}
+
+
+	if( (newValue & SR_RB_BIT) != (context.sr & SR_RB_BIT) ) {
+		uint32_t temp[8];
+		memcpy( temp,                 &context.gpr[0],      sizeof(uint32_t) * 8 );
+		memcpy( &context.gpr[0],      &context.gpr_bank[0], sizeof(uint32_t) * 8 );
+		memcpy( &context.gpr_bank[0], temp,                 sizeof(uint32_t) * 8 );
+	}
+
+	context.sr = newValue;
+}
+
 void Sh4aCpu::Init()
 {
 	mmu.Init();
 	mmu.MapFull();
+
+	SetSR( context.sr );
 }
 
 void Sh4aCpu::Execute()
@@ -423,10 +455,10 @@ void Sh4aCpu::Execute()
 						int rn = (opcode >> 8) & 0xF;
 						int rm = (opcode >> 4) & 0xF;
 						if( context.gpr[ rm ] & context.gpr[ rm ] ) {
-							context.sr |= T_BIT;
+							context.sr |= SR_T_BIT;
 						}
 						else {
-							context.sr &= ~T_BIT;
+							context.sr &= ~SR_T_BIT;
 						}
 						break;
 					}
@@ -463,10 +495,10 @@ void Sh4aCpu::Execute()
 						int rm = (opcode >> 4) & 0xF;
 
 						if( context.gpr[rn] == context.gpr[rm] ) {
-							context.sr |= T_BIT;
+							context.sr |= SR_T_BIT;
 						}
 						else {
-							context.sr &= ~T_BIT;
+							context.sr &= ~SR_T_BIT;
 						} 
 						break;
 					}
@@ -476,10 +508,10 @@ void Sh4aCpu::Execute()
 						int rm = (opcode >> 4) & 0xF;
 
 						if( context.gpr[rn] > context.gpr[rm] ) {
-							context.sr |= T_BIT;
+							context.sr |= SR_T_BIT;
 						}
 						else {
-							context.sr &= ~T_BIT;
+							context.sr &= ~SR_T_BIT;
 						} 
 						break;
 					}
@@ -503,10 +535,10 @@ void Sh4aCpu::Execute()
 								context.gpr[rn]--;
 
 								if( 0 == context.gpr[rn] ) {
-									context.sr |= T_BIT;
+									context.sr |= SR_T_BIT;
 								}
 								else {
-									context.sr &= ~T_BIT;
+									context.sr &= ~SR_T_BIT;
 								}
 
 								break;
@@ -526,8 +558,8 @@ void Sh4aCpu::Execute()
 							case 0x0000: {
 								int rn = (opcode >> 8) & 0xF;
 
-								context.sr &= ~T_BIT;
-								context.sr |= context.gpr[rn] & T_BIT;
+								context.sr &= ~SR_T_BIT;
+								context.sr |= context.gpr[rn] & SR_T_BIT;
 
 								context.gpr[rn] >>= 1;
 
@@ -537,8 +569,8 @@ void Sh4aCpu::Execute()
 							case 0x0020: {
 								int rn = (opcode >> 8) & 0xF;
 
-								context.sr &= ~T_BIT;
-								context.sr |= context.gpr[rn] & T_BIT;
+								context.sr &= ~SR_T_BIT;
+								context.sr |= context.gpr[rn] & SR_T_BIT;
 
 								uint32_t temp = context.gpr[rn] >> 1;
 								temp |= context.gpr[rn] & 0x80000000;
@@ -561,11 +593,11 @@ void Sh4aCpu::Execute()
 							case 0x0000: {
 								int rn = (opcode >> 8) & 0xF;
 
-								context.sr &= ~T_BIT;
-								context.sr |= context.gpr[rn] & T_BIT;
+								context.sr &= ~SR_T_BIT;
+								context.sr |= context.gpr[rn] & SR_T_BIT;
 
 								context.gpr[rn] >>= 1;
-								context.gpr[rn] |= (context.sr & T_BIT) << 31;
+								context.gpr[rn] |= (context.sr & SR_T_BIT) << 31;
 
 								break;
 							}
@@ -646,7 +678,7 @@ void Sh4aCpu::Execute()
 								int rn = (opcode >> 8) & 0xF;
 								uint32_t* ptr = (uint32_t*)((uint64_t)context.gpr[rn]);
 
-								context.sr = *ptr;
+								SetSR( *ptr );
 								context.gpr[rn] += sizeof(uint32_t);
 
 								break;
@@ -812,7 +844,7 @@ void Sh4aCpu::Execute()
 							case 0x0000: { // ldc rn, sr
 								int rn = (opcode >> 8) & 0xF;
 
-								context.sr = context.gpr[rn];
+								SetSR( context.gpr[rn] );
 
 								break;
 							}
@@ -968,7 +1000,7 @@ void Sh4aCpu::Execute()
 						disp = Util::SignExtend<int32_t,9>( disp );
 						uint32_t target = context.pc + disp + 4;
 
-						if( (context.sr & T_BIT) == T_BIT ) {
+						if( (context.sr & SR_T_BIT) == SR_T_BIT ) {
 							context.pc = target - 2;
 						}
 
@@ -981,7 +1013,7 @@ void Sh4aCpu::Execute()
 						disp = Util::SignExtend<int32_t,9>( disp );
 						uint32_t target = context.pc + disp + 4;
 
-						if( (context.sr & T_BIT) == 0 ) {
+						if( (context.sr & SR_T_BIT) == 0 ) {
 							context.pc = target - 2;
 						}
 
@@ -1025,10 +1057,10 @@ void Sh4aCpu::Execute()
 						uint32_t imm = opcode & 0xFF;
 
 						if( context.gpr[0] & imm ) {
-							context.sr |= T_BIT;
+							context.sr |= SR_T_BIT;
 						}
 						else {
-							context.sr &= ~T_BIT;
+							context.sr &= ~SR_T_BIT;
 						}
 
 						break;

@@ -46,6 +46,7 @@ struct XenonPpcContext : public CpuContext {
 
 struct Sh4aContext : public CpuContext {
 	uint32_t gpr[16];
+	uint32_t gpr_bank[8];
 	float fpr[16];
 	float xpr[16];
 	uint32_t sr;
