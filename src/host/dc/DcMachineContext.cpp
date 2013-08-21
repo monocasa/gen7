@@ -10,6 +10,7 @@ void DcMachineContext::LoadBios( Sh4aContext &context )
 {
 	context.pc     = 0xA0000000;
 	context.expevt = 0x00000020;
+	context.vbr    = 0x00000000;
 }
 
 void DcMachineContext::Load( const char *path )

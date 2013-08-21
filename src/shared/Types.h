@@ -49,11 +49,14 @@ struct Sh4aContext : public CpuContext {
 	float fpr[16];
 	float xpr[16];
 	uint32_t sr;
+	uint32_t ssr;
 	uint32_t gbr;
+	uint32_t vbr;
 	uint32_t mach;
 	uint32_t macl;
 	uint32_t pr;
 	uint32_t pc;
+	uint32_t spc;
 	uint32_t fpscr;
 	uint32_t fpul;
 

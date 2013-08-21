@@ -266,6 +266,14 @@ void Sh4aCpu::DumpState()
 			        *((uint32_t*)&context.fpr[i]),
 			        ((i % 4) == 3) ? "\n" : " | " );
 		}
+
+		for( int i = 0; i < 16; i++ ) {
+			printf( "%sx%d %08x%s",
+			        (i < 10) ? " " : "",
+			        i,
+			        *((uint32_t*)&context.xpr[i]),
+			        ((i % 4) == 3) ? "\n" : " | " );
+		}
 	}
 }
 
@@ -573,6 +581,36 @@ void Sh4aCpu::Execute()
 
 					case 0x6: {
 						switch( opcode & 0x00F0 ) {
+							case 0x0000: { // lds.l @Rm+, MACH
+								int rn = (opcode >> 8) & 0xF;
+								uint32_t* ptr = (uint32_t*)((uint64_t)context.gpr[rn]);
+
+								context.mach = *ptr;
+								context.gpr[rn] += sizeof(uint32_t);
+
+								break;
+							}
+
+							case 0x0010: { // lds.l @Rm+, MACL
+								int rn = (opcode >> 8) & 0xF;
+								uint32_t* ptr = (uint32_t*)((uint64_t)context.gpr[rn]);
+
+								context.mach = *ptr;
+								context.gpr[rn] += sizeof(uint32_t);
+
+								break;
+							}
+
+							case 0x0020: { // lds.l @Rm+, PR
+								int rn = (opcode >> 8) & 0xF;
+								uint32_t* ptr = (uint32_t*)((uint64_t)context.gpr[rn]);
+
+								context.pr = *ptr;
+								context.gpr[rn] += sizeof(uint32_t);
+
+								break;
+							}
+
 							case 0x0050: { // lds.l @Rm+, FPUL
 								int rn = (opcode >> 8) & 0xF;
 								uint32_t* ptr = (uint32_t*)((uint64_t)context.gpr[rn]);
@@ -595,6 +633,67 @@ void Sh4aCpu::Execute()
 
 							default: {
 								printf( "Unknown 0x4006 opcode %04x\n", opcode );
+								running = false;
+								break;
+							}
+						}
+						break;
+					}
+
+					case 0x7: {
+						switch( opcode & 0x00F0 ) {
+							case 0x0000: { // lds.l @Rm+, SR
+								int rn = (opcode >> 8) & 0xF;
+								uint32_t* ptr = (uint32_t*)((uint64_t)context.gpr[rn]);
+
+								context.sr = *ptr;
+								context.gpr[rn] += sizeof(uint32_t);
+
+								break;
+							}
+
+							case 0x0010: { // lds.l @Rm+, GBR
+								int rn = (opcode >> 8) & 0xF;
+								uint32_t* ptr = (uint32_t*)((uint64_t)context.gpr[rn]);
+
+								context.gbr = *ptr;
+								context.gpr[rn] += sizeof(uint32_t);
+
+								break;
+							}
+
+							case 0x0020: { // lds.l @Rm+, VBR
+								int rn = (opcode >> 8) & 0xF;
+								uint32_t* ptr = (uint32_t*)((uint64_t)context.gpr[rn]);
+
+								context.vbr = *ptr;
+								context.gpr[rn] += sizeof(uint32_t);
+
+								break;
+							}
+
+							case 0x0030: { // lds.l @Rm+, SSR
+								int rn = (opcode >> 8) & 0xF;
+								uint32_t* ptr = (uint32_t*)((uint64_t)context.gpr[rn]);
+
+								context.ssr = *ptr;
+								context.gpr[rn] += sizeof(uint32_t);
+
+								break;
+							}
+
+							case 0x0040: { // lds.l @Rm+, SPC
+								int rn = (opcode >> 8) & 0xF;
+								uint32_t* ptr = (uint32_t*)((uint64_t)context.gpr[rn]);
+
+								context.spc = *ptr;
+								context.gpr[rn] += sizeof(uint32_t);
+
+								break;
+							}
+
+							default: {
+								printf( "Unknown 0x4007 opcode %04x\n", opcode );
 								running = false;
 								break;
 							}
@@ -986,8 +1085,6 @@ void Sh4aCpu::Execute()
 						else {
 							frn >>= 1;
 							if( ((opcode >> 8) & 1) == 0 ) {
-								printf( "fmov @r%d+, dr%d\n", rm, frn );
-
 								uint64_t * memPtr = (uint64_t*)( (uint64_t)context.gpr[rm] );
 								uint64_t * fprPtr = (uint64_t*)( &context.fpr[frn * 2] );
 
