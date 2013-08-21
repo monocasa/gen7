@@ -443,10 +443,20 @@ void Sh4aCpu::Execute()
 						int rn = (opcode >> 8) & 0xF;
 						int rm = (opcode >> 4) & 0xF;
 
+						uint16_t *ptr = (uint16_t*)((uint64_t)context.gpr[rn] -2);
+						*ptr = context.gpr[rm];
 						context.gpr[rn] -= 2;
 
-						uint16_t *ptr = (uint16_t*)((uint64_t)context.gpr[rn]);
+						break;
+					}
+
+					case 0x0006: { //mov.l rm, @-rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						uint32_t *ptr = (uint32_t*)((uint64_t)context.gpr[rn] - 4);
 						*ptr = context.gpr[rm];
+						context.gpr[rn] -= 4;
 
 						break;
 					}
@@ -581,6 +591,27 @@ void Sh4aCpu::Execute()
 
 							default: {
 								printf( "Unknown 0x4001 opcode %04x\n", opcode );
+								running = false;
+								break;
+							}
+						}
+						break;
+					}
+
+					case 0x02: {
+						switch( opcode & 0x00F0 ) {
+							case 0x0020: { // STS.L pr @-Rn
+								int rn = (opcode >> 8) & 0xF;
+
+								uint32_t *ptr = (uint32_t*)((uint64_t)context.gpr[rn] - 4);
+								*ptr = context.pr;
+								context.gpr[rn] -= sizeof(uint32_t);
+
+								break;
+							}
+
+							default: {
+								printf( "Unknown 0x4002 opcode %04x\n", opcode );
 								running = false;
 								break;
 							}
