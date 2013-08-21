@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <cstdio>
+#include <cstring>
 
 extern void hyper_quit();
 
@@ -971,6 +972,36 @@ void Sh4aCpu::Execute()
 								break;
 							}
 						}
+					}
+
+					case 0x000D: {
+						switch( opcode & 0x00F0 ) {
+							case 0x00F0: {
+								switch( opcode & 0x0F00 ) {
+									case 0x0B00: { // frchg
+										float temp[16];
+										memcpy( temp,        context.fpr, sizeof(float) * 16 );
+										memcpy( context.fpr, context.xpr, sizeof(float) * 16 );
+										memcpy( context.xpr, temp       , sizeof(float) * 16 );
+										break;
+									}
+
+									default: {
+										printf( "Unknown 0xF0FD opcode %04x\n", opcode );
+										running = false;
+										break;
+									}
+								}
+								break;
+							}
+
+							default: {
+								printf( "Unknown 0xF00D opcode %04x\n", opcode );
+								running = false;
+								break;
+							}
+						}
+						break;
 					}
 
 					default: {

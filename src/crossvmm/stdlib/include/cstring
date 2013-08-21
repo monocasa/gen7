@@ -1,0 +1,9 @@
+#ifndef STANDALONECPP_CSTRING
+#define STANDALONECPP_CSTRING
+
+#include <cstdint>
+
+extern void* memcpy( void *dest, const void *src, size_t n );
+
+#endif //STANDALONECPP_CSTRING
+

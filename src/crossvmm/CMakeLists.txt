@@ -11,6 +11,7 @@ ADD_LIBRARY( crossvmm STATIC vmm/Boot.asm
                              vmm/InterruptManager.cpp
                              vmm/Isr.asm
                              vmm/Main.cpp
+                             vmm/memcpy.cpp
                              vmm/MemoryManager.cpp
                              vmm/PpcCpu.cpp
                              vmm/printf.cpp
