@@ -583,6 +583,16 @@ void Sh4aCpu::Execute()
 								break;
 							}
 
+							case 0x0060: { // lds.l @Rm+, FPSCR
+								int rn = (opcode >> 8) & 0xF;
+								uint32_t* ptr = (uint32_t*)((uint64_t)context.gpr[rn]);
+
+								context.fpscr = *ptr;
+								context.gpr[rn] += sizeof(uint32_t);
+
+								break;
+							}
+
 							default: {
 								printf( "Unknown 0x4006 opcode %04x\n", opcode );
 								running = false;
