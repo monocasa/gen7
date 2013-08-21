@@ -255,6 +255,17 @@ void Sh4aCpu::DumpState()
 	printf( " r8 %8x |  r9 %8x | r10 %8x | r11 %8x\n", context.gpr[ 8], context.gpr[ 9], context.gpr[10], context.gpr[11] );
 	printf( "r12 %8x | r13 %8x | r14 %8x | r15 %8x\n", context.gpr[12], context.gpr[13], context.gpr[14], context.gpr[15] );
 	printf( " pc %08x |  sr %08x |  pr %08x\n", context.pc, context.sr, context.pr );
+	printf( "fpscr %06x\n", context.fpscr );
+
+	if( (context.fpscr & FPSCR_SZ_BIT) != 0 ) {
+		for( int i = 0; i < 16; i++ ) {
+			printf( "%sf%d %08x%s",
+			        (i < 10) ? " " : "",
+			        i,
+			        *((uint32_t*)&context.fpr[i]),
+			        ((i % 4) == 3) ? "\n" : " | " );
+		}
+	}
 }
 
 void Sh4aCpu::Init()
@@ -607,6 +618,14 @@ void Sh4aCpu::Execute()
 
 					case 0xA: {
 						switch( opcode & 0x00F0 ) {
+							case 0x0060: { // ldc rn, fpscr
+								int rn = (opcode >> 8) & 0xF;
+
+								context.fpscr = context.gpr[rn];
+
+								break;
+							}
+
 							case 0x00F0: { // ldc rn, dbr
 								int rn = (opcode >> 8) & 0xF;
 
@@ -918,6 +937,48 @@ void Sh4aCpu::Execute()
 				int32_t imm = Util::SignExtend<int32_t,8>( opcode & 0xFF );
 				int reg = (opcode >> 8) & 0xF;
 				context.gpr[ reg ] = imm;
+				break;
+			}
+
+			case 0xF000: {
+				switch( opcode & 0x000F ) {
+					case 0x0009: {
+						int frn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						if( (context.fpscr & FPSCR_SZ_BIT) == 0 ) {
+							printf( "fmov.s @r%d+, fr%d\n", rm, frn );
+							running = false;
+							break;
+						}
+						else {
+							frn >>= 1;
+							if( ((opcode >> 8) & 1) == 0 ) {
+								printf( "fmov @r%d+, dr%d\n", rm, frn );
+
+								uint64_t * memPtr = (uint64_t*)( (uint64_t)context.gpr[rm] );
+								uint64_t * fprPtr = (uint64_t*)( &context.fpr[frn * 2] );
+
+								*fprPtr = *memPtr;
+
+								context.gpr[rm] += 8;
+
+								break;
+							}
+							else {
+								printf( "fmov @r%d+, xdr%d\n", rm, frn );
+								running = false;
+								break;
+							}
+						}
+					}
+
+					default: {
+						printf( "Unknown 0xF opcode %04x\n", opcode );
+						running = false;
+						break;
+					}
+				}
 				break;
 			}
 

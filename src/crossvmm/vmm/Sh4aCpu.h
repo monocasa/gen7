@@ -25,6 +25,8 @@ class Sh4aCpu : public Cpu
 private:
 	static const uint32_t T_BIT = 0x000000001;
 
+	static const uint32_t FPSCR_SZ_BIT = 0x00100000;
+
 	Gen7::Sh4aContext &context;
 
 	class MmuContext : public PageFaultHandler, MemoryEmulator
