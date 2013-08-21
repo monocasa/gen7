@@ -571,6 +571,27 @@ void Sh4aCpu::Execute()
 						break;
 					}
 
+					case 0x6: {
+						switch( opcode & 0x00F0 ) {
+							case 0x0050: { // lds.l @Rm+, FPUL
+								int rn = (opcode >> 8) & 0xF;
+								uint32_t* ptr = (uint32_t*)((uint64_t)context.gpr[rn]);
+
+								context.fpul = *ptr;
+								context.gpr[rn] += sizeof(uint32_t);
+
+								break;
+							}
+
+							default: {
+								printf( "Unknown 0x4006 opcode %04x\n", opcode );
+								running = false;
+								break;
+							}
+						}
+						break;
+					}
+
 					case 0x8: {
 						switch( opcode & 0x00F0 ) {
 							case 0x0000: { //shll2 reg
