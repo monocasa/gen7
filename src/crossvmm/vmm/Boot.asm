@@ -67,7 +67,7 @@ SetupPagingAndLongMode:
 	mov	dword [__boot_pml2 + 16], 0x400083
 	mov	dword [__boot_pml2 + 24], 0x600083
 
-	; Enable SSR
+	; Enable SSE
 	mov eax, cr0
 	and ax, 0xFFFB
 	or  ax, 0x2
