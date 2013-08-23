@@ -124,11 +124,12 @@ void Sh4aCpu::MmuContext::OnPageFault( PageFaultReason reason, uint64_t addr, In
 		printf( "Woah massive error.  Addr=%016lx rip=%016lx\n", addr, regs->rip );
 		hyper_quit();
 	}
-	else if( addr >= 0xF0000000 ) {
+	else if( addr >= 0xE0000000 ) {
 		P4Access( addr, regs );
 	}
 	else {
 		printf( "Unimplemented access Addr=%016lx\n", addr );
+		cpu.DumpState();
 		hyper_quit();
 	}
 }
@@ -196,6 +197,11 @@ uint16_t Sh4aCpu::MmuContext::Read16( uint64_t addr )
 
 void Sh4aCpu::MmuContext::Write32( uint64_t addr, uint32_t data )
 {
+	if( (addr & 0xF0000000) == 0xE0000000 ) {
+		context.sq[ (addr >> 2) & 0xF ] = data;
+		return;
+	}
+
 	switch( addr ) {
 		case 0xFF00001C: {
 			printf( "Write to CCR:  %08x\n", data );
@@ -227,6 +233,16 @@ void Sh4aCpu::MmuContext::Write32( uint64_t addr, uint32_t data )
 			return;
 		}
 
+		case 0xFF000038: {
+			context.qacr0 = data & 0x1C;
+			return;
+		}
+
+		case 0xFF00003C: {
+			context.qacr1 = data & 0x1C;
+			return;
+		}
+
 		default: {
 			printf( "Implement Sh4aCpu::MmuContext::Write32( addr=%08lx, data=%08x )\n", addr, data );
 			hyper_quit();
@@ -236,6 +252,10 @@ void Sh4aCpu::MmuContext::Write32( uint64_t addr, uint32_t data )
 
 uint32_t Sh4aCpu::MmuContext::Read32( uint64_t addr )
 {
+	if( (addr & 0xF0000000) == 0xE0000000 ) {
+		return context.sq[ (addr >> 2) & 0xF ];
+	}
+
 	switch( addr ) {
 		case 0xFF000024: {
 			return context.expevt;
@@ -258,7 +278,7 @@ void Sh4aCpu::DumpState()
 	printf( " pc %08x |  sr %08x |  pr %08x\n", context.pc, context.sr, context.pr );
 	printf( "fpscr %06x\n", context.fpscr );
 
-	if( (context.fpscr & FPSCR_SZ_BIT) != 0 ) {
+	if( (context.fpscr & FPSCR_SZ_BIT) == 0 ) {
 		for( int i = 0; i < 16; i++ ) {
 			printf( "%sf%d %08x%s",
 			        (i < 10) ? " " : "",
@@ -291,10 +311,10 @@ void Sh4aCpu::SetSR( uint32_t newValue )
 		hyper_quit();
 	}
 
-	if( (newValue & SR_BL_BIT) == 0 ) {
-		printf( "Interrupt block disabled not implemented\n" );
-		hyper_quit();
-	}
+//	if( (newValue & SR_BL_BIT) == 0 ) {
+//		printf( "Interrupt block disabled not implemented\n" );
+//		hyper_quit();
+//	}
 
 
 	if( (newValue & SR_RB_BIT) != (context.sr & SR_RB_BIT) ) {
@@ -331,13 +351,45 @@ void Sh4aCpu::Execute()
 	while( running ) {
 		uint16_t opcode = *reinterpret_cast<uint16_t*>( context.pc );
 
-//		printf( "%08x : %04x\n", context.pc, opcode );
+		//printf( "%08x : %04x\n", context.pc, opcode );
+		//
+		//if( 0x8c010810 <= context.pc && 0x8c010974 >= context.pc ) {
+		//	printf( "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" );
+		//	DumpState();
+		//}
 
 		switch( opcode & 0xF000 ) {
 			case 0x0000: {
 				switch( opcode & 0x000F ) {
+					case 0x2: {
+						switch( opcode & 0x00F0 ) {
+							case 0x0000: { // stc sr, Rn
+								int rn = (opcode >> 8) & 0xF;
+								context.gpr[rn] = context.sr;
+								break;
+							}
+
+							default: {
+								printf( "Unknown 0x0002 opcode %04x\n", opcode );
+								running = false;
+								break;
+							}
+						}
+						break;
+					}
+
 					case 0x3: {
 						switch( opcode & 0x00F0 ) {
+							case 0x0020: { //braf rn
+								int rn = (opcode >> 8) & 0xF;
+
+								delayTarget = context.gpr[rn] + context.pc + 4;
+
+								delayState = ENTERING_DELAY;
+
+								break;
+							}
+
 							case 0x0080: { //pref @rn
 								int rn = (opcode >> 8) & 0xF;
 								if( context.gpr[rn] > 0xF0000000 ) {
@@ -356,6 +408,17 @@ void Sh4aCpu::Execute()
 						break;
 					}
 
+					case 0x6: { //mov.l Rm, @(R0,Rn)
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						uint32_t *ptr = (uint32_t*)((uint64_t)(context.gpr[0] + context.gpr[rn]));
+
+						*ptr = context.gpr[rm];
+
+						break;
+					}
+
 					case 0x9: {
 						if( opcode == 0x0009 ) { // nop
 							break;
@@ -363,6 +426,22 @@ void Sh4aCpu::Execute()
 
 						else {
 							printf( "Unknown 0x0009 opcode %04x\n", opcode );
+							running = false;
+							break;
+						}
+						break;
+					}
+
+					case 0xB: {
+						if( 0x000B == opcode ) { // rts
+							delayTarget = context.pr;
+							delayState = ENTERING_DELAY;
+
+							printf( "Returning to %x\n", context.pr );
+							break;
+						}
+						else {
+							printf( "Unknown opcode %04x\n", opcode );
 							running = false;
 							break;
 						}
@@ -377,12 +456,29 @@ void Sh4aCpu::Execute()
 								break;
 							}
 
+							case 0x0020: { //sts pr, rn
+								int rn = (opcode >> 8) & 0xF;
+								context.gpr[ rn ] = context.pr;
+								break;
+							}
+
 							default: {
 								printf( "Unknown 0x000A opcode %04x\n", opcode ); 
 								running = false;
 								break;
 							}
 						}
+						break;
+					}
+
+					case 0xE: { //mov.l @(R0,Rm), Rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						uint32_t *ptr = (uint32_t*)((uint64_t)(context.gpr[0] + context.gpr[rm]));
+
+						context.gpr[rn] = *ptr;
+
 						break;
 					}
 
@@ -464,7 +560,7 @@ void Sh4aCpu::Execute()
 					case 0x0008: { //tst rm, rn
 						int rn = (opcode >> 8) & 0xF;
 						int rm = (opcode >> 4) & 0xF;
-						if( context.gpr[ rm ] & context.gpr[ rm ] ) {
+						if( (context.gpr[ rm ] & context.gpr[ rm ]) == 0 ) {
 							context.sr |= SR_T_BIT;
 						}
 						else {
@@ -473,10 +569,24 @@ void Sh4aCpu::Execute()
 						break;
 					}
 
+					case 0x0009: { //and rm, rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+						context.gpr[ rn ] = context.gpr[ rn ] & context.gpr[ rm ];
+						break;
+					}
+
 					case 0x000A: { //xor rm, rn
 						int rn = (opcode >> 8) & 0xF;
 						int rm = (opcode >> 4) & 0xF;
 						context.gpr[ rn ] = context.gpr[ rn ] ^ context.gpr[ rm ];
+						break;
+					}
+
+					case 0x000B: { //or rm, rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+						context.gpr[ rn ] = context.gpr[ rn ] | context.gpr[ rm ];
 						break;
 					}
 
@@ -513,6 +623,19 @@ void Sh4aCpu::Execute()
 						break;
 					}
 
+					case 0x0003: { //CMP/GE Rm,Rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						if( ((int32_t)context.gpr[rn]) >= ((int32_t)context.gpr[rm]) ) {
+							context.sr |= SR_T_BIT;
+						}
+						else {
+							context.sr &= ~SR_T_BIT;
+						} 
+						break;
+					}
+
 					case 0x0006: { //CMP/HI Rm,Rn
 						int rn = (opcode >> 8) & 0xF;
 						int rm = (opcode >> 4) & 0xF;
@@ -523,6 +646,24 @@ void Sh4aCpu::Execute()
 						else {
 							context.sr &= ~SR_T_BIT;
 						} 
+						break;
+					}
+
+					case 0x0008: { //SUB Rm, Rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						context.gpr[rn] -= context.gpr[rm];
+
+						break;
+					}
+
+					case 0x000C: { //ADD Rm, Rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						context.gpr[rn] += context.gpr[rm];
+
 						break;
 					}
 
@@ -600,6 +741,26 @@ void Sh4aCpu::Execute()
 
 					case 0x02: {
 						switch( opcode & 0x00F0 ) {
+							case 0x0000: { // STS.L mach @-Rn
+								int rn = (opcode >> 8) & 0xF;
+
+								uint32_t *ptr = (uint32_t*)((uint64_t)context.gpr[rn] - 4);
+								*ptr = context.mach;
+								context.gpr[rn] -= sizeof(uint32_t);
+
+								break;
+							}
+
+							case 0x0010: { // STS.L macl @-Rn
+								int rn = (opcode >> 8) & 0xF;
+
+								uint32_t *ptr = (uint32_t*)((uint64_t)context.gpr[rn] - 4);
+								*ptr = context.macl;
+								context.gpr[rn] -= sizeof(uint32_t);
+
+								break;
+							}
+
 							case 0x0020: { // STS.L pr @-Rn
 								int rn = (opcode >> 8) & 0xF;
 
@@ -848,6 +1009,10 @@ void Sh4aCpu::Execute()
 
 								delayState = ENTERING_DELAY;
 
+								printf( "Calling loc_%x\n", delayTarget );
+
+								DumpState();
+
 								break;
 							}
 
@@ -867,6 +1032,30 @@ void Sh4aCpu::Execute()
 								break;
 							}
 						}
+						break;
+					}
+
+					case 0xC: {
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						if( context.gpr[rn] & 0x80000000 ) {
+							printf( "Implement shad sign extend\n" );
+							running = false;
+						}
+						else {
+							context.gpr[rn] <<= (int)context.gpr[rm];
+						}
+
+						break;
+					}
+
+					case 0xD: {
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						context.gpr[rn] <<= (int)context.gpr[rm];
+
 						break;
 					}
 
@@ -958,6 +1147,15 @@ void Sh4aCpu::Execute()
 						break;
 					}
 
+					case 0x7: { //not rm, rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						context.gpr[rn] = ~context.gpr[rm];
+
+						break;
+					}
+
 					case 0x8: { //swap.b rm, rn	
 						int dest = (opcode >> 8) & 0xF;
 						int src = (opcode >> 4) & 0xF;
@@ -983,6 +1181,44 @@ void Sh4aCpu::Execute()
 						break;
 					}
 
+					case 0xA: { //negc rm, rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						int temp = 0 - context.gpr[rn];
+						context.gpr[rn] = temp - (context.sr & SR_T_BIT);
+						if( 0 < temp ) {
+							context.sr |= SR_T_BIT;
+						}
+						else {
+							context.sr &= ~SR_T_BIT;
+						}
+
+						if( temp < ((int)context.gpr[rn]) ) {
+							context.sr |= SR_T_BIT;
+						}
+
+						break;
+					}
+
+					case 0xB: { //neg rm, rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						context.gpr[rn] = 0 - context.gpr[rm];
+
+						break;
+					}
+
+					case 0xC: { //extu.b rm,rn
+						int rn = (opcode >> 8) & 0xF;
+						int rm = (opcode >> 4) & 0xF;
+
+						context.gpr[rn] = context.gpr[rm] & 0x000000FF;
+
+						break;
+					}
+
 					default: {
 						printf( "Unknown 0x6 opcode %04x\n", opcode );
 						running = false;
@@ -994,7 +1230,9 @@ void Sh4aCpu::Execute()
 
 			case 0x7000: {
 				int rn = (opcode >> 8) & 0xF;
-				int imm = opcode & 0xFF;
+				int32_t imm = opcode & 0xFF;
+
+				imm = Util::SignExtend<int32_t,8>( imm );
 
 				context.gpr[rn] += imm;
 
@@ -1051,6 +1289,20 @@ void Sh4aCpu::Execute()
 						break;
 					}
 
+					case 0x0F00: { //bf/s loc_disp
+						if( (context.sr & SR_T_BIT) == 0 ) {
+							int disp = opcode & 0xFF;
+							disp *= 2;
+							disp = Util::SignExtend<int32_t,9>( disp );
+
+							delayTarget = context.pc + disp + 4;
+
+							delayState = ENTERING_DELAY;
+						}
+
+						break;
+					}
+
 					default: {
 						printf( "Unknown 0x8 opcode %04x\n", opcode );
 						running = false;
@@ -1073,6 +1325,16 @@ void Sh4aCpu::Execute()
 				break;
 			}
 
+			case 0xA000: {
+				int disp = Util::SignExtend<int,12>( opcode & 0xFF ) * 2;
+				uint32_t target = context.pc + 4 + disp;
+
+				delayTarget = target;
+				delayState = ENTERING_DELAY;
+
+				break;
+			}
+
 			case 0xC000: { 
 				switch( opcode & 0x0F00 ) {
 					case 0x0700: { //mova @(disp,pc),r0
@@ -1087,12 +1349,20 @@ void Sh4aCpu::Execute()
 					case 0x0800: { //tst #imm, r0
 						uint32_t imm = opcode & 0xFF;
 
-						if( context.gpr[0] & imm ) {
+						if( (context.gpr[0] & imm) == 0 ) {
 							context.sr |= SR_T_BIT;
 						}
 						else {
 							context.sr &= ~SR_T_BIT;
 						}
+
+						break;
+					}
+
+					case 0x0A00: { //or #imm, R0
+						int imm = opcode & 0x00FF;
+
+						context.gpr[0] ^= imm;
 
 						break;
 					}
@@ -1192,6 +1462,29 @@ void Sh4aCpu::Execute()
 								break;
 							}
 						}
+						break;
+					}
+
+					case 0x000A: { //fmov.s FRm, @Rn
+						int rn = (opcode >> 8) & 0xF;
+						int frm = (opcode >> 4) & 0xF;
+
+						float *ptr = (float*)((uint64_t)context.gpr[rn]);
+
+						*ptr = context.fpr[frm];
+
+						break;
+					}
+
+					case 0x000B: { //fmov.s FRm, @-Rn
+						int rn = (opcode >> 8) & 0xF;
+						int frm = (opcode >> 4) & 0xF;
+
+						float *ptr = (float*)((uint64_t)context.gpr[rn] - sizeof(float));
+
+						*ptr = context.fpr[frm];
+						context.gpr[rn] -= sizeof(float);
+
 						break;
 					}
 

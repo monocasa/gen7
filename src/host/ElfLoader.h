@@ -16,6 +16,7 @@ public:
 		X86_64 = 0,
 		POWERPC32 = 1,
 		POWERPC64 = 2,
+		SH4 = 3,
 	};
 
 private:

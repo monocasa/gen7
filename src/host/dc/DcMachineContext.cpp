@@ -1,10 +1,21 @@
 #include "dc/DcMachineContext.h"
+#include "ElfLoader.h"
 
 #include "shared/Types.h"
 
 #include <cstring>
 
 namespace Gen7 {
+
+void DcMachineContext::LoadElf( const char *exePath, Sh4aContext &context )
+{
+	ElfLoader elfLoader( exePath, ElfLoader::POWERPC32 );
+	elfLoader.Load( machineMemory );
+
+	context.pc      = elfLoader.GetEntry();
+	context.sr      = 0x700000F0;
+	context.gpr[15] = 0x8D000000;
+}
 
 void DcMachineContext::LoadBios( Sh4aContext &context )
 {
@@ -20,10 +31,11 @@ void DcMachineContext::Load( const char *path )
 	Sh4aContext *context = new (perThreadContext) Sh4aContext();
 
 	if( strlen( path ) != 0 ) {
-		throw Sys::Exception( "Dreamcast does not yet support --exec" );
+		LoadElf( path, *context );
 	}
-
-	LoadBios( *context );
+	else {
+		LoadBios( *context );
+	}
 }
 
 } //namespace Gen7

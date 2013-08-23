@@ -64,6 +64,10 @@ struct Sh4aContext : public CpuContext {
 	uint32_t dbr;
 
 	uint32_t expevt;
+	uint32_t qacr0;
+	uint32_t qacr1;
+
+	uint32_t sq[ 16 ];
 
 	Sh4aContext()
 	  : CpuContext( CpuType::SH4A, 0 )

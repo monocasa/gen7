@@ -45,6 +45,7 @@ private:
 		static const int NUM_PML1S = 1024;
 
 		Gen7::Sh4aContext &context;
+		Sh4aCpu &cpu;
 
 		uint64_t* pml3;
 		uint64_t* pml2s[ NUM_PML2S ];
@@ -75,23 +76,24 @@ private:
 		virtual void Write32( uint64_t addr, uint32_t data );
 		virtual uint32_t Read32( uint64_t addr );
 
-		MmuContext( Gen7::Sh4aContext &context )
+		MmuContext( Gen7::Sh4aContext &context, Sh4aCpu &cpu )
 		  : context( context )
+		  , cpu( cpu )
 		{ }
 	} mmu;
-
-	void DumpState();
 
 	void SetSR( uint32_t newValue );
 
 public:
+	void DumpState();
+
 	virtual void Init();
 
 	virtual void Execute();
 
 	Sh4aCpu( Gen7::Sh4aContext &context )
 	  : context( context )
-	  , mmu( context )
+	  , mmu( context, *this )
 	{ }
 };
 

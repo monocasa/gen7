@@ -84,7 +84,9 @@ void DcPhysicalMemory::WritePhys32( uint64_t addr, uint32_t data )
 {
 	assert( 0 == (addr & 0xE0000000) );
 
-	switch( addr >> 26 ) {
+	int region = addr >> 26;
+
+	switch( region ) {
 		case 0: {
 			switch( addr ) {
 				case 0x005F74E4: { //Some mmio register for G1 setup
@@ -98,8 +100,15 @@ void DcPhysicalMemory::WritePhys32( uint64_t addr, uint32_t data )
 			}
 		}
 
+		case 3: {
+			uint64_t offset = addr & 0x00FFFFFF;
+			((uint32_t*)dram)[ offset / sizeof(uint32_t) ] = data;
+
+			break;
+		}
+
 		default: {
-			throw Sys::Exception( "Implement DcPhysicalMemory::WritePhys32( addr=%08x, data=%08x )", addr, data );
+			throw Sys::Exception( "Implement DcPhysicalMemory::WritePhys32( addr=%08x, data=%08x, region=%x )", addr, data, region );
 		}
 	}
 }
