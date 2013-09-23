@@ -8,7 +8,7 @@
 #include <cstdio>
 #include <cstring>
 
-extern void hyper_quit();
+extern "C" void hyper_quit();
 
 class NativeInstructionEmulator
 {

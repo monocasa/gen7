@@ -133,7 +133,7 @@ MemoryManager::Page* MemoryManager::AllocatePage()
 	return nullptr;
 }
 
-extern void hyper_quit();
+extern "C" void hyper_quit();
 
 void MemoryManager::OnPageFault( uint64_t offendingAddr, InterruptRegs *regs )
 {

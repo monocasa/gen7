@@ -17,11 +17,13 @@ extern "C" int hypercall_1( hypercall_num_t callnum, uint64_t arg );
 
 uint8_t value;
 
+extern "C"
 void hyper_quit()
 {
 	hypercall_0( 0 );
 }
 
+extern "C"
 int hyper_putc( char data )
 {
 	return hypercall_1( 1, data );

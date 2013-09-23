@@ -432,7 +432,7 @@ number:
 #undef PCHAR
 }
 
-extern void hyper_putc( char c );
+extern "C" void hyper_putc( char c );
 
 static void
 putchar(int c, void *arg)
