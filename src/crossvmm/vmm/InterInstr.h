@@ -41,44 +41,90 @@ struct InterInstr
 	uint32_t rsvd;
 	uint64_t args[4];
 
-	InterInstr( InstrOp op )
-	  : op( op )
+	InterInstr()
+	  : op( UNKNOWN_OPCODE )
 	  , rsvd( 0 )
 	{ }
 
-	InterInstr( InstrOp op, uint64_t arg0 )
-	  : op( op )
-	  , rsvd( 0 )
-	{
-		args[0] = arg0;
+	void BuildUnknown( int opcode, uint64_t instruction, uint64_t pc ) {
+		op = UNKNOWN_OPCODE;
+		args[0] = opcode;
+		args[1] = instruction;
+		args[2] = pc;
 	}
 
-	InterInstr( InstrOp op, uint64_t arg0, uint64_t arg1 )
-	  : op( op )
-	  , rsvd( 0 )
-	{
-		args[0] = arg0;
-		args[1] = arg1;
+	void BuildNop() {
+		op = NOP;
 	}
 
-	InterInstr( InstrOp op, uint64_t arg0, uint64_t arg1, uint64_t arg2 )
-	  : op( op )
-	  , rsvd( 0 )
-	{
-		args[0] = arg0;
-		args[1] = arg1;
-		args[2] = arg2;
+	void BuildSetSystemImm( uint64_t value, int sysReg ) {
+		op = SET_SYS_IMM;
+		args[0] = value;
+		args[1] = sysReg;
 	}
 
-	InterInstr( InstrOp op, uint64_t arg0, uint64_t arg1, uint64_t arg2, uint64_t arg3 )
-	  : op( op )
-	  , rsvd( 0 )
-	{
-		args[0] = arg0;
-		args[1] = arg1;
-		args[2] = arg2;
-		args[3] = arg3;
+	void BuildSetSystemReg( int sourceReg, int sysReg ) {
+		op = SET_SYS_REG;
+		args[0] = sourceReg;
+		args[1] = sysReg;
 	}
+
+	void BuildReadSystem( int destReg, int sysReg ) {
+		op = READ_SYS;
+		args[0] = destReg;
+		args[1] = sysReg;
+	}
+
+	void BuildMoveReg( int sourceReg, int destReg ) {
+		op = MOVE_REG;
+		args[0] = sourceReg;
+		args[1] = destReg;
+	}
+
+	void BuildBranchAlways( uint64_t target ) {
+		op = BRANCH_ALWAYS;
+		args[0] = target;
+	}
+
+	void BuildLoadImm( int destReg, uint64_t value ) {
+		op = LOAD_IMM;
+		args[0] = destReg;
+		args[1] = value;
+	}
+
+	void BuildAndc( int sourceReg0, int sourceReg1, int destReg ) {
+		op = ANDC;
+		args[0] = sourceReg0;
+		args[1] = sourceReg1;
+		args[2] = destReg;
+	}
+
+	void BuildOr( int sourceReg0, int sourceReg1, int destReg ) {
+		op = OR;
+		args[0] = sourceReg0;
+		args[1] = sourceReg1;
+		args[2] = destReg;
+	}
+
+	void BuildOrImm( int sourceReg, int destReg, uint64_t imm ) {
+		op = OR_IMM;
+		args[0] = sourceReg;
+		args[1] = destReg;
+		args[2] = imm;
+	}
+
+	void BuildSll64( int sourceReg, int destReg, int shift ) {
+		op = SLL64;
+		args[0] = sourceReg;
+		args[1] = destReg;
+		args[2] = shift;
+	}
+
+	void BuildPpcSlbia() {
+		op = PPC_SLBIA;
+	}
+
+	//SLBMTE
 };
 
 #endif //GEN7_CROSSVMM_INTERINSTR_H

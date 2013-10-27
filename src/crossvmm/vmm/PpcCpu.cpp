@@ -91,53 +91,60 @@ void PpcCpu::Init()
 #define XFX_SPR(x) (((x >> 16) & 0x1F) | ((x >> 6) & 0x3E0))
 #define XFX_RS(x)  ((x >> 21) & 0x1F)
 
-InterInstr PpcCpu::BuildIntermediateTable19( const uint32_t nativeInstr, uint64_t pc )
+int PpcCpu::BuildIntermediateTable19( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
 {
 	const int xo = X_XO(nativeInstr);
 
 	switch( xo ) {
 		case 150: { //isync
-			return InterInstr( InstrOp::NOP );
+			intermediates[0].BuildNop();
+			return 1;
 		}
 
 		default: {
-			return InterInstr( InstrOp::UNKNOWN_OPCODE, xo + 1900000, nativeInstr, pc );
+			intermediates[0].BuildUnknown( xo + 1900000, nativeInstr, pc );
+			return 1;
 		}
 	}
 }
 
-InterInstr PpcCpu::BuildIntermediateSpecial( const uint32_t nativeInstr, uint64_t pc )
+int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
 {
 	const int xo = X_XO(nativeInstr);
 
 	switch( xo ) {
 		case 60: { //andc
 			if( X_RC(nativeInstr) ) {
-				return InterInstr( InstrOp::UNKNOWN_OPCODE, xo + 3100000, nativeInstr, pc );
+				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+				return 1;
 			}
 			const int rs = X_RS(nativeInstr);
 			const int ra = X_RA(nativeInstr);
 			const int rb = X_RB(nativeInstr);
 
-			return InterInstr( InstrOp::ANDC, rs, rb, ra );
+			intermediates[0].BuildAndc( rs, rb, ra );
+			return 1;
 		}
 
 		case 339: { //mfspr
 			const int spr = XFX_SPR(nativeInstr);
 			const int destReg = XFX_RS(nativeInstr);
 
-			return InterInstr( InstrOp::READ_SYS, destReg, spr );
+			intermediates[0].BuildReadSystem( destReg, spr );
+			return 1;
 		}
 
 		case 444: { //or
 			if( X_RC(nativeInstr) ) {
-				return InterInstr( InstrOp::UNKNOWN_OPCODE, xo + 3100000, nativeInstr, pc );
+				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+				return 1;
 			}
 			const int rs = X_RS(nativeInstr);
 			const int ra = X_RA(nativeInstr);
 			const int rb = X_RB(nativeInstr);
 
-			return InterInstr( InstrOp::OR, rs, rb, ra );
+			intermediates[0].BuildOr( rs, rb, ra );
+			return 1;
 		}
 
 		case 467: { //mtspr
@@ -146,95 +153,119 @@ InterInstr PpcCpu::BuildIntermediateSpecial( const uint32_t nativeInstr, uint64_
 
 			switch( spr ) {
 				case 9: { //ctr
-					return InterInstr( InstrOp::MOVE_REG, sourceReg, 32 );
+					intermediates[0].BuildMoveReg( sourceReg, 32 );
+					break;
 				}
 				default: {
-					return InterInstr( InstrOp::SET_SYS_REG, sourceReg, spr );
+					intermediates[0].BuildSetSystemReg( sourceReg, spr );
+					break;
 				}
 			}
+
+			return 1;
 		}
 
 		case 498: { //slbia
-			return InterInstr( InstrOp::PPC_SLBIA );
+			intermediates[0].BuildPpcSlbia();
+			return 1;
 		}
 
 		case 598: { //sync
-			return InterInstr( InstrOp::NOP );
+			intermediates[0].BuildNop();
+			return 1;
 		}
 
 		default: {
-			return InterInstr( InstrOp::UNKNOWN_OPCODE, xo + 3100000, nativeInstr, pc );
+			intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+			return 1;
 		}
 	}
 }
 
-InterInstr PpcCpu::BuildIntermediate( const uint32_t nativeInstr, uint64_t pc )
+int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
 {
 	const int opcode = nativeInstr >> 26;
 
 	switch( opcode ) {
 		case 14: { //addi
 			if( D_RA(nativeInstr) != 0 ) {
-				return InterInstr( InstrOp::UNKNOWN_OPCODE, opcode, nativeInstr, pc );
+				intermediates[0].BuildUnknown( opcode, nativeInstr, pc );
+				return 1;
 			}
 
 			int64_t imm = D_SI(nativeInstr);
 			int rt = D_RT(nativeInstr);
-			return InterInstr( InstrOp::LOAD_IMM, rt, imm );
+
+			intermediates[0].BuildLoadImm( rt, imm );
+			return 1;
 		}
 
 		case 15: { //addis
 			if( D_RA(nativeInstr) != 0 ) {
-				return InterInstr( InstrOp::UNKNOWN_OPCODE, opcode, nativeInstr, pc );
+				intermediates[0].BuildUnknown( opcode, nativeInstr, pc );
+				return 1;
 			}
+
 			int64_t imm = D_SI(nativeInstr) << 16;
 			int rt = D_RT(nativeInstr);
 
-			return InterInstr( InstrOp::LOAD_IMM, rt, imm );
+			intermediates[0].BuildLoadImm( rt, imm );
+			return 1;
 		}
 			
 		case 18: { //branch
 			if( nativeInstr & 3 ) {
-				return InterInstr( InstrOp::UNKNOWN_OPCODE, opcode, nativeInstr, pc );
+				intermediates[0].BuildUnknown( opcode, nativeInstr, pc );
+				return 1;
 			}
 			int offset = Util::SignExtend<int,26>( nativeInstr & 0x03FFFFFC );
 			uint64_t target = offset + context.pc;
 
-			return InterInstr( InstrOp::BRANCH_ALWAYS, target );
+			intermediates[0].BuildBranchAlways( target );
+			return 1;
 		}
 
 		case 19: { //table 19
-			return BuildIntermediateTable19( nativeInstr, pc );
+			return BuildIntermediateTable19( intermediates, nativeInstr, pc );
 		}
 
 		case 24: { //ori
 			const int rs = D_RS(nativeInstr);
 			const int ra = D_RA(nativeInstr);
 			const uint64_t imm = D_UI(nativeInstr);
+
 			if( rs == 0 && ra == 0 && imm == 0 ) {
-				return InterInstr( InstrOp::NOP );
+				intermediates[0].BuildNop();
+				return 1;
 			}
-			return InterInstr( InstrOp::OR_IMM, rs, ra, imm );
+
+			intermediates[0].BuildOrImm( rs, ra, imm );
+			return 1;
 		}
 
 		case 30: { //rotate
 			const int rs = D_RS(nativeInstr);
 			const int ra = D_RA(nativeInstr);
+
 			if( (nativeInstr & 0xFFFF) == 0x07C6 ) {
-				return InterInstr( InstrOp::SLL64, rs, ra, 32 );
+				intermediates[0].BuildSll64( rs, ra, 32 );
 			}
 			else if( (nativeInstr & 0xFFFF) == 0x64c6 ) {
-				return InterInstr( InstrOp::SLL64, rs, ra, 44 );
+				intermediates[0].BuildSll64( rs, ra, 44 );
 			}
-			return InterInstr( InstrOp::UNKNOWN_OPCODE, opcode, nativeInstr, pc );
+			else {
+				intermediates[0].BuildUnknown( opcode, nativeInstr, pc );
+			}
+			return 1;
 		}
 
 		case 31: { //special
-			return BuildIntermediateSpecial( nativeInstr, pc );
+			return BuildIntermediateSpecial( intermediates, nativeInstr, pc );
 		} 	
 
 		default: {
-			return InterInstr( InstrOp::UNKNOWN_OPCODE, opcode, nativeInstr, pc );
+			intermediates[0].BuildUnknown( opcode, nativeInstr, pc );
+			return 1;
 		}
 	}
 }
@@ -289,16 +320,20 @@ void PpcCpu::Execute()
 {
 	bool running = true;
 
+	InterInstr intermediates[ 10 ];
+
 	while( running ) {
 		const uint32_t instruction = *PC;
 
-		InterInstr intermediate = BuildIntermediate( instruction, context.pc );
+		int numIntermediates = BuildIntermediate( intermediates, instruction, context.pc );
 
 		context.pc += sizeof(uint32_t);
 
-		if( !InterpretIntermediate( intermediate ) ) {
-			DumpContext();
-			break;
+		for( int i = 0; i < numIntermediates; i++ ) {
+			if( !InterpretIntermediate( intermediates[i] ) ) {
+				DumpContext();
+				return;
+			}
 		}
 	}
 }

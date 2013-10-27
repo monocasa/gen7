@@ -44,9 +44,9 @@ private:
 
 	void DumpContext();
 
-	InterInstr BuildIntermediateTable19( const uint32_t nativeInstr, uint64_t pc );
-	InterInstr BuildIntermediateSpecial( const uint32_t nativeInstr, uint64_t pc );
-	InterInstr BuildIntermediate( uint32_t nativeInstr, uint64_t pc );
+	int BuildIntermediateTable19( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
+	int BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
+	int BuildIntermediate( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc );
 
 public:
 	virtual void Init();
