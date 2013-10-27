@@ -8,6 +8,7 @@ ENABLE_LANGUAGE( ASM_NASM )
 ADD_LIBRARY( vmmsyscall STATIC stdlib/src/dlmalloc.c )
 
 ADD_LIBRARY( crossvmm STATIC vmm/Boot.asm
+                             vmm/Cpu.cpp
                              vmm/cxxabiv1.cpp
                              vmm/DcRealMemory.cpp
                              vmm/Hypercall.asm

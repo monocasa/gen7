@@ -2,13 +2,18 @@
 #define GEN7_CROSSVMM_VMM_PPCCPU_H
 
 #include "Cpu.h"
+#include "InterInstr.h"
 
 #include "shared/Types.h"
+
+#include <cstdio>
 
 class PpcCpu : public Cpu
 {
 private:
 	Gen7::XenonPpcContext &context;
+
+	static const int SPR_HID6 = 1017;
 
 	class MmuContext
 	{
@@ -37,10 +42,44 @@ private:
 
 	} mmuContext;
 
+	void DumpContext();
+
+	InterInstr BuildIntermediateTable19( const uint32_t nativeInstr, uint64_t pc );
+	InterInstr BuildIntermediateSpecial( const uint32_t nativeInstr, uint64_t pc );
+	InterInstr BuildIntermediate( uint32_t nativeInstr, uint64_t pc );
+
 public:
 	virtual void Init();
 
 	virtual void Execute();
+
+	virtual void SetPC( uint64_t pc ) {
+		context.pc = pc;
+	}
+
+	virtual void SetGPR( int gpr, uint64_t newValue ) {
+		if( gpr >= 0 && gpr <= 31 ) {
+			context.gpr[ gpr ] = newValue;
+			return;
+		}
+		if( gpr == 32 ) {
+			context.ctr = newValue;
+			return;
+		}
+		printf( "Unimplemented gpr %d set to 0x%lx\n", gpr, newValue );
+	}
+
+	virtual uint64_t ReadGPR( int gpr ) {
+		if( gpr >= 0 && gpr <= 31 ) {
+			return context.gpr[ gpr ];
+		}
+
+		printf( "Unimplemented gpr %d read from\n", gpr );
+		return 0;
+	}
+
+	virtual bool SetSystemReg( int sysReg, uint64_t value );
+	virtual bool ReadSystemReg( int sysReg, uint64_t &value );
 
 	PpcCpu( Gen7::XenonPpcContext &context )
 	  : context( context )

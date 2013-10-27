@@ -39,6 +39,8 @@ struct XenonPpcContext : public CpuContext {
 	uint64_t msr;
 	uint64_t hrmor;
 
+	uint64_t hid6;
+
 	XenonPpcContext( int coreNum )
 	  : CpuContext( CpuType::XENON, coreNum )
 	{ }
