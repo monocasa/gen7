@@ -81,6 +81,8 @@ public:
 	virtual bool SetSystemReg( int sysReg, uint64_t value );
 	virtual bool ReadSystemReg( int sysReg, uint64_t &value );
 
+	virtual bool InterpretProcessorSpecific( InterInstr &instr );
+
 	PpcCpu( Gen7::XenonPpcContext &context )
 	  : context( context )
 	  , mmuContext( context )

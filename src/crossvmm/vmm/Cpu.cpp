@@ -99,6 +99,9 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 		}
 
 		default: {
+			if( instr.op >= PROC_LOW ) {
+				return InterpretProcessorSpecific( instr );
+			}
 			printf( "Unknown instr.op %d (0x%lx, 0x%lx, 0x%lx, 0x%lx)\n",
 			        instr.op, instr.args[0], instr.args[1], instr.args[2], instr.args[3] );
 			return false;

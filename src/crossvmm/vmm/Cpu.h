@@ -19,6 +19,8 @@ public:
 	virtual bool SetSystemReg( int sysReg, uint64_t value ) = 0;
 	virtual bool ReadSystemReg( int sysReg, uint64_t &value ) = 0;
 
+	virtual bool InterpretProcessorSpecific( InterInstr &instr ) = 0;
+
 	bool InterpretIntermediate( InterInstr &instr );
 };
 

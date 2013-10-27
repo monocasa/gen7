@@ -7,11 +7,11 @@ enum InstrOp
 {
 	//Misc
 	UNKNOWN_OPCODE = 0,
-	NOP = 1,
-	SET_SYS_IMM = 2,
-	SET_SYS_REG = 3,
-	READ_SYS = 4,
-	MOVE_REG = 5,
+	NOP,
+	SET_SYS_IMM,
+	SET_SYS_REG,
+	READ_SYS,
+	MOVE_REG,
 
 	//Branch
 	BRANCH_ALWAYS = 100,
@@ -21,15 +21,18 @@ enum InstrOp
 
 	//Logic
 	ANDC = 300,
-	OR = 301,
-	OR_IMM = 302,
+	OR,
+	OR_IMM,
 
 	//Shift
 	SLL64 = 400,
 
-	//Processor Specific
+	//Processor Specific Region
 	PROC_LOW = 10000,
-	PROC_HIGH = 19999,
+
+	//PowerPC specific
+	PPC_SLBIA = PROC_LOW,
+	PPC_SLBMTE,
 };
 
 struct InterInstr

@@ -2,6 +2,7 @@
 #define GEN7_CROSSVMM_VMM_SH4ACPU_H
 
 #include "Cpu.h"
+#include "InterInstr.h"
 #include "MemoryManager.h"
 
 #include "shared/Types.h"
@@ -113,6 +114,11 @@ public:
 
 	virtual bool ReadSystemReg( int sysReg, uint64_t &/*value*/ ) {
 		printf( "Todo:  ReadSystemReg( %d )\n", sysReg );
+		return false;
+	}
+
+	virtual bool InterpretProcessorSpecific( InterInstr &instr ) {
+		printf( "Todo:  InterpretProcessorSpecific( instr.op=%d )\n", instr.op );
 		return false;
 	}
 

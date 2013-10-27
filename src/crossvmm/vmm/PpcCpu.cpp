@@ -155,7 +155,7 @@ InterInstr PpcCpu::BuildIntermediateSpecial( const uint32_t nativeInstr, uint64_
 		}
 
 		case 498: { //slbia
-			return InterInstr( InstrOp::NOP );
+			return InterInstr( InstrOp::PPC_SLBIA );
 		}
 
 		case 598: { //sync
@@ -265,6 +265,21 @@ bool PpcCpu::ReadSystemReg( int sysReg, uint64_t &value )
 
 		default: {
 			printf( "Unknown Ppc System Reg %d read from\n", sysReg );
+			return false;
+		}
+	}
+}
+
+bool PpcCpu::InterpretProcessorSpecific( InterInstr &instr )
+{
+	switch( instr.op ) {
+		case PPC_SLBIA: {
+			printf( "SLBIA\n" );
+			return true;
+		}
+
+		default: {
+			printf( "Unimplemented PowerPC specific op %d\n", instr.op );
 			return false;
 		}
 	}
