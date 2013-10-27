@@ -560,7 +560,7 @@ void Sh4aCpu::Execute()
 					case 0x0008: { //tst rm, rn
 						int rn = (opcode >> 8) & 0xF;
 						int rm = (opcode >> 4) & 0xF;
-						if( (context.gpr[ rm ] & context.gpr[ rm ]) == 0 ) {
+						if( (context.gpr[ rn ] & context.gpr[ rm ]) == 0 ) {
 							context.sr |= SR_T_BIT;
 						}
 						else {
@@ -1185,7 +1185,7 @@ void Sh4aCpu::Execute()
 						int rn = (opcode >> 8) & 0xF;
 						int rm = (opcode >> 4) & 0xF;
 
-						int temp = 0 - context.gpr[rn];
+						int temp = 0 - context.gpr[rm];
 						context.gpr[rn] = temp - (context.sr & SR_T_BIT);
 						if( 0 < temp ) {
 							context.sr |= SR_T_BIT;
