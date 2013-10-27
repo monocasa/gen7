@@ -15,12 +15,14 @@ enum InstrOp
 
 	//Branch
 	BRANCH_ALWAYS = 100,
+	BRANCH_GPR_NOT_ZERO,
 
 	//Load/Store
 	LOAD_IMM = 200,
 
 	//Arithmetic
 	ADD = 300,
+	SUBU_IMM,
 
 	//Logic
 	ANDC = 400,
@@ -91,6 +93,12 @@ struct InterInstr
 		args[0] = target;
 	}
 
+	void BuildBranchGprNotZero( int gpr, uint64_t target ) {
+		op = BRANCH_GPR_NOT_ZERO;
+		args[0] = gpr;
+		args[1] = target;
+	}
+
 //Load/Store
 	void BuildLoadImm( int destReg, uint64_t value ) {
 		op = LOAD_IMM;
@@ -104,6 +112,13 @@ struct InterInstr
 		args[0] = sourceReg0;
 		args[1] = sourceReg1;
 		args[2] = destReg;
+	}
+
+	void BuildSubuImm( int sourceReg, int destReg, uint64_t imm ) {
+		op = SUBU_IMM;
+		args[0] = sourceReg;
+		args[1] = destReg;
+		args[2] = imm;
 	}
 
 //Logic

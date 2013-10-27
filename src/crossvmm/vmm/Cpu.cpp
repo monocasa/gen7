@@ -46,6 +46,19 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
+		case BRANCH_GPR_NOT_ZERO: {
+			const int gpr = instr.args[0];
+			const uint64_t target = instr.args[1];
+
+			uint64_t value = ReadGPR(gpr);
+
+			if( value != 0 ) {
+				SetPC( target );
+			}
+
+			return true;
+		}
+
 	//Load/Store
 		case LOAD_IMM: {
 			SetGPR( instr.args[0], instr.args[1] );
@@ -62,6 +75,20 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			uint64_t sourceValue1 = ReadGPR( sourceReg1 );
 
 			uint64_t result = sourceValue0 + sourceValue1;
+
+			SetGPR( destReg, result );
+
+			return true;
+		}
+
+		case SUBU_IMM: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const uint64_t imm = instr.args[2];
+
+			uint64_t sourceValue = ReadGPR( sourceReg );
+
+			uint64_t result = sourceValue - imm;
 
 			SetGPR( destReg, result );
 

@@ -13,6 +13,9 @@ class PpcCpu : public Cpu
 private:
 	Gen7::XenonPpcContext &context;
 
+	static const int GPR_CTR = 32;
+
+	static const int SPR_CTR  = 9;
 	static const int SPR_HID6 = 1017;
 
 	class MmuContext
@@ -44,6 +47,7 @@ private:
 
 	void DumpContext();
 
+	int BuildIntermediateBranchConditional( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
 	int BuildIntermediateTable19( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
 	int BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
 	int BuildIntermediate( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc );
@@ -62,7 +66,7 @@ public:
 			context.gpr[ gpr ] = newValue;
 			return;
 		}
-		if( gpr == 32 ) {
+		if( gpr == GPR_CTR ) {
 			context.ctr = newValue;
 			return;
 		}
@@ -72,6 +76,10 @@ public:
 	virtual uint64_t ReadGPR( int gpr ) {
 		if( gpr >= 0 && gpr <= 31 ) {
 			return context.gpr[ gpr ];
+		}
+
+		if( gpr == GPR_CTR ) {
+			return context.ctr;
 		}
 
 		printf( "Unimplemented gpr %d read from\n", gpr );

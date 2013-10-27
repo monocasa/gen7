@@ -73,6 +73,12 @@ void PpcCpu::Init()
 
 #define PC ((uint32_t*)context.pc)
 
+#define B_LK(x) (x & 1)
+#define B_AA(x) ((x >> 1) & 1)
+#define B_BD(x) (Util::SignExtend<int64_t,16>( x & 0x0000FFFC ))
+#define B_BI(x) ((x >> 16) & 0x1F)
+#define B_BO(x) ((x >> 21) & 0x1F)
+
 #define D_SI(x) (Util::SignExtend<int32_t,16>( x & 0x0000FFFF ))
 #define D_UI(x) (x & 0x0000FFFF)
 #define D_RA(x) ((x >> 16) & 0x1F)
@@ -95,6 +101,35 @@ void PpcCpu::Init()
 #define XO_RB(x) ((x >> 11) & 0x1F)
 #define XO_RA(x) ((x >> 16) & 0x1F)
 #define XO_RT(x) ((x >> 21) & 0x1F)
+
+int PpcCpu::BuildIntermediateBranchConditional( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
+{
+	if( B_LK(nativeInstr) || B_AA(nativeInstr) ) {
+		intermediates[0].BuildUnknown( 16, nativeInstr, pc );
+		return 1;
+	}
+
+	if( B_BI(nativeInstr) ) {
+		intermediates[0].BuildUnknown( 16, nativeInstr, pc );
+		return 1;
+	}
+
+	const uint64_t target = pc + B_BD( nativeInstr );
+
+	switch( B_BO(nativeInstr) ) {
+		case 25: { //bdnz+
+			intermediates[0].BuildSubuImm( GPR_CTR, GPR_CTR, 1 );
+			intermediates[1].BuildBranchGprNotZero( GPR_CTR, target );
+			return 2;
+		}
+
+		default: {
+			printf( "BO=%d BI=%d\n", B_BO(nativeInstr), B_BI(nativeInstr) );
+			intermediates[0].BuildUnknown( 16, nativeInstr, pc );
+			return 1;
+		}
+	}
+}
 
 int PpcCpu::BuildIntermediateTable19( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
 {
@@ -178,8 +213,8 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 			const int sourceReg = XFX_RS(nativeInstr);
 
 			switch( spr ) {
-				case 9: { //ctr
-					intermediates[0].BuildMoveReg( sourceReg, 32 );
+				case SPR_CTR: {
+					intermediates[0].BuildMoveReg( sourceReg, GPR_CTR );
 					break;
 				}
 				default: {
@@ -238,7 +273,11 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 			intermediates[0].BuildLoadImm( rt, imm );
 			return 1;
 		}
-			
+
+		case 16: { //branch conditional
+			return BuildIntermediateBranchConditional( intermediates, nativeInstr, pc );
+		}
+
 		case 18: { //branch
 			if( nativeInstr & 3 ) {
 				intermediates[0].BuildUnknown( opcode, nativeInstr, pc );
