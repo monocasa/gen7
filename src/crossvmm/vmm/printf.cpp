@@ -435,7 +435,7 @@ number:
 extern "C" void hyper_putc( char c );
 
 static void
-putchar(int c, void *arg)
+putchar(int c, void */*arg*/)
 {
 	hyper_putc( c );
 }

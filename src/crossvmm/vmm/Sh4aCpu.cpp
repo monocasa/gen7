@@ -55,7 +55,7 @@ void NativeInstructionEmulator::EmulateSingle()
 	}
 }
 
-void Sh4aCpu::MmuContext::P4Access( uint64_t addr, InterruptRegs *regs )
+void Sh4aCpu::MmuContext::P4Access( uint64_t /*addr*/, InterruptRegs *regs )
 {
 	NativeInstructionEmulator nativeEmu( *regs, *this );
 	nativeEmu.EmulateSingle();
@@ -118,7 +118,7 @@ void Sh4aCpu::MmuContext::MapFull()
 	mm.RegisterLowerHandler( this );
 }
 
-void Sh4aCpu::MmuContext::OnPageFault( PageFaultReason reason, uint64_t addr, InterruptRegs *regs )
+void Sh4aCpu::MmuContext::OnPageFault( PageFaultReason /*reason*/, uint64_t addr, InterruptRegs *regs )
 {
 	if( addr > 0xFFFFFFFF ) {
 		printf( "Woah massive error.  Addr=%016lx rip=%016lx\n", addr, regs->rip );
