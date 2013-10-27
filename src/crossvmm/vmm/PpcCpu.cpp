@@ -91,6 +91,11 @@ void PpcCpu::Init()
 #define XFX_SPR(x) (((x >> 16) & 0x1F) | ((x >> 6) & 0x3E0))
 #define XFX_RS(x)  ((x >> 21) & 0x1F)
 
+#define XO_RC(x) (x & 1)
+#define XO_RB(x) ((x >> 11) & 0x1F)
+#define XO_RA(x) ((x >> 16) & 0x1F)
+#define XO_RT(x) ((x >> 21) & 0x1F)
+
 int PpcCpu::BuildIntermediateTable19( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
 {
 	const int xo = X_XO(nativeInstr);
@@ -123,6 +128,19 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 			const int rb = X_RB(nativeInstr);
 
 			intermediates[0].BuildAndc( rs, rb, ra );
+			return 1;
+		}
+
+		case 266: { //add
+			if( XO_RC(nativeInstr) ) {
+				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+				return 1;
+			}
+			const int rt = XO_RT(nativeInstr);
+			const int ra = XO_RA(nativeInstr);
+			const int rb = XO_RB(nativeInstr);
+
+			intermediates[0].BuildAdd( ra, rb, rt );
 			return 1;
 		}
 

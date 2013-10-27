@@ -19,13 +19,16 @@ enum InstrOp
 	//Load/Store
 	LOAD_IMM = 200,
 
+	//Arithmetic
+	ADD = 300,
+
 	//Logic
-	ANDC = 300,
+	ANDC = 400,
 	OR,
 	OR_IMM,
 
 	//Shift
-	SLL64 = 400,
+	SLL64 = 500,
 
 	//Processor Specific Region
 	PROC_LOW = 10000,
@@ -46,6 +49,7 @@ struct InterInstr
 	  , rsvd( 0 )
 	{ }
 
+//Misc
 	void BuildUnknown( int opcode, uint64_t instruction, uint64_t pc ) {
 		op = UNKNOWN_OPCODE;
 		args[0] = opcode;
@@ -81,17 +85,28 @@ struct InterInstr
 		args[1] = destReg;
 	}
 
+//Branch
 	void BuildBranchAlways( uint64_t target ) {
 		op = BRANCH_ALWAYS;
 		args[0] = target;
 	}
 
+//Load/Store
 	void BuildLoadImm( int destReg, uint64_t value ) {
 		op = LOAD_IMM;
 		args[0] = destReg;
 		args[1] = value;
 	}
 
+//Arithmetic
+	void BuildAdd( int sourceReg0, int sourceReg1, int destReg ) {
+		op = ADD;
+		args[0] = sourceReg0;
+		args[1] = sourceReg1;
+		args[2] = destReg;
+	}
+
+//Logic
 	void BuildAndc( int sourceReg0, int sourceReg1, int destReg ) {
 		op = ANDC;
 		args[0] = sourceReg0;
@@ -113,6 +128,7 @@ struct InterInstr
 		args[2] = imm;
 	}
 
+//Shift/Rotate
 	void BuildSll64( int sourceReg, int destReg, int shift ) {
 		op = SLL64;
 		args[0] = sourceReg;
@@ -120,6 +136,7 @@ struct InterInstr
 		args[2] = shift;
 	}
 
+//PowerPC Specific
 	void BuildPpcSlbia() {
 		op = PPC_SLBIA;
 	}

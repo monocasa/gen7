@@ -52,6 +52,22 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
+	//Arithmetic
+		case ADD: {
+			const int sourceReg0 = instr.args[0];
+			const int sourceReg1 = instr.args[1];
+			const int destReg = instr.args[2];
+
+			uint64_t sourceValue0 = ReadGPR( sourceReg0 );
+			uint64_t sourceValue1 = ReadGPR( sourceReg1 );
+
+			uint64_t result = sourceValue0 + sourceValue1;
+
+			SetGPR( destReg, result );
+
+			return true;
+		}
+
 	//Logic
 		case ANDC: {
 			const int sourceReg0 = instr.args[0];
