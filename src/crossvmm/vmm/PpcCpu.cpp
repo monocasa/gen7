@@ -134,6 +134,14 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 			return 1;
 		}
 
+		case 402: { //slbmte
+			const int rs = X_RS(nativeInstr);
+			const int rb = X_RB(nativeInstr);
+
+			intermediates[0].BuildPpcSlbmte( rs, rb );
+			return 1;
+		}
+
 		case 444: { //or
 			if( X_RC(nativeInstr) ) {
 				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
@@ -306,6 +314,14 @@ bool PpcCpu::InterpretProcessorSpecific( InterInstr &instr )
 	switch( instr.op ) {
 		case PPC_SLBIA: {
 			printf( "SLBIA\n" );
+			return true;
+		}
+
+		case PPC_SLBMTE: {
+			const int rs = instr.args[0];
+			const int rb = instr.args[1];
+
+			printf( "SLBMTE RS=%016lx RB=%016lx\n", ReadGPR(rs), ReadGPR(rb) );
 			return true;
 		}
 

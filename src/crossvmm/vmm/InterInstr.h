@@ -124,7 +124,11 @@ struct InterInstr
 		op = PPC_SLBIA;
 	}
 
-	//SLBMTE
+	void BuildPpcSlbmte( int rs, int rb ) {
+		op = PPC_SLBMTE;
+		args[0] = rs;
+		args[1] = rb;
+	}
 };
 
 #endif //GEN7_CROSSVMM_INTERINSTR_H
