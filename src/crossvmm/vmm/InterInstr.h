@@ -38,6 +38,7 @@ enum InstrOp
 	//PowerPC specific
 	PPC_SLBIA = PROC_LOW,
 	PPC_SLBMTE,
+	PPC_TLBIEL,
 };
 
 struct InterInstr
@@ -160,6 +161,11 @@ struct InterInstr
 		op = PPC_SLBMTE;
 		args[0] = rs;
 		args[1] = rb;
+	}
+
+	void BuildPpcTlbiel( int rb ) {
+		op = PPC_TLBIEL;
+		args[0] = rb;
 	}
 };
 

@@ -179,6 +179,13 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 			return 1;
 		}
 
+		case 274: { //tlbiel
+			const int rb = X_RB(nativeInstr);
+
+			intermediates[0].BuildPpcTlbiel( rb );
+			return 1;
+		}
+
 		case 339: { //mfspr
 			const int spr = XFX_SPR(nativeInstr);
 			const int destReg = XFX_RS(nativeInstr);
@@ -379,6 +386,13 @@ bool PpcCpu::InterpretProcessorSpecific( InterInstr &instr )
 			const int rb = instr.args[1];
 
 			printf( "SLBMTE RS=%016lx RB=%016lx\n", ReadGPR(rs), ReadGPR(rb) );
+			return true;
+		}
+
+		case PPC_TLBIEL: {
+			const int rb = instr.args[0];
+
+			printf( "TLBIEL RB=%016lx\n", ReadGPR(rb) );
 			return true;
 		}
 
