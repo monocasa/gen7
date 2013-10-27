@@ -45,8 +45,6 @@ void PpcCpu::MmuContext::MapFull()
 	hvRealModePml3s[ 3 ][ 2 ] = (((uint64_t)xenonReal.GetRamPml2(2)) - 0xFFFFFFFF80000000UL) | 1;
 	hvRealModePml3s[ 3 ][ 3 ] = (((uint64_t)xenonReal.GetRamPml2(3)) - 0xFFFFFFFF80000000UL) | 1;
 
-	uint64_t virtAddr = 0x0000000000000000UL;
-
 	mm.SetLowerPml3( hvRealModePml3s[ 0 ], 0x0000000000000000UL );
 	mm.SetLowerPml3( hvRealModePml3s[ 1 ], 0x0000010000000000UL );
 	mm.SetLowerPml3( hvRealModePml3s[ 2 ], 0x0000020000000000UL );
