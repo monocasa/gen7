@@ -104,7 +104,7 @@ void MemoryManager::InitializeContiguousHeap()
 	contiguousHeapInfo = reinterpret_cast<HeapPageInfo*>( &contiguousHeap[0] );
 	numContiguousHeapInfoPages = numContiguousPages * sizeof(HeapPageInfo);
 	numContiguousHeapInfoPages += 4095;
-	numContiguousHeapInfoPages & 0xFFFFFFFFFFFFF000UL;
+	numContiguousHeapInfoPages &= 0xFFFFFFFFFFFFF000UL;
 	numContiguousHeapInfoPages /= 4096;
 
 	for( uint64_t page = 0; page < numContiguousPages; page++ ) {
