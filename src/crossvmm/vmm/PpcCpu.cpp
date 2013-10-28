@@ -243,6 +243,11 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 			return 1;
 		}
 
+		case 854: { //eieio
+			intermediates[0].BuildNop();
+			return 1;
+		}
+
 		default: {
 			intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
 			return 1;
