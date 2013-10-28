@@ -19,6 +19,8 @@ private:
 	//PowerPC SPRs
 	static const int SPR_CTR  = 9;
 	static const int SPR_SRR1 = 27;
+	static const int SPR_LPCR = 318;
+	static const int SPR_LPIDR = 319;
 	static const int SPR_HID6 = 1017;
 
 	//Not actually real SPRs

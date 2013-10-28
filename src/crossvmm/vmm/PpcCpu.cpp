@@ -383,6 +383,18 @@ bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 			return true;
 		}
 
+		case SPR_LPCR: {
+			printf( "PpcCpu:  LPCR set to %016lx\n", value );
+			context.lpcr = value;
+			return true;
+		}
+
+		case SPR_LPIDR: {
+			printf( "PpcCpu:  LPIDR set to %016lx\n", value );
+			context.lpidr = value;
+			return true;
+		}
+
 		case SPR_HID6: {
 			printf( "PpcCpu:  HID6 set to %016lx\n", value );
 			context.hid6 = value;
@@ -399,6 +411,11 @@ bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 bool PpcCpu::ReadSystemReg( int sysReg, uint64_t &value )
 {
 	switch( sysReg ) {
+		case SPR_LPCR: {
+			value = context.lpcr;
+			return true;
+		}
+
 		case SPR_HID6: {
 			value = context.hid6;
 			return true;
