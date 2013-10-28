@@ -256,16 +256,18 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 
 	switch( opcode ) {
 		case 14: { //addi
-			if( D_RA(nativeInstr) != 0 ) {
-				intermediates[0].BuildUnknown( opcode, nativeInstr, pc );
+			const int64_t imm = D_SI(nativeInstr);
+			const int rt = D_RT(nativeInstr);
+			const int ra = D_RA(nativeInstr);
+
+			if( ra != 0 ) {
+				intermediates[0].BuildAddImm( ra, rt, imm );
 				return 1;
 			}
-
-			int64_t imm = D_SI(nativeInstr);
-			int rt = D_RT(nativeInstr);
-
-			intermediates[0].BuildLoadImm( rt, imm );
-			return 1;
+			else {
+				intermediates[0].BuildLoadImm( rt, imm );
+				return 1;
+			}
 		}
 
 		case 15: { //addis

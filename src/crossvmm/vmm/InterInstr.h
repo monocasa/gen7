@@ -22,6 +22,7 @@ enum InstrOp
 
 	//Arithmetic
 	ADD = 300,
+	ADD_IMM,
 	SUBU_IMM,
 
 	//Logic
@@ -113,6 +114,13 @@ struct InterInstr
 		args[0] = sourceReg0;
 		args[1] = sourceReg1;
 		args[2] = destReg;
+	}
+
+	void BuildAddImm( int sourceReg, int destReg, uint64_t imm ) {
+		op = ADD_IMM;
+		args[0] = sourceReg;
+		args[1] = destReg;
+		args[2] = imm;
 	}
 
 	void BuildSubuImm( int sourceReg, int destReg, uint64_t imm ) {
