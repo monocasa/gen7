@@ -61,7 +61,7 @@ void PpcCpu::DumpContext()
 	printf( " r20 %16lx |  r21 %16lx |  r22 %16lx |  r23 %16lx\n", context.gpr[20], context.gpr[21], context.gpr[22], context.gpr[23] );
 	printf( " r24 %16lx |  r25 %16lx |  r26 %16lx |  r27 %16lx\n", context.gpr[24], context.gpr[25], context.gpr[26], context.gpr[27] );
 	printf( " r28 %16lx |  r29 %16lx |  r30 %16lx |  r31 %16lx\n", context.gpr[28], context.gpr[29], context.gpr[30], context.gpr[31] );
-	printf( "  pc %16lx |  ctr %16lx\n", context.pc, context.ctr );
+	printf( "  pc %16lx |  msr %16lx | ctr %16lx\n", context.pc, context.msr, context.ctr );
 	printf( "hid6 %16lx\n", context.hid6 );
 }
 
@@ -93,6 +93,7 @@ void PpcCpu::Init()
 #define X_RB(x) ((x >> 11) & 0x1F)
 #define X_RA(x) ((x >> 16) & 0x1F)
 #define X_RS(x) ((x >> 21) & 0x1F)
+#define X_RT(x) ((x >> 21) & 0x1F)
 
 #define XFX_SPR(x) (((x >> 16) & 0x1F) | ((x >> 6) & 0x3E0))
 #define XFX_RS(x)  ((x >> 21) & 0x1F)
@@ -163,6 +164,13 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 			const int rb = X_RB(nativeInstr);
 
 			intermediates[0].BuildAndc( rs, rb, ra );
+			return 1;
+		}
+
+		case 83: { //mfmsr
+			const int rt = X_RT(nativeInstr);
+
+			intermediates[0].BuildReadSystem( rt, SPR_MSR );
 			return 1;
 		}
 
@@ -370,6 +378,11 @@ bool PpcCpu::ReadSystemReg( int sysReg, uint64_t &value )
 	switch( sysReg ) {
 		case SPR_HID6: {
 			value = context.hid6;
+			return true;
+		}
+
+		case SPR_MSR: {
+			value = context.msr;
 			return true;
 		}
 
