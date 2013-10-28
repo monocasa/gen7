@@ -26,7 +26,8 @@ enum InstrOp
 	SUBU_IMM,
 
 	//Logic
-	ANDC = 400,
+	AND_IMM = 400,
+	ANDC,
 	OR,
 	OR_IMM,
 
@@ -131,6 +132,13 @@ struct InterInstr
 	}
 
 //Logic
+	void BuildAndImm( int sourceReg, int destReg, uint64_t imm ) {
+		op = AND_IMM;
+		args[0] = sourceReg;
+		args[1] = destReg;
+		args[2] = imm;
+	}
+
 	void BuildAndc( int sourceReg0, int sourceReg1, int destReg ) {
 		op = ANDC;
 		args[0] = sourceReg0;

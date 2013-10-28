@@ -330,15 +330,32 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 			return 1;
 		}
 
+		case 25: { //oris
+			const int rs = D_RS(nativeInstr);
+			const int ra = D_RA(nativeInstr);
+			const uint64_t imm = D_UI(nativeInstr) << 16;
+
+			if( rs == 0 && ra == 0 && imm == 0 ) {
+				intermediates[0].BuildNop();
+				return 1;
+			}
+
+			intermediates[0].BuildOrImm( rs, ra, imm );
+			return 1;
+		}
+
 		case 30: { //rotate
 			const int rs = D_RS(nativeInstr);
 			const int ra = D_RA(nativeInstr);
 
-			if( (nativeInstr & 0xFFFF) == 0x07C6 ) {
+			if( (nativeInstr & 0xFFFF) == 0x07C6 ) { //sldi rs, ra, 32
 				intermediates[0].BuildSll64( rs, ra, 32 );
 			}
-			else if( (nativeInstr & 0xFFFF) == 0x64c6 ) {
+			else if( (nativeInstr & 0xFFFF) == 0x64c6 ) { //sldi rs, ra, 44
 				intermediates[0].BuildSll64( rs, ra, 44 );
+			}
+			else if( (nativeInstr & 0xFFFF) == 0x0040 ) { //clrldi rs, ra, 1
+				intermediates[0].BuildAndImm( rs, ra, 0x7FFFFFFFFFFFFFFFUL );
 			}
 			else {
 				intermediates[0].BuildUnknown( opcode, nativeInstr, pc );

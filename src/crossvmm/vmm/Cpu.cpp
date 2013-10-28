@@ -110,6 +110,20 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 		}
 
 	//Logic
+		case AND_IMM: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const uint64_t imm = instr.args[2];
+
+			uint64_t sourceValue = ReadGPR( sourceReg );
+
+			uint64_t result = sourceValue & imm;
+
+			SetGPR( destReg, result );
+
+			return true;
+		}
+
 		case ANDC: {
 			const int sourceReg0 = instr.args[0];
 			const int sourceReg1 = instr.args[1];
