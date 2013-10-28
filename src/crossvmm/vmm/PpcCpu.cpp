@@ -53,16 +53,17 @@ void PpcCpu::MmuContext::MapFull()
 
 void PpcCpu::DumpContext()
 {
-	printf( "  r0 %16lx |   r1 %16lx |   r2 %16lx |   r3 %16lx\n", context.gpr[ 0], context.gpr[ 1], context.gpr[ 2], context.gpr[ 3] );
-	printf( "  r4 %16lx |   r5 %16lx |   r6 %16lx |   r7 %16lx\n", context.gpr[ 4], context.gpr[ 5], context.gpr[ 6], context.gpr[ 7] );
-	printf( "  r8 %16lx |   r9 %16lx |  r10 %16lx |  r11 %16lx\n", context.gpr[ 8], context.gpr[ 9], context.gpr[10], context.gpr[11] );
-	printf( " r12 %16lx |  r13 %16lx |  r14 %16lx |  r15 %16lx\n", context.gpr[12], context.gpr[13], context.gpr[14], context.gpr[15] );
-	printf( " r16 %16lx |  r17 %16lx |  r18 %16lx |  r19 %16lx\n", context.gpr[16], context.gpr[17], context.gpr[18], context.gpr[19] );
-	printf( " r20 %16lx |  r21 %16lx |  r22 %16lx |  r23 %16lx\n", context.gpr[20], context.gpr[21], context.gpr[22], context.gpr[23] );
-	printf( " r24 %16lx |  r25 %16lx |  r26 %16lx |  r27 %16lx\n", context.gpr[24], context.gpr[25], context.gpr[26], context.gpr[27] );
-	printf( " r28 %16lx |  r29 %16lx |  r30 %16lx |  r31 %16lx\n", context.gpr[28], context.gpr[29], context.gpr[30], context.gpr[31] );
-	printf( "  pc %16lx |  msr %16lx | ctr %16lx\n", context.pc, context.msr, context.ctr );
-	printf( "hid6 %16lx\n", context.hid6 );
+	printf( "   r0 %16lx |    r1 %16lx |    r2 %16lx |    r3 %16lx\n", context.gpr[ 0], context.gpr[ 1], context.gpr[ 2], context.gpr[ 3] );
+	printf( "   r4 %16lx |    r5 %16lx |    r6 %16lx |    r7 %16lx\n", context.gpr[ 4], context.gpr[ 5], context.gpr[ 6], context.gpr[ 7] );
+	printf( "   r8 %16lx |    r9 %16lx |   r10 %16lx |   r11 %16lx\n", context.gpr[ 8], context.gpr[ 9], context.gpr[10], context.gpr[11] );
+	printf( "  r12 %16lx |   r13 %16lx |   r14 %16lx |   r15 %16lx\n", context.gpr[12], context.gpr[13], context.gpr[14], context.gpr[15] );
+	printf( "  r16 %16lx |   r17 %16lx |   r18 %16lx |   r19 %16lx\n", context.gpr[16], context.gpr[17], context.gpr[18], context.gpr[19] );
+	printf( "  r20 %16lx |   r21 %16lx |   r22 %16lx |   r23 %16lx\n", context.gpr[20], context.gpr[21], context.gpr[22], context.gpr[23] );
+	printf( "  r24 %16lx |   r25 %16lx |   r26 %16lx |   r27 %16lx\n", context.gpr[24], context.gpr[25], context.gpr[26], context.gpr[27] );
+	printf( "  r28 %16lx |   r29 %16lx |   r30 %16lx |   r31 %16lx\n", context.gpr[28], context.gpr[29], context.gpr[30], context.gpr[31] );
+	printf( "   pc %16lx |   msr %16lx |   ctr %16lx |    lr %16lx\n", context.pc, context.msr, context.ctr, context.lr );
+	printf( " srr0 %16lx |  srr1 %16lx | hrmor %16lx\n", context.srr0, context.srr1, context.hrmor );
+	printf( " hid6 %16lx | lpidr %16lx |  lpcr %16lx\n", context.hid6, context.lpidr, context.lpcr );
 }
 
 void PpcCpu::Init()
@@ -377,6 +378,11 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 {
 	switch( sysReg ) {
+		case SPR_SRR1: {
+			context.srr1 = value;
+			return true;
+		}
+
 		case SPR_HID6: {
 			printf( "PpcCpu:  HID6 set to %016lx\n", value );
 			context.hid6 = value;
