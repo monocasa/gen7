@@ -355,6 +355,9 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 			else if( (nativeInstr & 0xFFFF) == 0x64c6 ) { //sldi rs, ra, 44
 				intermediates[0].BuildSll64( rs, ra, 44 );
 			}
+			else if( (nativeInstr & 0xFFFF) == 0xf806 ) { //sldi rs, ra, 63
+				intermediates[0].BuildSll64( rs, ra, 63 );
+			}
 			else if( (nativeInstr & 0xFFFF) == 0x0040 ) { //clrldi rs, ra, 1
 				intermediates[0].BuildAndImm( rs, ra, 0x7FFFFFFFFFFFFFFFUL );
 			}
@@ -380,6 +383,12 @@ bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 	switch( sysReg ) {
 		case SPR_SRR1: {
 			context.srr1 = value;
+			return true;
+		}
+
+		case SPR_HRMOR: {
+			printf( "PpcCpu:  HRMOR set to %016lx\n", value );
+			context.hrmor = value & 0x000003FFFFF00000;
 			return true;
 		}
 
