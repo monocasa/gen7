@@ -418,6 +418,11 @@ bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 			return true;
 		}
 
+		case SPR_SPRG1: {
+			context.sprg1 = value;
+			return true;
+		}
+
 		case SPR_HRMOR: {
 			printf( "PpcCpu:  HRMOR set to %016lx\n", value );
 			context.hrmor = value & 0x000003FFFFF00000;

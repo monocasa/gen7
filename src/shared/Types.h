@@ -40,6 +40,10 @@ struct XenonPpcContext : public CpuContext {
 	uint64_t hrmor;
 	uint64_t srr0;
 	uint64_t srr1;
+	uint64_t sprg0;
+	uint64_t sprg1;
+	uint64_t sprg2;
+	uint64_t sprg3;
 	uint64_t hid6;
 	uint64_t lpidr;
 	uint64_t lpcr;
