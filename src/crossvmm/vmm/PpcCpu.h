@@ -23,6 +23,7 @@ private:
 	static const int SPR_LPCR  = 318;
 	static const int SPR_LPIDR = 319;
 	static const int SPR_HID6  = 1017;
+	static const int SPR_PIR   = 1023;
 
 	//Not actually real SPRs
 	static const int SPR_MSR = 1024;

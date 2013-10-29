@@ -430,6 +430,11 @@ bool PpcCpu::ReadSystemReg( int sysReg, uint64_t &value )
 			return true;
 		}
 
+		case SPR_PIR: {
+			value = context.coreNum;
+			return true;
+		}
+
 		case SPR_MSR: {
 			value = context.msr;
 			return true;
