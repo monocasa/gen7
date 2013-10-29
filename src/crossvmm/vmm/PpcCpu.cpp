@@ -86,6 +86,9 @@ void PpcCpu::Init()
 #define D_RT(x) ((x >> 21) & 0x1F)
 #define D_RS(x) ((x >> 21) & 0x1F)
 
+#define M_RA(x) ((x >> 16) & 0x1F)
+#define M_RS(x) ((x >> 21) & 0x1F)
+
 #define MD_RA(x) ((x >> 16) & 0x1F)
 #define MD_RS(x) ((x >> 21) & 0x1F)
 
@@ -155,6 +158,21 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 	const int xo = X_XO(nativeInstr);
 
 	switch( xo ) {
+		case 40: { //subf
+			if( XO_RC(nativeInstr) ) {
+				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+				return 1;
+			}
+
+			const int rt = XO_RT(nativeInstr);
+			const int ra = XO_RA(nativeInstr);
+			const int rb = XO_RB(nativeInstr);
+
+			intermediates[0].BuildSub( ra, rb, rt );
+
+			return 1;
+		}
+
 		case 60: { //andc
 			if( X_RC(nativeInstr) ) {
 				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
@@ -315,6 +333,20 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 
 		case 19: { //table 19
 			return BuildIntermediateTable19( intermediates, nativeInstr, pc );
+		}
+
+		case 21: { //rotate
+			const int rs = M_RS(nativeInstr);
+			const int ra = M_RA(nativeInstr);
+
+			if( (nativeInstr & 0xFFFF) == 0x901A ) { //slwi rs, ra, 18
+				intermediates[0].BuildSll32( rs, ra, 18 );
+			}
+			else {
+				intermediates[0].BuildUnknown( opcode, nativeInstr, pc );
+			}
+
+			return 1;
 		}
 
 		case 24: { //ori

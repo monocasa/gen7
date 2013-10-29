@@ -23,6 +23,7 @@ enum InstrOp
 	//Arithmetic
 	ADD = 300,
 	ADD_IMM,
+	SUB,
 	SUBU_IMM,
 
 	//Logic
@@ -32,7 +33,8 @@ enum InstrOp
 	OR_IMM,
 
 	//Shift
-	SLL64 = 500,
+	SLL32 = 500,
+	SLL64,
 
 	//Processor Specific Region
 	PROC_LOW = 10000,
@@ -124,6 +126,13 @@ struct InterInstr
 		args[2] = imm;
 	}
 
+	void BuildSub( int sourceReg0, int sourceReg1, int destReg ) {
+		op = SUB;
+		args[0] = sourceReg0;
+		args[1] = sourceReg1;
+		args[2] = destReg;
+	}
+
 	void BuildSubuImm( int sourceReg, int destReg, uint64_t imm ) {
 		op = SUBU_IMM;
 		args[0] = sourceReg;
@@ -161,6 +170,13 @@ struct InterInstr
 	}
 
 //Shift/Rotate
+	void BuildSll32( int sourceReg, int destReg, int shift ) {
+		op = SLL32;
+		args[0] = sourceReg;
+		args[1] = destReg;
+		args[2] = shift;
+	}
+
 	void BuildSll64( int sourceReg, int destReg, int shift ) {
 		op = SLL64;
 		args[0] = sourceReg;

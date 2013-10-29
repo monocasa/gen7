@@ -95,6 +95,21 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
+		case SUB: {
+			const int sourceReg0 = instr.args[0];
+			const int sourceReg1 = instr.args[1];
+			const int destReg = instr.args[2];
+
+			uint64_t sourceValue0 = ReadGPR( sourceReg0 );
+			uint64_t sourceValue1 = ReadGPR( sourceReg1 );
+
+			uint64_t result = ~sourceValue0 + sourceValue1 + 1;
+
+			SetGPR( destReg, result );
+
+			return true;
+		} 
+
 		case SUBU_IMM: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];
@@ -162,6 +177,23 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 		}
 
 	//Shift/Rotate
+		case SLL32: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const int shift = instr.args[2];
+
+			uint64_t value = ReadGPR( sourceReg );
+			uint32_t lower = value;
+			lower <<= shift;
+
+			value &= 0xFFFFFFFF00000000UL;
+			value |= lower;
+
+			SetGPR( destReg, value );
+
+			return true;
+		}
+			
 		case SLL64: {
 			uint64_t value = ReadGPR(instr.args[0]);
 			value <<= instr.args[2];
