@@ -177,7 +177,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 		}
 
 	//Shift/Rotate
-		case SLL32: {
+		case SLL32_IMM: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];
 			const int shift = instr.args[2];
@@ -194,7 +194,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 			
-		case SLL64: {
+		case SLL64_IMM: {
 			uint64_t value = ReadGPR(instr.args[0]);
 			value <<= instr.args[2];
 			SetGPR( instr.args[1], value );

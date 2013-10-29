@@ -340,7 +340,7 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 			const int ra = M_RA(nativeInstr);
 
 			if( (nativeInstr & 0xFFFF) == 0x901A ) { //slwi rs, ra, 18
-				intermediates[0].BuildSll32( rs, ra, 18 );
+				intermediates[0].BuildSll32Imm( rs, ra, 18 );
 			}
 			else {
 				intermediates[0].BuildUnknown( opcode, nativeInstr, pc );
@@ -382,13 +382,13 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 			const int ra = D_RA(nativeInstr);
 
 			if( (nativeInstr & 0xFFFF) == 0x07C6 ) { //sldi rs, ra, 32
-				intermediates[0].BuildSll64( rs, ra, 32 );
+				intermediates[0].BuildSll64Imm( rs, ra, 32 );
 			}
 			else if( (nativeInstr & 0xFFFF) == 0x64c6 ) { //sldi rs, ra, 44
-				intermediates[0].BuildSll64( rs, ra, 44 );
+				intermediates[0].BuildSll64Imm( rs, ra, 44 );
 			}
 			else if( (nativeInstr & 0xFFFF) == 0xf806 ) { //sldi rs, ra, 63
-				intermediates[0].BuildSll64( rs, ra, 63 );
+				intermediates[0].BuildSll64Imm( rs, ra, 63 );
 			}
 			else if( (nativeInstr & 0xFFFF) == 0x0040 ) { //clrldi rs, ra, 1
 				intermediates[0].BuildAndImm( rs, ra, 0x7FFFFFFFFFFFFFFFUL );
