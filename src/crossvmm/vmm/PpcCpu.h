@@ -14,9 +14,15 @@ private:
 	Gen7::XenonPpcContext &context;
 
 	//Not real GPRs
-	static const int GPR_CTR = 32;
+	static const int GPR_LR    = 32;
+	static const int GPR_CTR   = 33;
+	static const int GPR_SPRG0 = 34;
+	static const int GPR_SPRG1 = 35;
+	static const int GPR_SPRG2 = 36;
+	static const int GPR_SPRG3 = 37;
 
 	//PowerPC SPRs
+	static const int SPR_LR    = 8;
 	static const int SPR_CTR   = 9;
 	static const int SPR_SRR1  = 27;
 	static const int SPR_SPRG0 = 272;
@@ -75,43 +81,14 @@ public:
 		context.pc = pc;
 	}
 
-	virtual void SetGPR( int gpr, uint64_t newValue ) {
-		switch( gpr ) {
-			case 0 ... 31:
-				context.gpr[ gpr ] = newValue;
-				return;
-
-			case GPR_CTR:
-				context.ctr = newValue;
-				return;
-
-			default:
-				printf( "Unimplemented gpr %d set to 0x%lx\n", gpr, newValue );
-				return;
-		}
-	}
-
-	virtual uint64_t ReadGPR( int gpr ) {
-		switch( gpr ) {
-			case 0 ... 31:
-				return context.gpr[ gpr ];
-
-			case GPR_CTR:
-				return context.ctr;
-
-			default:
-				printf( "Unimplemented gpr %d read from\n", gpr );
-				return 0;
-		}
-	}
-
 	virtual bool SetSystemReg( int sysReg, uint64_t value );
 	virtual bool ReadSystemReg( int sysReg, uint64_t &value );
 
 	virtual bool InterpretProcessorSpecific( InterInstr &instr );
 
 	PpcCpu( Gen7::XenonPpcContext &context )
-	  : context( context )
+	  : Cpu( &context.gpr[0] )
+	  , context( context )
 	  , mmuContext( context )
 	{ }
 };

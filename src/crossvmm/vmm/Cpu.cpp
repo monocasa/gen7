@@ -17,32 +17,46 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 		}
 
 		case SET_SYS_IMM: {
-			SetSystemReg( instr.args[1], instr.args[0] );
+			const uint64_t imm = instr.args[0];
+			const int sourceReg = instr.args[1];
+
+			return SetSystemReg( sourceReg, imm );
 		}
 
 		case SET_SYS_REG: {
-			uint64_t value = ReadGPR( instr.args[0] );
-			return SetSystemReg( instr.args[1], value );
+			const int sourceReg = instr.args[0];
+			const int sysReg = instr.args[1];
+
+			uint64_t result = ReadGPR64( sourceReg );
+			return SetSystemReg( sysReg, result );
 		}
 
 		case READ_SYS: {
-			uint64_t value = 0;
-			if( !ReadSystemReg( instr.args[1], value ) ) {
+			const int destReg = instr.args[0];
+			const int sysReg = instr.args[1];
+
+			uint64_t result = 0;
+			if( !ReadSystemReg( sysReg, result ) ) {
 				return false;
 			}
-			SetGPR( instr.args[0], value );
+			SetGPR64( destReg, result );
 			return true;
 		}
 
 		case MOVE_REG: {
-			uint64_t value = ReadGPR( instr.args[0] );
-			SetGPR( instr.args[1], value );
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+
+			uint64_t result = ReadGPR64( sourceReg );
+			SetGPR64( destReg, result );
 			return true;
 		}
 
 	//Branch
 		case BRANCH_ALWAYS: {
-			SetPC( instr.args[0] );
+			const uint64_t target = instr.args[0];
+
+			SetPC( target );
 			return true;
 		}
 
@@ -50,7 +64,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			const int gpr = instr.args[0];
 			const uint64_t target = instr.args[1];
 
-			uint64_t value = ReadGPR(gpr);
+			uint64_t value = ReadGPR64(gpr);
 
 			if( value != 0 ) {
 				SetPC( target );
@@ -61,7 +75,10 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 
 	//Load/Store
 		case LOAD_IMM: {
-			SetGPR( instr.args[0], instr.args[1] );
+			const int gpr = instr.args[0];
+			const uint64_t imm = instr.args[1];
+
+			SetGPR64( gpr, imm );
 			return true;
 		}
 
@@ -71,12 +88,12 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			const int sourceReg1 = instr.args[1];
 			const int destReg = instr.args[2];
 
-			uint64_t sourceValue0 = ReadGPR( sourceReg0 );
-			uint64_t sourceValue1 = ReadGPR( sourceReg1 );
+			uint64_t sourceValue0 = ReadGPR64( sourceReg0 );
+			uint64_t sourceValue1 = ReadGPR64( sourceReg1 );
 
 			uint64_t result = sourceValue0 + sourceValue1;
 
-			SetGPR( destReg, result );
+			SetGPR64( destReg, result );
 
 			return true;
 		}
@@ -86,11 +103,11 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			const int destReg = instr.args[1];
 			const uint64_t imm = instr.args[2];
 
-			uint64_t sourceValue = ReadGPR( sourceReg );
+			uint64_t sourceValue = ReadGPR64( sourceReg );
 
 			uint64_t result = sourceValue + imm;
 
-			SetGPR( destReg, result );
+			SetGPR64( destReg, result );
 
 			return true;
 		}
@@ -100,12 +117,12 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			const int sourceReg1 = instr.args[1];
 			const int destReg = instr.args[2];
 
-			uint64_t sourceValue0 = ReadGPR( sourceReg0 );
-			uint64_t sourceValue1 = ReadGPR( sourceReg1 );
+			uint64_t sourceValue0 = ReadGPR64( sourceReg0 );
+			uint64_t sourceValue1 = ReadGPR64( sourceReg1 );
 
 			uint64_t result = ~sourceValue0 + sourceValue1 + 1;
 
-			SetGPR( destReg, result );
+			SetGPR64( destReg, result );
 
 			return true;
 		} 
@@ -115,11 +132,11 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			const int destReg = instr.args[1];
 			const uint64_t imm = instr.args[2];
 
-			uint64_t sourceValue = ReadGPR( sourceReg );
+			uint64_t sourceValue = ReadGPR64( sourceReg );
 
 			uint64_t result = sourceValue - imm;
 
-			SetGPR( destReg, result );
+			SetGPR64( destReg, result );
 
 			return true;
 		}
@@ -130,11 +147,11 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			const int destReg = instr.args[1];
 			const uint64_t imm = instr.args[2];
 
-			uint64_t sourceValue = ReadGPR( sourceReg );
+			uint64_t sourceValue = ReadGPR64( sourceReg );
 
 			uint64_t result = sourceValue & imm;
 
-			SetGPR( destReg, result );
+			SetGPR64( destReg, result );
 
 			return true;
 		}
@@ -144,12 +161,12 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			const int sourceReg1 = instr.args[1];
 			const int destReg = instr.args[2];
 
-			uint64_t sourceValue0 = ReadGPR( sourceReg0 );
-			uint64_t sourceValue1 = ReadGPR( sourceReg1 );
+			uint64_t sourceValue0 = ReadGPR64( sourceReg0 );
+			uint64_t sourceValue1 = ReadGPR64( sourceReg1 );
 
 			uint64_t value = sourceValue0 & ~sourceValue1;
 
-			SetGPR( destReg, value );
+			SetGPR64( destReg, value );
 
 			return true;
 		}
@@ -159,20 +176,28 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			const int sourceReg1 = instr.args[1];
 			const int destReg = instr.args[2];
 
-			uint64_t sourceValue0 = ReadGPR( sourceReg0 );
-			uint64_t sourceValue1 = ReadGPR( sourceReg1 );
+			uint64_t sourceValue0 = ReadGPR64( sourceReg0 );
+			uint64_t sourceValue1 = ReadGPR64( sourceReg1 );
 
 			uint64_t value = sourceValue0 | sourceValue1;
 
-			SetGPR( destReg, value );
+			SetGPR64( destReg, value );
 
 			return true;
 		}
 
 		case OR_IMM: {
-			uint64_t value = ReadGPR(instr.args[0]);
-			value |= instr.args[2];
-			SetGPR( instr.args[1], value );
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const uint64_t imm = instr.args[2];
+
+			uint64_t sourceValue = ReadGPR64( sourceReg );
+
+			uint64_t result = sourceValue | imm;
+
+			SetGPR64( destReg, result );
+
+			return true;
 			return true;
 		}
 
@@ -182,22 +207,21 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			const int destReg = instr.args[1];
 			const int shift = instr.args[2];
 
-			uint64_t value = ReadGPR( sourceReg );
-			uint32_t lower = value;
-			lower <<= shift;
+			uint32_t result = ReadGPR32( sourceReg ) << shift;
 
-			value &= 0xFFFFFFFF00000000UL;
-			value |= lower;
-
-			SetGPR( destReg, value );
+			SetGPR32( destReg, result );
 
 			return true;
 		}
 			
 		case SLL64_IMM: {
-			uint64_t value = ReadGPR(instr.args[0]);
-			value <<= instr.args[2];
-			SetGPR( instr.args[1], value );
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const int shift = instr.args[2];
+
+			uint64_t result = ReadGPR64( sourceReg ) << shift;
+
+			SetGPR64( destReg, result );
 			return true;
 		}
 

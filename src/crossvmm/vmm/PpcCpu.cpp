@@ -64,6 +64,7 @@ void PpcCpu::DumpContext()
 	printf( "   pc %16lx |   msr %16lx |   ctr %16lx |    lr %16lx\n", context.pc, context.msr, context.ctr, context.lr );
 	printf( " srr0 %16lx |  srr1 %16lx | hrmor %16lx\n", context.srr0, context.srr1, context.hrmor );
 	printf( " hid6 %16lx | lpidr %16lx |  lpcr %16lx\n", context.hid6, context.lpidr, context.lpcr );
+	printf( "sprg0 %16lx | sprg1 %16lx | sprg2 %16lx | sprg3 %16lx\n", context.sprg0, context.sprg1, context.sprg2, context.sprg3 );
 }
 
 void PpcCpu::Init()
@@ -107,6 +108,16 @@ void PpcCpu::Init()
 #define XO_RA(x) ((x >> 16) & 0x1F)
 #define XO_RT(x) ((x >> 21) & 0x1F)
 
+constexpr int GPR64OFFSET( int regNum )
+{
+	return regNum * sizeof(uint64_t);
+}
+
+constexpr int GPR32LOWOFFSET( int regNum )
+{
+	return regNum * sizeof(uint64_t);
+}
+
 int PpcCpu::BuildIntermediateBranchConditional( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
 {
 	if( B_LK(nativeInstr) || B_AA(nativeInstr) ) {
@@ -123,8 +134,8 @@ int PpcCpu::BuildIntermediateBranchConditional( InterInstr *intermediates, const
 
 	switch( B_BO(nativeInstr) ) {
 		case 25: { //bdnz+
-			intermediates[0].BuildSubuImm( GPR_CTR, GPR_CTR, 1 );
-			intermediates[1].BuildBranchGprNotZero( GPR_CTR, target );
+			intermediates[0].BuildSubuImm( GPR64OFFSET(GPR_CTR), GPR64OFFSET(GPR_CTR), 1 );
+			intermediates[1].BuildBranchGprNotZero( GPR64OFFSET(GPR_CTR), target );
 			return 2;
 		}
 
@@ -164,9 +175,9 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 				return 1;
 			}
 
-			const int rt = XO_RT(nativeInstr);
-			const int ra = XO_RA(nativeInstr);
-			const int rb = XO_RB(nativeInstr);
+			const int rt = GPR64OFFSET( XO_RT(nativeInstr) );
+			const int ra = GPR64OFFSET( XO_RA(nativeInstr) );
+			const int rb = GPR64OFFSET( XO_RB(nativeInstr) );
 
 			intermediates[0].BuildSub( ra, rb, rt );
 
@@ -178,16 +189,16 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
 				return 1;
 			}
-			const int rs = X_RS(nativeInstr);
-			const int ra = X_RA(nativeInstr);
-			const int rb = X_RB(nativeInstr);
+			const int rs = GPR64OFFSET( X_RS(nativeInstr) );
+			const int ra = GPR64OFFSET( X_RA(nativeInstr) );
+			const int rb = GPR64OFFSET( X_RB(nativeInstr) );
 
 			intermediates[0].BuildAndc( rs, rb, ra );
 			return 1;
 		}
 
 		case 83: { //mfmsr
-			const int rt = X_RT(nativeInstr);
+			const int rt = GPR64OFFSET( X_RT(nativeInstr) );
 
 			intermediates[0].BuildReadSystem( rt, SPR_MSR );
 			return 1;
@@ -198,16 +209,16 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
 				return 1;
 			}
-			const int rt = XO_RT(nativeInstr);
-			const int ra = XO_RA(nativeInstr);
-			const int rb = XO_RB(nativeInstr);
+			const int rt = GPR64OFFSET( XO_RT(nativeInstr) );
+			const int ra = GPR64OFFSET( XO_RA(nativeInstr) );
+			const int rb = GPR64OFFSET( XO_RB(nativeInstr) );
 
 			intermediates[0].BuildAdd( ra, rb, rt );
 			return 1;
 		}
 
 		case 274: { //tlbiel
-			const int rb = X_RB(nativeInstr);
+			const int rb = GPR64OFFSET( X_RB(nativeInstr) );
 
 			intermediates[0].BuildPpcTlbiel( rb );
 			return 1;
@@ -215,15 +226,45 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 
 		case 339: { //mfspr
 			const int spr = XFX_SPR(nativeInstr);
-			const int destReg = XFX_RS(nativeInstr);
+			const int destReg = GPR64OFFSET( XFX_RS(nativeInstr) );
 
-			intermediates[0].BuildReadSystem( destReg, spr );
+			switch( spr ) {
+				case SPR_LR: {
+					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_LR), destReg );
+					break;
+				}
+				case SPR_CTR: {
+					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_CTR), destReg );
+					break;
+				}
+				case SPR_SPRG0: {
+					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_SPRG0), destReg );
+					break;
+				}
+				case SPR_SPRG1: {
+					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_SPRG1), destReg );
+					break;
+				}
+				case SPR_SPRG2: {
+					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_SPRG2), destReg );
+					break;
+				}
+				case SPR_SPRG3: {
+					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_SPRG3), destReg );
+					break;
+				}
+				default: {
+					intermediates[0].BuildReadSystem( destReg, spr );
+					break;
+				}
+			}
+
 			return 1;
 		}
 
 		case 402: { //slbmte
-			const int rs = X_RS(nativeInstr);
-			const int rb = X_RB(nativeInstr);
+			const int rs = GPR64OFFSET( X_RS(nativeInstr) );
+			const int rb = GPR64OFFSET( X_RB(nativeInstr) );
 
 			intermediates[0].BuildPpcSlbmte( rs, rb );
 			return 1;
@@ -234,9 +275,9 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
 				return 1;
 			}
-			const int rs = X_RS(nativeInstr);
-			const int ra = X_RA(nativeInstr);
-			const int rb = X_RB(nativeInstr);
+			const int rs = GPR64OFFSET( X_RS(nativeInstr) );
+			const int ra = GPR64OFFSET( X_RA(nativeInstr) );
+			const int rb = GPR64OFFSET( X_RB(nativeInstr) );
 
 			intermediates[0].BuildOr( rs, rb, ra );
 			return 1;
@@ -244,11 +285,31 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 
 		case 467: { //mtspr
 			const int spr = XFX_SPR(nativeInstr);
-			const int sourceReg = XFX_RS(nativeInstr);
+			const int sourceReg = GPR64OFFSET( XFX_RS(nativeInstr) );
 
 			switch( spr ) {
+				case SPR_LR: {
+					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_LR) );
+					break;
+				}
 				case SPR_CTR: {
-					intermediates[0].BuildMoveReg( sourceReg, GPR_CTR );
+					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_CTR) );
+					break;
+				}
+				case SPR_SPRG0: {
+					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_SPRG0) );
+					break;
+				}
+				case SPR_SPRG1: {
+					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_SPRG1) );
+					break;
+				}
+				case SPR_SPRG2: {
+					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_SPRG2) );
+					break;
+				}
+				case SPR_SPRG3: {
+					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_SPRG3) );
 					break;
 				}
 				default: {
@@ -293,11 +354,11 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 			const int ra = D_RA(nativeInstr);
 
 			if( ra != 0 ) {
-				intermediates[0].BuildAddImm( ra, rt, imm );
+				intermediates[0].BuildAddImm( GPR64OFFSET(ra), GPR64OFFSET(rt), imm );
 				return 1;
 			}
 			else {
-				intermediates[0].BuildLoadImm( rt, imm );
+				intermediates[0].BuildLoadImm( GPR64OFFSET(rt), imm );
 				return 1;
 			}
 		}
@@ -311,7 +372,7 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 			int64_t imm = D_SI(nativeInstr) << 16;
 			int rt = D_RT(nativeInstr);
 
-			intermediates[0].BuildLoadImm( rt, imm );
+			intermediates[0].BuildLoadImm( GPR64OFFSET(rt), imm );
 			return 1;
 		}
 
@@ -336,8 +397,8 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 		}
 
 		case 21: { //rotate
-			const int rs = M_RS(nativeInstr);
-			const int ra = M_RA(nativeInstr);
+			const int rs = GPR32LOWOFFSET( M_RS(nativeInstr) );
+			const int ra = GPR32LOWOFFSET( M_RA(nativeInstr) );
 
 			if( (nativeInstr & 0xFFFF) == 0x901A ) { //slwi rs, ra, 18
 				intermediates[0].BuildSll32Imm( rs, ra, 18 );
@@ -350,8 +411,8 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 		}
 
 		case 24: { //ori
-			const int rs = D_RS(nativeInstr);
-			const int ra = D_RA(nativeInstr);
+			const int rs = GPR64OFFSET( D_RS(nativeInstr) );
+			const int ra = GPR64OFFSET( D_RA(nativeInstr) );
 			const uint64_t imm = D_UI(nativeInstr);
 
 			if( rs == 0 && ra == 0 && imm == 0 ) {
@@ -364,8 +425,8 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 		}
 
 		case 25: { //oris
-			const int rs = D_RS(nativeInstr);
-			const int ra = D_RA(nativeInstr);
+			const int rs = GPR64OFFSET( D_RS(nativeInstr) );
+			const int ra = GPR64OFFSET( D_RA(nativeInstr) );
 			const uint64_t imm = D_UI(nativeInstr) << 16;
 
 			if( rs == 0 && ra == 0 && imm == 0 ) {
@@ -378,8 +439,8 @@ int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeI
 		}
 
 		case 30: { //rotate
-			const int rs = D_RS(nativeInstr);
-			const int ra = D_RA(nativeInstr);
+			const int rs = GPR64OFFSET( D_RS(nativeInstr) );
+			const int ra = GPR64OFFSET( D_RA(nativeInstr) );
 
 			if( (nativeInstr & 0xFFFF) == 0x07C6 ) { //sldi rs, ra, 32
 				intermediates[0].BuildSll64Imm( rs, ra, 32 );
@@ -496,14 +557,14 @@ bool PpcCpu::InterpretProcessorSpecific( InterInstr &instr )
 			const int rs = instr.args[0];
 			const int rb = instr.args[1];
 
-			printf( "SLBMTE RS=%016lx RB=%016lx\n", ReadGPR(rs), ReadGPR(rb) );
+			printf( "SLBMTE RS=%016lx RB=%016lx\n", ReadGPR64(rs), ReadGPR64(rb) );
 			return true;
 		}
 
 		case PPC_TLBIEL: {
 			const int rb = instr.args[0];
 
-			printf( "TLBIEL RB=%016lx\n", ReadGPR(rb) );
+			printf( "TLBIEL RB=%016lx\n", ReadGPR64(rb) );
 			return true;
 		}
 
@@ -522,6 +583,9 @@ void PpcCpu::Execute()
 
 	while( running ) {
 		const uint32_t instruction = *PC;
+
+		//DumpContext();
+		//printf( "%08lx : %04x\n", context.pc, instruction );
 
 		int numIntermediates = BuildIntermediate( intermediates, instruction, context.pc );
 

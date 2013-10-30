@@ -98,15 +98,6 @@ public:
 		context.pc = pc;
 	}
 
-	virtual void SetGPR( int gpr, uint64_t newValue ) {
-		printf( "Todo:  SetGPR( %d, 0x%lx )\n", gpr, newValue );
-	}
-
-	virtual uint64_t ReadGPR( int gpr ) {
-		printf( "Todo:  ReadGPR( %d )\n", gpr );
-		return 0;
-	}
-
 	virtual bool SetSystemReg( int sysReg, uint64_t value ) {
 		printf( "Todo:  SetSystemReg( %d, %lx )\n", sysReg, value );
 		return false;
@@ -123,7 +114,8 @@ public:
 	}
 
 	Sh4aCpu( Gen7::Sh4aContext &context )
-	  : context( context )
+	  : Cpu( &context.gpr[0] )
+	  , context( context )
 	  , mmu( context, *this )
 	{ }
 };
