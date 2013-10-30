@@ -76,28 +76,33 @@ public:
 	}
 
 	virtual void SetGPR( int gpr, uint64_t newValue ) {
-		if( gpr >= 0 && gpr <= 31 ) {
-			context.gpr[ gpr ] = newValue;
-			return;
+		switch( gpr ) {
+			case 0 ... 31:
+				context.gpr[ gpr ] = newValue;
+				return;
+
+			case GPR_CTR:
+				context.ctr = newValue;
+				return;
+
+			default:
+				printf( "Unimplemented gpr %d set to 0x%lx\n", gpr, newValue );
+				return;
 		}
-		if( gpr == GPR_CTR ) {
-			context.ctr = newValue;
-			return;
-		}
-		printf( "Unimplemented gpr %d set to 0x%lx\n", gpr, newValue );
 	}
 
 	virtual uint64_t ReadGPR( int gpr ) {
-		if( gpr >= 0 && gpr <= 31 ) {
-			return context.gpr[ gpr ];
-		}
+		switch( gpr ) {
+			case 0 ... 31:
+				return context.gpr[ gpr ];
 
-		if( gpr == GPR_CTR ) {
-			return context.ctr;
-		}
+			case GPR_CTR:
+				return context.ctr;
 
-		printf( "Unimplemented gpr %d read from\n", gpr );
-		return 0;
+			default:
+				printf( "Unimplemented gpr %d read from\n", gpr );
+				return 0;
+		}
 	}
 
 	virtual bool SetSystemReg( int sysReg, uint64_t value );
