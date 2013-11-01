@@ -10,4 +10,5 @@ FIND_PACKAGE( Boost 1.37 COMPONENTS program_options REQUIRED )
 ADD_SUBDIRECTORY( cli-frontend )
 ADD_SUBDIRECTORY( crossvmm )
 ADD_SUBDIRECTORY( host )
+ADD_SUBDIRECTORY( libjit )
 

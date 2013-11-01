@@ -4,11 +4,11 @@
 #include "dc/DcPhysicalMemory.h"
 #include "MachineContext.h"
 
+#include "jit/sh4a/Sh4aCpuContext.h"
+
 #include <cassert>
 
 namespace Gen7 {
-
-struct Sh4aContext;
 
 class DcMachineContext : public MachineContext
 {
@@ -50,8 +50,8 @@ private:
 		{ }
 	} machineMemory;
 
-	void LoadElf( const char *exePath, Sh4aContext &context );
-	void LoadBios( Sh4aContext &context );
+	void LoadElf( const char *exePath, jit::Sh4aCpuContext &context );
+	void LoadBios( jit::Sh4aCpuContext &context );
 
 public:
 	virtual void Load( const char *path );

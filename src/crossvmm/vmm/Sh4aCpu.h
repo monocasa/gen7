@@ -5,7 +5,7 @@
 #include "InterInstr.h"
 #include "MemoryManager.h"
 
-#include "shared/Types.h"
+#include "jit/sh4a/Sh4aCpuContext.h"
 
 #include <cstdio>
 
@@ -39,7 +39,7 @@ private:
 
 	static const uint32_t FPSCR_SZ_BIT = 0x00100000;
 
-	Gen7::Sh4aContext &context;
+	jit::Sh4aCpuContext &context;
 
 	class MmuContext : public PageFaultHandler, MemoryEmulator
 	{
@@ -47,7 +47,7 @@ private:
 		static const int NUM_PML2S = 4;
 		static const int NUM_PML1S = 1024;
 
-		Gen7::Sh4aContext &context;
+		jit::Sh4aCpuContext &context;
 		Sh4aCpu &cpu;
 
 		uint64_t* pml3;
@@ -79,7 +79,7 @@ private:
 		virtual void Write32( uint64_t addr, uint32_t data );
 		virtual uint32_t Read32( uint64_t addr );
 
-		MmuContext( Gen7::Sh4aContext &context, Sh4aCpu &cpu )
+		MmuContext( jit::Sh4aCpuContext &context, Sh4aCpu &cpu )
 		  : context( context )
 		  , cpu( cpu )
 		{ }
@@ -113,7 +113,7 @@ public:
 		return false;
 	}
 
-	Sh4aCpu( Gen7::Sh4aContext &context )
+	Sh4aCpu( jit::Sh4aCpuContext &context )
 	  : Cpu( &context.gpr[0] )
 	  , context( context )
 	  , mmu( context, *this )

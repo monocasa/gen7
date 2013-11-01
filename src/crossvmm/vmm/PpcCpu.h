@@ -4,14 +4,14 @@
 #include "Cpu.h"
 #include "InterInstr.h"
 
-#include "shared/Types.h"
+#include "jit/powerpc/XenonCpuContext.h"
 
 #include <cstdio>
 
 class PpcCpu : public Cpu
 {
 private:
-	Gen7::XenonPpcContext &context;
+	jit::XenonCpuContext &context;
 
 	//Not real GPRs
 	static const int GPR_LR    = 32;
@@ -46,7 +46,7 @@ private:
 		static const int NUM_IR32_PML2S = 4;
 		static const int NUM_IR32_PML1S = 1024;
 
-		Gen7::XenonPpcContext &context;
+		jit::XenonCpuContext &context;
 
 		uint64_t* hvRealModePml3s[ NUM_HVREALMODE_PML3S ];  //PML3s for Hypervisor Real Mode
 
@@ -59,7 +59,7 @@ private:
 
 		void MapFull();
 
-		MmuContext( Gen7::XenonPpcContext &context )
+		MmuContext( jit::XenonCpuContext &context )
 		  : context( context )
 		{ }
 
@@ -86,7 +86,7 @@ public:
 
 	virtual bool InterpretProcessorSpecific( InterInstr &instr );
 
-	PpcCpu( Gen7::XenonPpcContext &context )
+	PpcCpu( jit::XenonCpuContext &context )
 	  : Cpu( &context.gpr[0] )
 	  , context( context )
 	  , mmuContext( context )

@@ -5,7 +5,8 @@
 #include "Sh4aCpu.h"
 #include "XenonRealMemory.h"
 
-#include "shared/Types.h"
+#include "jit/powerpc/XenonCpuContext.h"
+#include "jit/sh4a/Sh4aCpuContext.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -48,20 +49,20 @@ extern "C" void kmain()
 	mm.Init();
 	intm.Init();
 
-	Gen7::CpuContext *cpuContext = reinterpret_cast<Gen7::CpuContext*>( 0xFFFFFFFF80003000UL );
+	jit::CpuContext *cpuContext = reinterpret_cast<jit::CpuContext*>( 0xFFFFFFFF80003000UL );
 	switch( cpuContext->type )
 	{
-		case Gen7::CpuType::XENON: {
+		case jit::CpuType::XENON: {
 			xenonReal.Init();
-			PpcCpu cpu( *static_cast<Gen7::XenonPpcContext*>( cpuContext ) );
+			PpcCpu cpu( *static_cast<jit::XenonCpuContext*>( cpuContext ) );
 			cpu.Init();
 			cpu.Execute();
 			break;
 		}
 
-		case Gen7::CpuType::SH4A: {
+		case jit::CpuType::SH4A: {
 			dcReal.Init();
-			Sh4aCpu cpu( *static_cast<Gen7::Sh4aContext*>( cpuContext ) );
+			Sh4aCpu cpu( *static_cast<jit::Sh4aCpuContext*>( cpuContext ) );
 			cpu.Init();
 			cpu.Execute();
 			break;
