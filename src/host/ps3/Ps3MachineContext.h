@@ -5,7 +5,7 @@
 #include "sys/Exception.h"
 #include "MachineContext.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 class Ps3MachineContext : public MachineContext
 {
@@ -23,7 +23,7 @@ public:
 	{ }
 };
 
-} //namespace Gen7
+} //namespace gen7
 
 #endif //GEN7_HOST_PS3_PS3MACHINECONEXT_H
 

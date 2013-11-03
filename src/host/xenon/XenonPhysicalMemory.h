@@ -4,7 +4,7 @@
 #include "Subsystem.h"
 #include "PhysicalMemory.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 class XenonPhysicalMemory : public NativePhysicalMemory, public Subsystem
 {
@@ -89,7 +89,7 @@ public:
 	}
 };
 
-} //namespace Gen7
+} //namespace gen7
 
 #endif //GEN7_HOST_XENON_XENONPHYSICALMEMORY_H
 

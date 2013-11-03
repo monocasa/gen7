@@ -2,7 +2,7 @@
 #include "sys/Exception.h"
 #include "sys/Mem.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 void CrossVmmPhysicalMemory::WritePhys8( uint64_t addr, uint8_t data )
 {
@@ -105,5 +105,5 @@ void CrossVmmPhysicalMemory::Init( InitPhase phase )
 	}
 }
 
-} //namespace Gen7
+} //namespace gen7
 

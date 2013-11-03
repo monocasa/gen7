@@ -2,7 +2,7 @@
 #include "Log.h"
 #include "MachineContext.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 void MachineContext::Init()
 {
@@ -31,5 +31,5 @@ void MachineContext::RegisterSubsystem( Subsystem *subsystem )
 	subsystems.push_back( subsystem );
 }
 
-} //namespace Gen7
+} //namespace gen7
 

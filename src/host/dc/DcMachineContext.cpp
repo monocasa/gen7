@@ -5,7 +5,7 @@
 
 #include <cstring>
 
-namespace Gen7 {
+namespace gen7 {
 
 void DcMachineContext::LoadElf( const char *exePath, jit::Sh4aCpuContext &context )
 {
@@ -38,5 +38,5 @@ void DcMachineContext::Load( const char *path )
 	}
 }
 
-} //namespace Gen7
+} //namespace gen7
 

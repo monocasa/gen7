@@ -3,7 +3,7 @@
 
 #include "Cpu.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 class TableMmu
 {
@@ -191,7 +191,7 @@ public:
 	{ }
 };
 
-} //namespace Gen7
+} //namespace gen7
 
 #endif //GEN7_HOST_INTERPCPU_H
 

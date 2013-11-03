@@ -5,7 +5,7 @@
 #include "crossvmm/KvmContext.h"
 #include "Subsystem.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 class CrossVmm : public Subsystem
 {
@@ -38,7 +38,7 @@ public:
 	{ }
 };
 
-} //namespace Gen7
+} //namespace gen7
 
 #endif //GEN7_HOST_CROSSVMM_CROSSVMM_H
 

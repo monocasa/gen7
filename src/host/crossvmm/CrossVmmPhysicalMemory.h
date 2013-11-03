@@ -6,7 +6,7 @@
 
 #include <vector>
 
-namespace Gen7 {
+namespace gen7 {
 
 class CrossVmmPhysicalMemory : public PhysicalMemory, public Subsystem
 {

@@ -1,6 +1,6 @@
 #include "InterpCpu.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 void InterpCpu::WriteSpr( int spr, uint64_t value )
 {
@@ -569,5 +569,5 @@ void InterpCpu::Execute()
 	}
 }
 
-} //namespace Gen7
+} //namespace gen7
 

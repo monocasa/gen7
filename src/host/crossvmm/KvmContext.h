@@ -8,7 +8,7 @@
 struct kvm_run;
 struct kvm_segment;
 
-namespace Gen7 {
+namespace gen7 {
 
 class CrossVmmPhysicalMemory;
 
@@ -101,7 +101,7 @@ public:
 	}
 };
 
-} //namespace Gen7
+} //namespace gen7
 
 #endif //GEN7_HOST_CROSSVMM_KVMCONTEXT_H
 

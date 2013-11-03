@@ -7,7 +7,7 @@
 #include <cassert>
 #include <cstdio>
 
-namespace Gen7 {
+namespace gen7 {
 
 const char * XenonPhysicalMemory::BROM_FILE_NAME = "/opt/gen7/roms/xenon/1bl.bin";
 
@@ -263,5 +263,5 @@ uint32_t XenonPhysicalMemory::ReadRegion32( int region, uint32_t addr )
 	}
 }
 
-} //namespace Gen7
+} //namespace gen7
 

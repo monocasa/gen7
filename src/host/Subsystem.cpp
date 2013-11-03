@@ -1,7 +1,7 @@
 #include "MachineContext.h"
 #include "Subsystem.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 Subsystem::Subsystem( MachineContext &context )
   : context( context )
@@ -9,5 +9,5 @@ Subsystem::Subsystem( MachineContext &context )
 	context.RegisterSubsystem( this );
 }
 
-} //namespace Gen7
+} //namespace gen7
 

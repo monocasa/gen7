@@ -4,7 +4,7 @@
 #include "PhysicalMemory.h"
 #include "Subsystem.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 class Ps3PhysicalMemory : public NativePhysicalMemory, public Subsystem
 {
@@ -48,7 +48,7 @@ public:
 	{ }
 };
 
-} //namespace Gen7
+} //namespace gen7
 
 #endif //GEN7_HOST_PS3_PS3PHYSICALMEMORY_H
 

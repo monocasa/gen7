@@ -1,6 +1,6 @@
 #include "Cpu.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 std::string IrInstruction::AsString() const
 {
@@ -242,5 +242,5 @@ std::string IrInstruction::AsString() const
 	return buffer;
 }
 
-} //namespace Gen7
+} //namespace gen7
 

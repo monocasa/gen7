@@ -4,7 +4,7 @@
 #include <cstdarg>
 #include <cstdio>
 
-namespace Gen7 {
+namespace gen7 {
 
 static inline void DPRINT( const char * tag, const char * format, ... )
 {
@@ -16,7 +16,7 @@ static inline void DPRINT( const char * tag, const char * format, ... )
 	va_end( args );
 }
 
-} //namespace Gen7
+} //namespace gen7
 
 #endif //GEN7_HOST_LOG_H
 

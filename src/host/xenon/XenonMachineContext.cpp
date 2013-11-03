@@ -5,7 +5,7 @@
 
 #include <cstring>
 
-namespace Gen7 {
+namespace gen7 {
 
 void XenonMachineContext::LoadLibXenonExecutable( const char * exePath, uint64_t* entry )
 {
@@ -29,5 +29,5 @@ void XenonMachineContext::Load( const char *path )
 	cpuContext->msr |= 0x0000000000001000UL;  //Machine check enable
 }
 
-} //namespace Gen7
+} //namespace gen7
 

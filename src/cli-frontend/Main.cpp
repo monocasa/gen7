@@ -120,7 +120,7 @@ void ParseArgs( int argc, char *argv[] )
 int main( int argc, char* argv[] )
 {
 	ParseArgs( argc, argv );
-	Gen7::MachineContext *context = nullptr;
+	gen7::MachineContext *context = nullptr;
 
 	if( showBanner ) {
 		PrintBanner();
@@ -129,17 +129,17 @@ int main( int argc, char* argv[] )
 	try {
 		switch( platform ) {
 			case XENON: {
-				context = new Gen7::XenonMachineContext();
+				context = new gen7::XenonMachineContext();
 				break;
 			}
 
 			case PS3: {
-				context = new Gen7::Ps3MachineContext();
+				context = new gen7::Ps3MachineContext();
 				break;
 			}
 
 			case DC: {
-				context = new Gen7::DcMachineContext();
+				context = new gen7::DcMachineContext();
 				break;
 			}
 

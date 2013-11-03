@@ -4,7 +4,7 @@
 #include <cstdarg>
 #include <cstdio>
 
-namespace Gen7 {
+namespace gen7 {
 
 class MachineContext;
 
@@ -39,7 +39,7 @@ public:
 	Subsystem( MachineContext& context );
 };
 
-} //namespace Gen7
+} //namespace gen7
 
 #endif //GEN7_HOST_SUBSYSTEM_H
 

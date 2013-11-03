@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 
-namespace Gen7 {
+namespace gen7 {
 
 const uint8_t KvmContext::INITIAL_GDT[24] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -316,5 +316,5 @@ void KvmContext::Run()
 	}
 }			
 
-} //namespace Gen7
+} //namespace gen7
 

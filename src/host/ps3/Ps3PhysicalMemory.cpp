@@ -1,7 +1,7 @@
 #include "ps3/Ps3PhysicalMemory.h"
 #include "sys/Mem.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 void Ps3PhysicalMemory::Init( InitPhase /*phase*/ )
 {
@@ -48,5 +48,5 @@ uint32_t Ps3PhysicalMemory::ReadRegion32( int /*region*/, uint32_t /*addr*/ )
 	return 0;
 }
 
-} //namespace Gen7
+} //namespace gen7
 

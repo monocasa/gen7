@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace Gen7 {
+namespace gen7 {
 
 class PhysicalMemory;
 
@@ -109,7 +109,7 @@ public:
 	{ }
 };
 
-} //namespace Gen7
+} //namespace gen7
 
 #endif //GEN7_HOST_ELFLOADER_H
 

@@ -4,7 +4,7 @@
 
 #include <cassert>
 
-namespace Gen7 {
+namespace gen7 {
 
 const char * DcPhysicalMemory::BIOS_FILE_NAME = "/opt/gen7/roms/dc/bios.bin";
 
@@ -139,5 +139,5 @@ uint32_t DcPhysicalMemory::ReadRegion32( int region, uint32_t addr )
 	return ReadPhys32( addr );
 }
 
-} //namespace Gen7
+} //namespace gen7
 

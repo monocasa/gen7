@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <vector>
 
-namespace Gen7 {
+namespace gen7 {
 
 class PhysicalMemory
 {
@@ -62,7 +62,7 @@ public:
 	virtual uint32_t ReadRegion32( int region, uint32_t addr ) = 0;
 };
 
-} //namespace Gen7
+} //namespace gen7
 
 #endif //GEN7_HOST_PHYSICALMEMORY_H
 

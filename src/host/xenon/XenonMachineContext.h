@@ -4,7 +4,7 @@
 #include "xenon/XenonPhysicalMemory.h"
 #include "MachineContext.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 class XenonMachineContext : public MachineContext
 {
@@ -22,7 +22,7 @@ public:
 	{ }
 };
 
-} //namspace Gen7
+} //namspace gen7
 
 #endif //GEN7_HOST_XENON_XENONMACHINECONTEXT_H
 

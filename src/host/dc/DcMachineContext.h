@@ -8,7 +8,7 @@
 
 #include <cassert>
 
-namespace Gen7 {
+namespace gen7 {
 
 class DcMachineContext : public MachineContext
 {
@@ -63,7 +63,7 @@ public:
 	{ }
 };
 
-} //namspace Gen7
+} //namspace gen7
 
 #endif //GEN7_HOST_DC_DCMACHINECONTEXT_H
 

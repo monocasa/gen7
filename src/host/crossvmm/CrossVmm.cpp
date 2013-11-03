@@ -2,7 +2,7 @@
 #include "sys/File.h"
 #include "ElfLoader.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 void CrossVmm::Run()
 {
@@ -32,5 +32,5 @@ void CrossVmm::Init( InitPhase phase )
 	}
 }
 
-} //namespace Gen7
+} //namespace gen7
 

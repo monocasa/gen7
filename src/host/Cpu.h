@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-namespace Gen7 {
+namespace gen7 {
 
 struct PowerPCInstr
 {
@@ -874,7 +874,7 @@ public:
 	{ }
 };
 
-} //namespace Gen7
+} //namespace gen7
 
 #endif //GEN7_HOST_CPU_H
 

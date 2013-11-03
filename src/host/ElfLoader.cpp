@@ -4,7 +4,7 @@
 #include "Log.h"
 #include "PhysicalMemory.h"
 
-namespace Gen7 {
+namespace gen7 {
 
 const char * ElfLoader::TAG = "ELFLDR";
 
@@ -101,5 +101,5 @@ void ElfLoader::Load( PhysicalMemory& physMem )
 	}
 }
 
-} //namespace Gen7
+} //namespace gen7
 
