@@ -1,7 +1,7 @@
 ADD_DEFINITIONS( "-std=c++0x" )
 
-ADD_EXECUTABLE( testjit Main.cpp
-                        TestPowerPCDisasm.cpp )
+ADD_EXECUTABLE( testjit powerpc/TestPowerPCDisasm.cpp
+                        Main.cpp )
 
 INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/libjit/include" )
 INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}" )
