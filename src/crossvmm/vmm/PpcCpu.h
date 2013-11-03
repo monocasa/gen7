@@ -2,9 +2,9 @@
 #define GEN7_CROSSVMM_VMM_PPCCPU_H
 
 #include "Cpu.h"
-#include "InterInstr.h"
 
 #include "jit/powerpc/XenonCpuContext.h"
+#include "jit/InterInstr.h"
 
 #include <cstdio>
 
@@ -67,10 +67,10 @@ private:
 
 	void DumpContext();
 
-	int BuildIntermediateBranchConditional( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
-	int BuildIntermediateTable19( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
-	int BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
-	int BuildIntermediate( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc );
+	int BuildIntermediateBranchConditional( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
+	int BuildIntermediateTable19( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
+	int BuildIntermediateSpecial( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
+	int BuildIntermediate( jit::InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc );
 
 public:
 	virtual void Init();
@@ -84,7 +84,7 @@ public:
 	virtual bool SetSystemReg( int sysReg, uint64_t value );
 	virtual bool ReadSystemReg( int sysReg, uint64_t &value );
 
-	virtual bool InterpretProcessorSpecific( InterInstr &instr );
+	virtual bool InterpretProcessorSpecific( jit::InterInstr &instr );
 
 	PpcCpu( jit::XenonCpuContext &context )
 	  : Cpu( &context.gpr[0] )

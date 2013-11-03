@@ -118,7 +118,7 @@ constexpr int GPR32LOWOFFSET( int regNum )
 	return regNum * sizeof(uint64_t);
 }
 
-int PpcCpu::BuildIntermediateBranchConditional( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
+int PpcCpu::BuildIntermediateBranchConditional( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
 {
 	if( B_LK(nativeInstr) || B_AA(nativeInstr) ) {
 		intermediates[0].BuildUnknown( 16, nativeInstr, pc );
@@ -147,7 +147,7 @@ int PpcCpu::BuildIntermediateBranchConditional( InterInstr *intermediates, const
 	}
 }
 
-int PpcCpu::BuildIntermediateTable19( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
+int PpcCpu::BuildIntermediateTable19( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
 {
 	const int xo = X_XO(nativeInstr);
 
@@ -164,7 +164,7 @@ int PpcCpu::BuildIntermediateTable19( InterInstr *intermediates, const uint32_t 
 	}
 }
 
-int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
+int PpcCpu::BuildIntermediateSpecial( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
 {
 	const int xo = X_XO(nativeInstr);
 
@@ -343,7 +343,7 @@ int PpcCpu::BuildIntermediateSpecial( InterInstr *intermediates, const uint32_t 
 	}
 }
 
-int PpcCpu::BuildIntermediate( InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
+int PpcCpu::BuildIntermediate( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
 {
 	const int opcode = nativeInstr >> 26;
 
@@ -545,15 +545,15 @@ bool PpcCpu::ReadSystemReg( int sysReg, uint64_t &value )
 	}
 }
 
-bool PpcCpu::InterpretProcessorSpecific( InterInstr &instr )
+bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 {
 	switch( instr.op ) {
-		case PPC_SLBIA: {
+		case jit::PPC_SLBIA: {
 			printf( "SLBIA\n" );
 			return true;
 		}
 
-		case PPC_SLBMTE: {
+		case jit::PPC_SLBMTE: {
 			const int rs = instr.args[0];
 			const int rb = instr.args[1];
 
@@ -561,7 +561,7 @@ bool PpcCpu::InterpretProcessorSpecific( InterInstr &instr )
 			return true;
 		}
 
-		case PPC_TLBIEL: {
+		case jit::PPC_TLBIEL: {
 			const int rb = instr.args[0];
 
 			printf( "TLBIEL RB=%016lx\n", ReadGPR64(rb) );
@@ -579,7 +579,7 @@ void PpcCpu::Execute()
 {
 	bool running = true;
 
-	InterInstr intermediates[ 10 ];
+	jit::InterInstr intermediates[ 10 ];
 
 	while( running ) {
 		const uint32_t instruction = *PC;

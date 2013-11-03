@@ -4,7 +4,9 @@
 #include <cstdint>
 #include <cstdio>
 
+namespace jit {
 struct InterInstr;
+} //namespace jit
 
 class Cpu
 {
@@ -38,9 +40,9 @@ public:
 	virtual bool SetSystemReg( int sysReg, uint64_t value ) = 0;
 	virtual bool ReadSystemReg( int sysReg, uint64_t &value ) = 0;
 
-	virtual bool InterpretProcessorSpecific( InterInstr &instr ) = 0;
+	virtual bool InterpretProcessorSpecific( jit::InterInstr &instr ) = 0;
 
-	bool InterpretIntermediate( InterInstr &instr );
+	bool InterpretIntermediate( jit::InterInstr &instr );
 
 	Cpu( void* gprPtr )
 	  : GPR_PTR( reinterpret_cast<uint8_t*>( gprPtr ) )

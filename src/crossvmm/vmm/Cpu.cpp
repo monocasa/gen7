@@ -1,29 +1,30 @@
 #include "Cpu.h"
-#include "InterInstr.h"
+
+#include "jit/InterInstr.h"
 
 #include <cstdio>
 
-bool Cpu::InterpretIntermediate( InterInstr &instr )
+bool Cpu::InterpretIntermediate( jit::InterInstr &instr )
 {
 	switch( instr.op ) {
 	//Misc
-		case UNKNOWN_OPCODE: {
+		case jit::UNKNOWN_OPCODE: {
 			printf( "Unknown opcode %ld (%08lx) @ %016lx\n", instr.args[0], instr.args[1], instr.args[2] );
 			return false;
 		}
 
-		case NOP: {
+		case jit::NOP: {
 			return true;
 		}
 
-		case SET_SYS_IMM: {
+		case jit::SET_SYS_IMM: {
 			const uint64_t imm = instr.args[0];
 			const int sourceReg = instr.args[1];
 
 			return SetSystemReg( sourceReg, imm );
 		}
 
-		case SET_SYS_REG: {
+		case jit::SET_SYS_REG: {
 			const int sourceReg = instr.args[0];
 			const int sysReg = instr.args[1];
 
@@ -31,7 +32,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			return SetSystemReg( sysReg, result );
 		}
 
-		case READ_SYS: {
+		case jit::READ_SYS: {
 			const int destReg = instr.args[0];
 			const int sysReg = instr.args[1];
 
@@ -43,7 +44,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
-		case MOVE_REG: {
+		case jit::MOVE_REG: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];
 
@@ -53,14 +54,14 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 		}
 
 	//Branch
-		case BRANCH_ALWAYS: {
+		case jit::BRANCH_ALWAYS: {
 			const uint64_t target = instr.args[0];
 
 			SetPC( target );
 			return true;
 		}
 
-		case BRANCH_GPR_NOT_ZERO: {
+		case jit::BRANCH_GPR_NOT_ZERO: {
 			const int gpr = instr.args[0];
 			const uint64_t target = instr.args[1];
 
@@ -74,7 +75,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 		}
 
 	//Load/Store
-		case LOAD_IMM: {
+		case jit::LOAD_IMM: {
 			const int gpr = instr.args[0];
 			const uint64_t imm = instr.args[1];
 
@@ -83,7 +84,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 		}
 
 	//Arithmetic
-		case ADD: {
+		case jit::ADD: {
 			const int sourceReg0 = instr.args[0];
 			const int sourceReg1 = instr.args[1];
 			const int destReg = instr.args[2];
@@ -98,7 +99,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
-		case ADD_IMM: {
+		case jit::ADD_IMM: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];
 			const uint64_t imm = instr.args[2];
@@ -112,7 +113,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
-		case SUB: {
+		case jit::SUB: {
 			const int sourceReg0 = instr.args[0];
 			const int sourceReg1 = instr.args[1];
 			const int destReg = instr.args[2];
@@ -127,7 +128,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			return true;
 		} 
 
-		case SUBU_IMM: {
+		case jit::SUBU_IMM: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];
 			const uint64_t imm = instr.args[2];
@@ -142,7 +143,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 		}
 
 	//Logic
-		case AND_IMM: {
+		case jit::AND_IMM: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];
 			const uint64_t imm = instr.args[2];
@@ -156,7 +157,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
-		case ANDC: {
+		case jit::ANDC: {
 			const int sourceReg0 = instr.args[0];
 			const int sourceReg1 = instr.args[1];
 			const int destReg = instr.args[2];
@@ -171,7 +172,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
-		case OR: {
+		case jit::OR: {
 			const int sourceReg0 = instr.args[0];
 			const int sourceReg1 = instr.args[1];
 			const int destReg = instr.args[2];
@@ -186,7 +187,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
-		case OR_IMM: {
+		case jit::OR_IMM: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];
 			const uint64_t imm = instr.args[2];
@@ -202,7 +203,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 		}
 
 	//Shift/Rotate
-		case SLL32_IMM: {
+		case jit::SLL32_IMM: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];
 			const int shift = instr.args[2];
@@ -214,7 +215,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 			
-		case SLL64_IMM: {
+		case jit::SLL64_IMM: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];
 			const int shift = instr.args[2];
@@ -226,7 +227,7 @@ bool Cpu::InterpretIntermediate( InterInstr &instr )
 		}
 
 		default: {
-			if( instr.op >= PROC_LOW ) {
+			if( instr.op >= jit::PROC_LOW ) {
 				return InterpretProcessorSpecific( instr );
 			}
 			printf( "Unknown instr.op %d (0x%lx, 0x%lx, 0x%lx, 0x%lx)\n",

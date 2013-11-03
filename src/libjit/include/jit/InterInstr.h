@@ -1,7 +1,9 @@
-#ifndef GEN7_CROSSVMM_INTERINSTR_H
-#define GEN7_CROSSVMM_INTERINSTR_H
+#ifndef GEN7_LIBJIT_INTERINSTR_H
+#define GEN7_LIBJIT_INTERINSTR_H
 
 #include <cstdint>
+
+namespace jit {
 
 enum InstrOp
 {
@@ -201,5 +203,7 @@ struct InterInstr
 	}
 };
 
-#endif //GEN7_CROSSVMM_INTERINSTR_H
+} //namespace jit
+
+#endif //GEN7_LIBJIT_INTERINSTR_H
 

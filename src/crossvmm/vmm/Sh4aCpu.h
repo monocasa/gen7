@@ -2,10 +2,10 @@
 #define GEN7_CROSSVMM_VMM_SH4ACPU_H
 
 #include "Cpu.h"
-#include "InterInstr.h"
 #include "MemoryManager.h"
 
 #include "jit/sh4a/Sh4aCpuContext.h"
+#include "jit/InterInstr.h"
 
 #include <cstdio>
 
@@ -108,7 +108,7 @@ public:
 		return false;
 	}
 
-	virtual bool InterpretProcessorSpecific( InterInstr &instr ) {
+	virtual bool InterpretProcessorSpecific( jit::InterInstr &instr ) {
 		printf( "Todo:  InterpretProcessorSpecific( instr.op=%d )\n", instr.op );
 		return false;
 	}
