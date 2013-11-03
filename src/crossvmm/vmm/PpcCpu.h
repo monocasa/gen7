@@ -1,13 +1,15 @@
 #ifndef GEN7_CROSSVMM_VMM_PPCCPU_H
 #define GEN7_CROSSVMM_VMM_PPCCPU_H
 
+#include "Cpu.h"
+
 #include "jit/powerpc/XenonCpuContext.h"
 #include "jit/CpuInterpreter.h"
 #include "jit/InterInstr.h"
 
 #include <cstdio>
 
-class PpcCpu : public jit::CpuInterpreter
+class PpcCpu : public Cpu, public jit::CpuInterpreter
 {
 private:
 	jit::XenonCpuContext &context;
