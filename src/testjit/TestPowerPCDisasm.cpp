@@ -23,19 +23,22 @@ void testDecode( const uint32_t opcode, const uint32_t pc, const char *expectedS
 	ASSERT_STREQ( expectedString, string ) << opcodeString;
 }
 
-
 TEST(PowerPCDisasmTest, Unknown)
 {
 	testDecode( 0x00000000, 0x00000000, "<UNKNOWN_00000000> OPCOD=0" );
 }
 
-
 TEST(PowerPCDisasmTest, Branch)
 {
+	// Test normal use case
 	testDecode( 0x48000100, 0x00001000, "b\tloc_1100" );
 	testDecode( 0x48000101, 0x00001000, "bl\tloc_1100" );
 
+	// Test branch absolute
 	testDecode( 0x48000102, 0x00001000, "ba\tloc_100" );
 	testDecode( 0x48000103, 0x00001000, "bla\tloc_100" );
+
+	// Test sign extension
+	testDecode( 0x4BFFFFFC, 0x00002000, "b\tloc_1ffc" );
 }
 
