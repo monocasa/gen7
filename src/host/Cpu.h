@@ -31,7 +31,7 @@ struct PowerPCInstr
 	}
 
 	int64_t B_BD() const {
-		return Util::SignExtend<int64_t, 16>( opcode & 0xFFFC );
+		return util::SignExtend<int64_t, 16>( opcode & 0xFFFC );
 	}
 
 	bool B_AA() const {
@@ -137,7 +137,7 @@ struct PowerPCInstr
 
 	// I-Form
 	int32_t I_LI() const {
-		return Util::SignExtend<int32_t, 26>( opcode & 0x3FFFFFC );
+		return util::SignExtend<int32_t, 26>( opcode & 0x3FFFFFC );
 	}
 
 	bool I_AA() const {
@@ -315,7 +315,7 @@ protected:
 				}
 
 				case 14: {
-					uint64_t imm = Util::SignExtend<int64_t, 16>( op.D_UI() );
+					uint64_t imm = util::SignExtend<int64_t, 16>( op.D_UI() );
 
 					if( 0 == op.D_RA() ) {
 						trace->instrs.push_back( IrInstruction( pc, IrInstruction::LOAD_IMM, 
@@ -329,7 +329,7 @@ protected:
 				}
 
 				case 15: {
-					uint64_t imm = Util::SignExtend<int64_t, 32>( op.D_UI() << 16 );
+					uint64_t imm = util::SignExtend<int64_t, 32>( op.D_UI() << 16 );
 
 					if( 0 == op.D_RA() ) {
 						trace->instrs.push_back( IrInstruction( pc, IrInstruction::LOAD_IMM, 
@@ -672,7 +672,7 @@ protected:
 				case 62: {
 					switch( op.DS_XO() ) {
 						case 0: {
-							int64_t offset = Util::SignExtend<int64_t, 16>( op.DS_DS() );
+							int64_t offset = util::SignExtend<int64_t, 16>( op.DS_DS() );
 							if( 0 == offset ) {
 								trace->instrs.push_back( IrInstruction( pc, IrInstruction::STD, op.DS_RS(), op.DS_RA() ) );
 							}

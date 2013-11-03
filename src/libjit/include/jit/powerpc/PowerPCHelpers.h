@@ -37,7 +37,7 @@ public:
 	}
 
 	static int64_t B_LI( const uint32_t instruction ) {
-		return Util::SignExtend<int64_t,B_LI_BITS>( instruction & B_LI_MASK );
+		return util::SignExtend<int64_t,B_LI_BITS>( instruction & B_LI_MASK );
 	}
 };
 

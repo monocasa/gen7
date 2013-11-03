@@ -1,7 +1,7 @@
 #ifndef GEN7_SHARED_UTIL_H
 #define GEN7_SHARED_UTIL_H
 
-namespace Util {
+namespace util {
 
 template <typename T, unsigned B>
 static inline T SignExtend( const T x )
@@ -13,7 +13,7 @@ static inline T SignExtend( const T x )
 	return s.x = x;
 }
 
-} //namespace Util
+} //namespace util
 
 #endif //GEN7_SHARED_UTIL_H
 

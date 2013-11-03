@@ -1127,7 +1127,7 @@ void Sh4aCpu::Execute()
 
 						uint16_t *ptr = (uint16_t*)((uint64_t)context.gpr[rm]);
 
-						context.gpr[rn] = Util::SignExtend<int32_t,16>( *ptr );
+						context.gpr[rn] = util::SignExtend<int32_t,16>( *ptr );
 
 						context.gpr[rm] += 2;
 
@@ -1232,7 +1232,7 @@ void Sh4aCpu::Execute()
 				int rn = (opcode >> 8) & 0xF;
 				int32_t imm = opcode & 0xFF;
 
-				imm = Util::SignExtend<int32_t,8>( imm );
+				imm = util::SignExtend<int32_t,8>( imm );
 
 				context.gpr[rn] += imm;
 
@@ -1258,7 +1258,7 @@ void Sh4aCpu::Execute()
 
 						uint64_t ptr = context.gpr[rm] + disp;
 
-						context.gpr[0] = Util::SignExtend<int32_t,16>( *((int16_t*)ptr) );
+						context.gpr[0] = util::SignExtend<int32_t,16>( *((int16_t*)ptr) );
 
 						break;
 					}
@@ -1266,7 +1266,7 @@ void Sh4aCpu::Execute()
 					case 0x0900: { //bt loc_disp
 						int disp = opcode & 0xFF;
 						disp *= 2;
-						disp = Util::SignExtend<int32_t,9>( disp );
+						disp = util::SignExtend<int32_t,9>( disp );
 						uint32_t target = context.pc + disp + 4;
 
 						if( (context.sr & SR_T_BIT) == SR_T_BIT ) {
@@ -1279,7 +1279,7 @@ void Sh4aCpu::Execute()
 					case 0x0B00: { //bf loc_disp
 						int disp = opcode & 0xFF;
 						disp *= 2;
-						disp = Util::SignExtend<int32_t,9>( disp );
+						disp = util::SignExtend<int32_t,9>( disp );
 						uint32_t target = context.pc + disp + 4;
 
 						if( (context.sr & SR_T_BIT) == 0 ) {
@@ -1293,7 +1293,7 @@ void Sh4aCpu::Execute()
 						if( (context.sr & SR_T_BIT) == 0 ) {
 							int disp = opcode & 0xFF;
 							disp *= 2;
-							disp = Util::SignExtend<int32_t,9>( disp );
+							disp = util::SignExtend<int32_t,9>( disp );
 
 							delayTarget = context.pc + disp + 4;
 
@@ -1320,13 +1320,13 @@ void Sh4aCpu::Execute()
 				uint64_t ptr = context.pc + disp + 4;
 				uint16_t value = *reinterpret_cast<int16_t*>( ptr );
 
-				context.gpr[rn] = Util::SignExtend<int32_t,16>( value );
+				context.gpr[rn] = util::SignExtend<int32_t,16>( value );
 
 				break;
 			}
 
 			case 0xA000: {
-				int disp = Util::SignExtend<int,12>( opcode & 0xFF ) * 2;
+				int disp = util::SignExtend<int,12>( opcode & 0xFF ) * 2;
 				uint32_t target = context.pc + 4 + disp;
 
 				delayTarget = target;
@@ -1398,7 +1398,7 @@ void Sh4aCpu::Execute()
 			}
 
 			case 0xE000: { //mov #imm, reg
-				int32_t imm = Util::SignExtend<int32_t,8>( opcode & 0xFF );
+				int32_t imm = util::SignExtend<int32_t,8>( opcode & 0xFF );
 				int reg = (opcode >> 8) & 0xF;
 				context.gpr[ reg ] = imm;
 				break;

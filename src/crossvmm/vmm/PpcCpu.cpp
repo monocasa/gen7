@@ -77,11 +77,11 @@ void PpcCpu::Init()
 
 #define B_LK(x) (x & 1)
 #define B_AA(x) ((x >> 1) & 1)
-#define B_BD(x) (Util::SignExtend<int64_t,16>( x & 0x0000FFFC ))
+#define B_BD(x) (util::SignExtend<int64_t,16>( x & 0x0000FFFC ))
 #define B_BI(x) ((x >> 16) & 0x1F)
 #define B_BO(x) ((x >> 21) & 0x1F)
 
-#define D_SI(x) (Util::SignExtend<int32_t,16>( x & 0x0000FFFF ))
+#define D_SI(x) (util::SignExtend<int32_t,16>( x & 0x0000FFFF ))
 #define D_UI(x) (x & 0x0000FFFF)
 #define D_RA(x) ((x >> 16) & 0x1F)
 #define D_RT(x) ((x >> 21) & 0x1F)
@@ -385,7 +385,7 @@ int PpcCpu::BuildIntermediate( jit::InterInstr *intermediates, const uint32_t na
 				intermediates[0].BuildUnknown( opcode, nativeInstr, pc );
 				return 1;
 			}
-			int offset = Util::SignExtend<int,26>( nativeInstr & 0x03FFFFFC );
+			int offset = util::SignExtend<int,26>( nativeInstr & 0x03FFFFFC );
 			uint64_t target = offset + context.pc;
 
 			intermediates[0].BuildBranchAlways( target );
