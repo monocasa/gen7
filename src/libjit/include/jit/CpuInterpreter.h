@@ -31,9 +31,6 @@ protected:
 	}
 
 public:
-	virtual void Init() = 0;
-	virtual void Execute() = 0;
-
 	virtual void SetPC( uint64_t newPc ) = 0;
 
 	virtual bool SetSystemReg( int sysReg, uint64_t value ) = 0;
