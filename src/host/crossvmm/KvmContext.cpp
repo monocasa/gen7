@@ -22,7 +22,7 @@ const char * KvmContext::KVM_DEVICE_FILE_NAME = "/dev/kvm";
 void KvmContext::OpenKvmInterface()
 {
 	if( (kvmFd = open( KVM_DEVICE_FILE_NAME, O_RDWR )) < 0 ) {
-		throw Sys::Exception( "Unable to open %s", KVM_DEVICE_FILE_NAME );
+		throw sys::Exception( "Unable to open %s", KVM_DEVICE_FILE_NAME );
 	}
 }
 
@@ -31,7 +31,7 @@ void KvmContext::MmapKvmRun()
 	void * addr = mmap( nullptr, kvmRunSize, PROT_READ | PROT_WRITE, MAP_SHARED, vcpuFd, 0 );
 
 	if( MAP_FAILED == addr ) {
-		throw Sys::Exception( "Unable to mmap kvm_run" );
+		throw sys::Exception( "Unable to mmap kvm_run" );
 	}
 
 	kvmRun = reinterpret_cast<struct kvm_run*>( addr );
@@ -52,7 +52,7 @@ void KvmContext::SetupMemory()
 		region.userspace_addr = reinterpret_cast<unsigned long>( entry.addr );
 
 		if( !VmIoctl( KVM_SET_USER_MEMORY_REGION, &region ) ) {
-			throw Sys::Exception( "Unable to map region %s(slot=%d, vmmLocation=0x%016lx, hostLocation=%p)", entry.name, slotNum, vmmLocation, entry.addr );
+			throw sys::Exception( "Unable to map region %s(slot=%d, vmmLocation=0x%016lx, hostLocation=%p)", entry.name, slotNum, vmmLocation, entry.addr );
 		}
 
 		slotNum++;
@@ -65,11 +65,11 @@ void KvmContext::SetupRegisters()
 	struct kvm_sregs sregs;
 
 	if( !VcpuIoctl( KVM_GET_REGS, &regs ) ) {
-		throw Sys::Exception( "Couldn't get regs" );
+		throw sys::Exception( "Couldn't get regs" );
 	}
 
 	if( !VcpuIoctl( KVM_GET_SREGS, &sregs ) ) {
-		throw Sys::Exception( "Couldn't get sregs" );
+		throw sys::Exception( "Couldn't get sregs" );
 	}
 
 	regs.rax = 0x00000010;
@@ -107,11 +107,11 @@ void KvmContext::SetupRegisters()
 	sregs.idt.limit = sizeof(INITIAL_GDT);
 
 	if( !VcpuIoctl( KVM_SET_SREGS, &sregs ) ) {
-		throw Sys::Exception( "Can not set sregs" );
+		throw sys::Exception( "Can not set sregs" );
 	}
 
 	if( !VcpuIoctl( KVM_SET_REGS, &regs ) ) {
-		throw Sys::Exception( "Can no set regs" );
+		throw sys::Exception( "Can no set regs" );
 	}
 }
 
@@ -120,7 +120,7 @@ void KvmContext::DumpRegisters()
 	struct kvm_regs regs;
 
 	if( !VcpuIoctl( KVM_GET_REGS, &regs ) ) {
-		throw Sys::Exception( "Couldn't get regs" );
+		throw sys::Exception( "Couldn't get regs" );
 	}
 
 	printf( "   rax %016llx | rbx %016llx | rcx %016llx | rdx %016llx\n", regs.rax, regs.rbx, regs.rcx, regs.rdx );
@@ -133,7 +133,7 @@ void KvmContext::DumpRegisters()
 bool KvmContext::KvmIoctl( int request, void *value, int &ret )
 {
 	if( -1 == kvmFd ) {
-		throw Sys::Exception( "KvmIoctl when kvmFd not open" );
+		throw sys::Exception( "KvmIoctl when kvmFd not open" );
 	}
 
 	if( (ret = ioctl( kvmFd, request, value )) < 0 ) {
@@ -146,7 +146,7 @@ bool KvmContext::KvmIoctl( int request, void *value, int &ret )
 bool KvmContext::VmIoctl( int request, void *value, int &ret )
 {
 	if( -1 == vmFd ) {
-		throw Sys::Exception( "VmIoctl when vmFd not open" );
+		throw sys::Exception( "VmIoctl when vmFd not open" );
 	}
 
 	if( (ret = ioctl( vmFd, request, value )) < 0 ) {
@@ -159,7 +159,7 @@ bool KvmContext::VmIoctl( int request, void *value, int &ret )
 bool KvmContext::VcpuIoctl( int request, void *value, int &ret )
 {
 	if( -1 == vcpuFd ) {
-		throw Sys::Exception( "VcpuIoctl when vmFd not open" );
+		throw sys::Exception( "VcpuIoctl when vmFd not open" );
 	}
 
 	if( (ret = ioctl( vcpuFd, request, value )) < 0 ) {
@@ -196,7 +196,7 @@ void KvmContext::ProcessHypercall()
 	struct kvm_regs regs;
 
 	if( !VcpuIoctl( KVM_GET_REGS, &regs ) ) {
-		throw Sys::Exception( "Couldn't get regs" );
+		throw sys::Exception( "Couldn't get regs" );
 	}
 
 	switch( regs.rdi ) {
@@ -215,7 +215,7 @@ void KvmContext::ProcessHypercall()
 
 
 	if( !VcpuIoctl( KVM_SET_REGS, &regs ) ) {
-		throw Sys::Exception( "Couldn't set regs" );
+		throw sys::Exception( "Couldn't set regs" );
 	}
 }
 
@@ -224,19 +224,19 @@ void KvmContext::Init()
 	OpenKvmInterface();
 
 	if( !KvmIoctl( KVM_CREATE_VM, nullptr, vmFd ) ) {
-		throw Sys::Exception( "Error creating VM" );
+		throw sys::Exception( "Error creating VM" );
 	}
 
 	if( !VmIoctl( KVM_SET_TSS_ADDR, (void*)TSS_LOCATION ) ) {
-		throw Sys::Exception( "Error setting TSS address range" );
+		throw sys::Exception( "Error setting TSS address range" );
 	}
 
 	if( !VmIoctl( KVM_CREATE_VCPU, nullptr, vcpuFd ) ) {
-		throw Sys::Exception( "Error creating vcpu" );
+		throw sys::Exception( "Error creating vcpu" );
 	}
 
 	if( !KvmIoctl( KVM_GET_VCPU_MMAP_SIZE, nullptr, kvmRunSize ) ) {
-		throw Sys::Exception( "Error getting kvm_run size" );
+		throw sys::Exception( "Error getting kvm_run size" );
 	}
 
 	MmapKvmRun();
@@ -255,7 +255,7 @@ void KvmContext::Run()
 
 	while( running ) {
 		if( !VcpuIoctl( KVM_RUN, nullptr ) ) {
-			throw Sys::Exception( "Can't KVM_RUN (%d)", kvmRun->exit_reason );
+			throw sys::Exception( "Can't KVM_RUN (%d)", kvmRun->exit_reason );
 		}
 
 		switch( kvmRun->exit_reason ) {
@@ -282,7 +282,7 @@ void KvmContext::Run()
 							break;
 						}
 						default: {
-							throw Sys::Exception( "Implment mmio write for len %d (data = %08x)\n", len, *data32 );
+							throw sys::Exception( "Implment mmio write for len %d (data = %08x)\n", len, *data32 );
 						}
 					}
 				}
@@ -293,7 +293,7 @@ void KvmContext::Run()
 							break;
 						}
 						default: {
-							throw Sys::Exception( "Implement mmio read for len %d", len );
+							throw sys::Exception( "Implement mmio read for len %d", len );
 						}
 					}
 				}
@@ -301,16 +301,16 @@ void KvmContext::Run()
 			}
 
 			case KVM_EXIT_FAIL_ENTRY: {
-				throw Sys::Exception( "KVM_EXIT_FAIL_ENTRY -> 0x%08x", kvmRun->hw.hardware_exit_reason );
+				throw sys::Exception( "KVM_EXIT_FAIL_ENTRY -> 0x%08x", kvmRun->hw.hardware_exit_reason );
 			}
 
 			case KVM_EXIT_INTERNAL_ERROR: {
-				throw Sys::Exception( "KVM_EXIT_INTERNAL_ERROR:  %d", kvmRun->internal.suberror );
+				throw sys::Exception( "KVM_EXIT_INTERNAL_ERROR:  %d", kvmRun->internal.suberror );
 			}
 
 			default: {
 				DumpRegisters();
-				throw Sys::Exception( "Unknown KVM_RUN exit reason %d", kvmRun->exit_reason );
+				throw sys::Exception( "Unknown KVM_RUN exit reason %d", kvmRun->exit_reason );
 			}
 		}
 	}

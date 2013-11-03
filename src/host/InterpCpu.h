@@ -44,7 +44,7 @@ public:
 
 	uint32_t ReadEx32( uint64_t addr ) {
 		if( instructionRelocate ) {
-			throw Sys::Exception( "ReadEx32->%016lx", addr );
+			throw sys::Exception( "ReadEx32->%016lx", addr );
 		}
 		else {
 			return physMem.ReadPhys32( addr );
@@ -69,7 +69,7 @@ public:
 	bool IsMappedExecutable( uint64_t addr ) {
 		if( instructionRelocate ) {
 			if( !is32Bit ) {
-				throw Sys::Exception( "instructionRelocate on 64bit not supported" );
+				throw sys::Exception( "instructionRelocate on 64bit not supported" );
 			}
 			else {
 				PageInfoEntry* entry = &pageInfoEntries[ ((uint32_t)addr) / 0x10000 ];

@@ -5,7 +5,7 @@
 
 #include <cstdio>
 
-namespace Sys {
+namespace sys {
 
 class File
 {
@@ -122,7 +122,7 @@ public:
 	{ }
 };
 
-} //namespace Sys
+} //namespace sys
 
 #endif //GEN7_HOST_SYS_FILE_H
 

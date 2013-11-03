@@ -3,7 +3,7 @@
 
 #include <cstdlib>
 
-namespace Sys {
+namespace sys {
 
 void * AllocatePageMem( size_t size )
 {
@@ -24,5 +24,5 @@ void * AllocatePageMem( size_t size )
 	}
 }
 
-} //namespace Sys
+} //namespace sys
 

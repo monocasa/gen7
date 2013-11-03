@@ -3,11 +3,11 @@
 
 #include <cstring>
 
-namespace Sys {
+namespace sys {
 
 void* AllocatePageMem( size_t size );
 
-} //namespace Sys
+} //namespace sys
 
 #endif //GEN7_HOST_SYS_MEM_H
 

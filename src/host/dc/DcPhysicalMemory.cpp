@@ -10,17 +10,17 @@ const char * DcPhysicalMemory::BIOS_FILE_NAME = "/opt/gen7/roms/dc/bios.bin";
 
 void DcPhysicalMemory::LoadBios()
 {
-	bios = Sys::AllocatePageMem( BIOS_SIZE );
+	bios = sys::AllocatePageMem( BIOS_SIZE );
 	uint32_t* bios32 = (uint32_t*)bios;
 
-	Sys::File biosFile( BIOS_FILE_NAME );
+	sys::File biosFile( BIOS_FILE_NAME );
 
 	if( !biosFile.IsOpen() ) {
-		throw Sys::Exception( "Unable to open dreamcast bios (%s)", BIOS_FILE_NAME );
+		throw sys::Exception( "Unable to open dreamcast bios (%s)", BIOS_FILE_NAME );
 	}
 
 	if( biosFile.Size() != BIOS_SIZE ) {
-		throw Sys::Exception( "dreamcast bios is the wrong size (%ld bytes)", biosFile.Size() );
+		throw sys::Exception( "dreamcast bios is the wrong size (%ld bytes)", biosFile.Size() );
 	}
 
 	for( size_t i = 0; i < (BIOS_SIZE / sizeof(uint32_t)); i++ ) {
@@ -34,9 +34,9 @@ void DcPhysicalMemory::Init( InitPhase phase )
 		case InitPhase::ALLOCATION: {
 			LoadBios();
 
-			dram = Sys::AllocatePageMem( DRAM_SIZE );
+			dram = sys::AllocatePageMem( DRAM_SIZE );
 
-			vram = Sys::AllocatePageMem( VRAM_SIZE );
+			vram = sys::AllocatePageMem( VRAM_SIZE );
 
 			AddMemoryEntry( "BIOS", bios, PHYS_REGION, 0x00000000, BIOS_SIZE, true );
 			AddMemoryEntry( "DRAM", dram, PHYS_REGION, 0x0C000000, DRAM_SIZE, false );
@@ -53,7 +53,7 @@ void DcPhysicalMemory::Init( InitPhase phase )
 
 void DcPhysicalMemory::WritePhys8( uint64_t addr, uint8_t data )
 {
-	throw Sys::Exception( "Implement DcPhysicalMemory::WritePhys8( addr=%08x, data=%02x )", addr, data );
+	throw sys::Exception( "Implement DcPhysicalMemory::WritePhys8( addr=%08x, data=%02x )", addr, data );
 }
 
 void DcPhysicalMemory::WritePhys16( uint64_t addr, uint16_t data )
@@ -69,13 +69,13 @@ void DcPhysicalMemory::WritePhys16( uint64_t addr, uint16_t data )
 				}
 
 				default: {
-					throw Sys::Exception( "Area 0 write16( addr=%08x, data=%04x )", addr, data );
+					throw sys::Exception( "Area 0 write16( addr=%08x, data=%04x )", addr, data );
 				}
 			}
 		}
 
 		default: {
-			throw Sys::Exception( "Implement DcPhysicalMemory::WritePhys16 addr=%08x, data=%04x )", addr, data );
+			throw sys::Exception( "Implement DcPhysicalMemory::WritePhys16 addr=%08x, data=%04x )", addr, data );
 		}
 	}
 }
@@ -95,7 +95,7 @@ void DcPhysicalMemory::WritePhys32( uint64_t addr, uint32_t data )
 				}
 
 				default: {
-					throw Sys::Exception( "Area 0 write32( addr=%08x, data=%08x )", addr, data );
+					throw sys::Exception( "Area 0 write32( addr=%08x, data=%08x )", addr, data );
 				}
 			}
 		}
@@ -108,14 +108,14 @@ void DcPhysicalMemory::WritePhys32( uint64_t addr, uint32_t data )
 		}
 
 		default: {
-			throw Sys::Exception( "Implement DcPhysicalMemory::WritePhys32( addr=%08x, data=%08x, region=%x )", addr, data, region );
+			throw sys::Exception( "Implement DcPhysicalMemory::WritePhys32( addr=%08x, data=%08x, region=%x )", addr, data, region );
 		}
 	}
 }
 
 uint32_t DcPhysicalMemory::ReadPhys32( uint64_t addr )
 {
-	throw Sys::Exception( "Implement DcPhysicalMemory::ReadPhys32( addr=%08x )", addr );
+	throw sys::Exception( "Implement DcPhysicalMemory::ReadPhys32( addr=%08x )", addr );
 }
 
 void DcPhysicalMemory::WriteRegion16( int region, uint32_t addr, uint16_t data )

@@ -8,11 +8,11 @@ namespace gen7 {
 
 const char * ElfLoader::TAG = "ELFLDR";
 
-void ElfLoader::Hdr::Load( Sys::File& file )
+void ElfLoader::Hdr::Load( sys::File& file )
 {
 	file.ReadBinary( ident, sizeof(ident) );
 
-	file.SetEndian( IsLittleEndian() ? Sys::File::LITTLE : Sys::File::BIG );
+	file.SetEndian( IsLittleEndian() ? sys::File::LITTLE : sys::File::BIG );
 
 	if( Is32Bit() ) {
 		type      = file.Read16();
@@ -46,7 +46,7 @@ void ElfLoader::Hdr::Load( Sys::File& file )
 	}
 }
 
-void ElfLoader::PHdr::Load( Sys::File& file, bool is32Bit )
+void ElfLoader::PHdr::Load( sys::File& file, bool is32Bit )
 {
 	if( is32Bit ) {
 		type   = file.Read32();
@@ -75,7 +75,7 @@ void ElfLoader::Load( PhysicalMemory& physMem )
 	DPRINT( TAG, "Loading %s\n", exePath );
 
 	if( !file.IsOpen() ) {
-		throw Sys::Exception( "Unable to open file %s", exePath );
+		throw sys::Exception( "Unable to open file %s", exePath );
 	}
 
 	header.Load( file );

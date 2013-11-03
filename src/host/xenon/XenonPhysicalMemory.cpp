@@ -13,28 +13,28 @@ const char * XenonPhysicalMemory::BROM_FILE_NAME = "/opt/gen7/roms/xenon/1bl.bin
 
 void XenonPhysicalMemory::LoadNand()
 {
-	nand = Sys::AllocatePageMem( NAND_SIZE );
+	nand = sys::AllocatePageMem( NAND_SIZE );
 
 	memset( nand, 0xFF, NAND_SIZE );
 }
 
 void XenonPhysicalMemory::LoadBrom()
 {
-	brom = Sys::AllocatePageMem( BROM_SIZE );
+	brom = sys::AllocatePageMem( BROM_SIZE );
 	uint32_t* brom32 = (uint32_t*)brom;
 
-	Sys::File bromFile( BROM_FILE_NAME );
+	sys::File bromFile( BROM_FILE_NAME );
 
 	if( !bromFile.IsOpen() ) {
-		throw Sys::Exception( "Unable to open xenon 1bl (%s)", BROM_FILE_NAME );
+		throw sys::Exception( "Unable to open xenon 1bl (%s)", BROM_FILE_NAME );
 	}
 
 	if( bromFile.Size() != BROM_SIZE ) {
-		throw Sys::Exception( "1bl is the wrong size (%ld bytes)", bromFile.Size() );
+		throw sys::Exception( "1bl is the wrong size (%ld bytes)", bromFile.Size() );
 	}
 
 	// Byte swap
-	bromFile.SetEndian( Sys::File::BIG );
+	bromFile.SetEndian( sys::File::BIG );
 
 	for( size_t i = 0; i < (BROM_SIZE / sizeof(uint32_t)); i++ ) {
 		brom32[ i ] = bromFile.Read32();
@@ -43,7 +43,7 @@ void XenonPhysicalMemory::LoadBrom()
 
 void XenonPhysicalMemory::WriteRam16( uint32_t addr, uint16_t data )
 {
-	throw Sys::Exception( "Write of %04x to unknown RAM address %08x", data, addr );
+	throw sys::Exception( "Write of %04x to unknown RAM address %08x", data, addr );
 }
 
 void XenonPhysicalMemory::WriteRam32( uint32_t addr, uint32_t data )
@@ -52,13 +52,13 @@ void XenonPhysicalMemory::WriteRam32( uint32_t addr, uint32_t data )
 		((uint32_t*)dram)[ addr / sizeof(uint32_t) ] = data;
 	}
 	else {
-		throw Sys::Exception( "Write of %08x to unknown RAM address %08x", data, addr );
+		throw sys::Exception( "Write of %08x to unknown RAM address %08x", data, addr );
 	}
 }
 
 void XenonPhysicalMemory::WriteSoc16( uint32_t addr, uint16_t data )
 {
-	throw Sys::Exception( "Write of %04x to unknown SoC address %08x", data, addr );
+	throw sys::Exception( "Write of %04x to unknown SoC address %08x", data, addr );
 }
 
 void XenonPhysicalMemory::WriteSoc32( uint32_t addr, uint32_t data )
@@ -84,7 +84,7 @@ void XenonPhysicalMemory::WriteSoc32( uint32_t addr, uint32_t data )
 	}
 
 	else {
-		throw Sys::Exception( "Write of %08x to unknown SoC address %08x", data, addr );
+		throw sys::Exception( "Write of %08x to unknown SoC address %08x", data, addr );
 	}
 }
 
@@ -94,7 +94,7 @@ uint32_t XenonPhysicalMemory::ReadRam32( uint32_t addr )
 		return ((uint32_t*)dram)[ addr / sizeof(uint32_t) ];
 	}
 	else {
-		throw Sys::Exception( "Read from unknown RAM address %08x", addr );
+		throw sys::Exception( "Read from unknown RAM address %08x", addr );
 	}
 }
 
@@ -109,16 +109,16 @@ uint32_t XenonPhysicalMemory::ReadSoc32( uint32_t addr )
 		return 0x02000000;
 	}
 
-	throw Sys::Exception( "Read from unknown SoC address %08x", addr );
+	throw sys::Exception( "Read from unknown SoC address %08x", addr );
 }
 
 void XenonPhysicalMemory::Init( InitPhase phase )
 {
 	switch( phase ) {
 		case InitPhase::ALLOCATION: {
-			dram = Sys::AllocatePageMem( DRAM_SIZE );
+			dram = sys::AllocatePageMem( DRAM_SIZE );
 
-			sram = Sys::AllocatePageMem( SRAM_SIZE );
+			sram = sys::AllocatePageMem( SRAM_SIZE );
 
 			LoadNand();
 
@@ -138,7 +138,7 @@ void XenonPhysicalMemory::Init( InitPhase phase )
 
 void XenonPhysicalMemory::WritePhys8( uint64_t addr, uint8_t data )
 {
-	throw Sys::Exception( "Implement XenonPhysicalMemory::WritePhys8( addr=0x%lx, data=%x )", addr, data );
+	throw sys::Exception( "Implement XenonPhysicalMemory::WritePhys8( addr=0x%lx, data=%x )", addr, data );
 }
 
 void XenonPhysicalMemory::WritePhys16( uint64_t addr, uint16_t data )
@@ -208,7 +208,7 @@ uint32_t XenonPhysicalMemory::ReadPhys32( uint64_t addr )
 			return ReadRam32( (uint32_t)addr );
 
 		default:
-			throw Sys::Exception( "We should never get here:  ReadPhys32( %016lx )", addr );
+			throw sys::Exception( "We should never get here:  ReadPhys32( %016lx )", addr );
 	}
 }
 
@@ -258,7 +258,7 @@ uint32_t XenonPhysicalMemory::ReadRegion32( int region, uint32_t addr )
 		}
 
 		default: {
-			throw Sys::Exception( "Read from unmapped in XenonPhysicalMemory::ReadRegion32( region: %d, addr: %08x )", region, addr );
+			throw sys::Exception( "Read from unmapped in XenonPhysicalMemory::ReadRegion32( region: %d, addr: %08x )", region, addr );
 		}
 	}
 }

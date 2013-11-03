@@ -309,7 +309,7 @@ protected:
 						                         op.D_RA(), op.D_UI() ) );
 					}
 					else {
-						throw Sys::Exception( "Implement cmpli %d, %d, r%d, 0x%x", op.D_BF(), op.D_L(), op.D_RA(), op.D_UI() );
+						throw sys::Exception( "Implement cmpli %d, %d, r%d, 0x%x", op.D_BF(), op.D_L(), op.D_RA(), op.D_UI() );
 					}
 					return;
 				}
@@ -345,7 +345,7 @@ protected:
 				case 16: {
 					uint64_t target;
 					if( op.B_LK() ) {
-						Sys::Exception( "Implement link bcc" );
+						throw sys::Exception( "Implement link bcc" );
 					}
 
 					if( op.B_AA() ) {
@@ -365,7 +365,7 @@ protected:
 								trace->instrs.push_back( IrInstruction( pc, IrInstruction::BNE, target ) );
 							}
 							else {
-								throw Sys::Exception( "Implement bc\t%d, %d, loc_%08lx", op.B_BO(), op.B_BI(), target );
+								throw sys::Exception( "Implement bc\t%d, %d, loc_%08lx", op.B_BO(), op.B_BI(), target );
 							}
 							break;
 						}
@@ -375,7 +375,7 @@ protected:
 								trace->instrs.push_back( IrInstruction( pc, IrInstruction::BEQ, target ) );
 							}
 							else {
-								throw Sys::Exception( "Implement bc\t%d, %d, loc_%08lx", op.B_BO(), op.B_BI(), target );
+								throw sys::Exception( "Implement bc\t%d, %d, loc_%08lx", op.B_BO(), op.B_BI(), target );
 							}
 							break;
 						}
@@ -386,7 +386,7 @@ protected:
 						}
 
 						default: {
-							throw Sys::Exception( "Implement bc\t%d, %d, loc_%08lx", op.B_BO(), op.B_BI(), target );
+							throw sys::Exception( "Implement bc\t%d, %d, loc_%08lx", op.B_BO(), op.B_BI(), target );
 						}
 					}
 
@@ -427,7 +427,7 @@ protected:
 								trace->instrs.push_back( IrInstruction( pc, IrInstruction::BLR ) );
 							}
 							else {
-								throw Sys::Exception( "Implement bclr %d, %d, %d", op.XL_BO(), op.XL_BI(), op.XL_BH() );
+								throw sys::Exception( "Implement bclr %d, %d, %d", op.XL_BO(), op.XL_BI(), op.XL_BH() );
 							}
 							break;
 						}
@@ -445,7 +445,7 @@ protected:
 						}
 
 						default: {
-							throw Sys::Exception( "Implement table 19 instr %d (%08x @ %08lx)", op.X_XO(), op.opcode, pc );
+							throw sys::Exception( "Implement table 19 instr %d (%08x @ %08lx)", op.X_XO(), op.opcode, pc );
 						}
 					}
 					return;
@@ -453,7 +453,7 @@ protected:
 
 				case 21: {
 					if( op.M_RC() ) {
-						throw Sys::Exception( "Implement rliwnm." );
+						throw sys::Exception( "Implement rliwnm." );
 					}
 
 					if( (op.M_SH() == (31 - op.M_ME())) && (0 == op.M_MB()) ) {
@@ -461,7 +461,7 @@ protected:
 						                                        op.M_RA(), op.M_RS(), op.M_SH() ) );
 					}
 					else {
-						throw Sys::Exception( "Implement rliwnm\tr%d, r%d, %d, %d, %d",
+						throw sys::Exception( "Implement rliwnm\tr%d, r%d, %d, %d, %d",
 						                       op.M_RA(), op.M_RS(), op.M_SH(), op.M_MB(), op.M_ME() );
 					}
 					return;
@@ -483,7 +483,7 @@ protected:
 					switch( op.MDS_XO() ) {
 						case 0: {
 							if( op.MD_RC() ) {
-								throw Sys::Exception( "Implement rldicl." );
+								throw sys::Exception( "Implement rldicl." );
 							}
 
 							if( 0 == op.MD_SH() ) {
@@ -493,14 +493,14 @@ protected:
 								                                        op.MD_RA(), op.MD_RS(), mask ) );
 							}
 							else {
-								throw Sys::Exception( "rldicl\tr%d, r%d, %d, %d", op.MD_RA(), op.MD_RS(), op.MD_SH(), op.MD_ME() );
+								throw sys::Exception( "rldicl\tr%d, r%d, %d, %d", op.MD_RA(), op.MD_RS(), op.MD_SH(), op.MD_ME() );
 							}
 							break;
 						}
 
 						case 3: {
 							if( op.MD_RC() ) {
-								throw Sys::Exception( "Implement rldicr." );
+								throw sys::Exception( "Implement rldicr." );
 							}
 
 							if( op.MD_SH() == (63 - op.MD_ME()) ) {
@@ -508,13 +508,13 @@ protected:
 								                                        op.MD_RA(), op.MD_RS(), op.MD_SH() ) );
 							}
 							else {
-								throw Sys::Exception( "Implement rldicr" );
+								throw sys::Exception( "Implement rldicr" );
 							}
 							break;
 						}
 
 						default: {
-							throw Sys::Exception( "Unknown rotate instr %d (%08x @ %08lx)", op.MDS_XO(), op.opcode, pc );
+							throw sys::Exception( "Unknown rotate instr %d (%08x @ %08lx)", op.MDS_XO(), op.opcode, pc );
 						}
 					}
 					return;
@@ -536,7 +536,7 @@ protected:
 
 						case 24: {
 							if( op.X_RC() ) {
-								throw Sys::Exception( "Implement slw." );
+								throw sys::Exception( "Implement slw." );
 							}
 
 							trace->instrs.push_back( IrInstruction( pc, IrInstruction::SLW,
@@ -547,11 +547,11 @@ protected:
 
 						case 40: {
 							if( op.XO_RC() ) {
-								throw Sys::Exception( "Implement subf." );
+								throw sys::Exception( "Implement subf." );
 							}
 
 							if( op.XO_OE() ) {
-								throw Sys::Exception( "Implement subfo" );
+								throw sys::Exception( "Implement subfo" );
 							}
 
 							trace->instrs.push_back( IrInstruction( pc, IrInstruction::SUBF,
@@ -562,7 +562,7 @@ protected:
 
 						case 60: {
 							if( op.X_RC() ) {
-								throw Sys::Exception( "Implement andc." );
+								throw sys::Exception( "Implement andc." );
 							}
 
 							trace->instrs.push_back( IrInstruction( pc, IrInstruction::ANDC,
@@ -591,7 +591,7 @@ protected:
 
 						case 266: {
 							if( op.X_RC() ) {
-								throw Sys::Exception( "Implement add." );
+								throw sys::Exception( "Implement add." );
 							}
 
 							trace->instrs.push_back( IrInstruction( pc, IrInstruction::ADD,
@@ -619,7 +619,7 @@ protected:
 
 						case 444: {
 							if( op.X_RC() ) {
-								throw Sys::Exception( "Implement or." );
+								throw sys::Exception( "Implement or." );
 							}
 
 							trace->instrs.push_back( IrInstruction( pc, IrInstruction::OR,
@@ -663,7 +663,7 @@ protected:
 						}
 
 						default: {
-							throw Sys::Exception( "Implement table 31 instr %d (%08x @ %08lx)", op.X_XO(), op.opcode, pc );
+							throw sys::Exception( "Implement table 31 instr %d (%08x @ %08lx)", op.X_XO(), op.opcode, pc );
 						}
 					}
 					return;
@@ -683,14 +683,14 @@ protected:
 						}
 
 						default: {
-							throw Sys::Exception( "Unimplemented table 62 instr %d (%08x @ %08lx)", op.DS_XO(), op.opcode, pc );
+							throw sys::Exception( "Unimplemented table 62 instr %d (%08x @ %08lx)", op.DS_XO(), op.opcode, pc );
 						}
 					}
 					return;
 				}
 
 				default: {
-					throw Sys::Exception( "Unknown opcode %d in Cpu::TraceBuilder::AppendInstrsForOpcode( opcode=%08x, pc=%08lx, trace=%p )", op.OPCD(), op.opcode, pc, trace );
+					throw sys::Exception( "Unknown opcode %d in Cpu::TraceBuilder::AppendInstrsForOpcode( opcode=%08x, pc=%08lx, trace=%p )", op.OPCD(), op.opcode, pc, trace );
 				}
 			}
 		}

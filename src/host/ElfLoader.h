@@ -67,7 +67,7 @@ private:
 			return ident[EI_DATA] == ELFDATA2LSB;
 		}
 
-		void Load( Sys::File& file );
+		void Load( sys::File& file );
 	};
 
 	struct PHdr {
@@ -82,13 +82,13 @@ private:
 		uint32_t flags;
 		uint64_t align;
 
-		void Load( Sys::File& file, bool is32Bit );
+		void Load( sys::File& file, bool is32Bit );
 	};
 
 	static const char * TAG;
 
 	const char * exePath;
-	Sys::File file;
+	sys::File file;
 	Target target;
 
 	Hdr header;

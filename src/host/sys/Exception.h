@@ -7,7 +7,7 @@
 #include <cstdio>
 #include <stdexcept>
 
-namespace Sys {
+namespace sys {
 
 class Exception : public std::exception
 {
@@ -50,7 +50,7 @@ public:
 	}
 };
 
-} //namespace Sys
+} //namespace sys
 
 #endif //GEN7_HOST_SYS_EXCEPTION_H
 

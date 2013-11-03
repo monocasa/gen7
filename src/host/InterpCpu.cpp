@@ -54,7 +54,7 @@ void InterpCpu::WriteSpr( int spr, uint64_t value )
 		}
 
 		default: {
-			throw Sys::Exception( "Write to unknown spr %d <- 0x%lx", spr, value );
+			throw sys::Exception( "Write to unknown spr %d <- 0x%lx", spr, value );
 		}
 	}
 }
@@ -84,7 +84,7 @@ uint64_t InterpCpu::ReadSpr( int spr  )
 		}
 
 		default: {
-			throw Sys::Exception( "Read from spr %d", spr );
+			throw sys::Exception( "Read from spr %d", spr );
 		}
 	}
 }
@@ -200,7 +200,7 @@ void InterpCpu::InstructionStorageInterrupt()
 void InterpCpu::ExecuteTrace( Trace *trace )
 {
 	if( 0 == trace->instrs.size() ) {
-		throw Sys::Exception( "No IR instructions in trace %p at %08lx", trace, trace->pc );
+		throw sys::Exception( "No IR instructions in trace %p at %08lx", trace, trace->pc );
 	}
 
 	pc = trace->finalPc;
@@ -366,7 +366,7 @@ void InterpCpu::ExecuteTrace( Trace *trace )
 			}
 
 			case IrInstruction::LWARX: {
-				throw Sys::Exception( "lwarx" );
+				throw sys::Exception( "lwarx" );
 			}
 
 			case IrInstruction::MFMSR: {
@@ -520,7 +520,7 @@ void InterpCpu::ExecuteTrace( Trace *trace )
 			}
 
 			case IrInstruction::STWCX: {
-				throw Sys::Exception( "stwcx" );
+				throw sys::Exception( "stwcx" );
 			}
 
 			case IrInstruction::SUBF: {

@@ -13,7 +13,7 @@ private:
 	Ps3PhysicalMemory ps3PhysMem;
 
 	virtual void Load( const char *path ) {
-		throw Sys::Exception( "Implement Ps3MachineContext::Load( path=%s )", path );
+		throw sys::Exception( "Implement Ps3MachineContext::Load( path=%s )", path );
 	}
 
 public:

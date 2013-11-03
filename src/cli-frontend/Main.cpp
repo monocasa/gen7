@@ -156,7 +156,7 @@ int main( int argc, char* argv[] )
 
 		context->Run();
 
-	} catch( Sys::Exception& ex ) {
+	} catch( sys::Exception& ex ) {
 		printf( "==================================\n" );
 		printf( "Caught exception during execution:\n" );
 		printf( "\n" );
