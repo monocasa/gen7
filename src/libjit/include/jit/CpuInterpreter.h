@@ -21,12 +21,10 @@ protected:
 	}
 
 	void SetGPR32( int offset, uint32_t value ) {
-		//printf( "Setting r%d(%d) to 0x%x\n", offset/8, offset, value );
 		*reinterpret_cast<uint32_t*>( &GPR_PTR[offset] ) = value;
 	}
 
 	void SetGPR64( int offset, uint64_t value ) {
-		//printf( "Setting r%d(%d) to 0x%lx\n", offset/8, offset, value );
 		*reinterpret_cast<uint64_t*>( &GPR_PTR[offset] ) = value;
 	}
 
