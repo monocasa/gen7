@@ -1,8 +1,13 @@
-SET( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++0x -mno-red-zone -Wall -Wextra -Werror" )
-
 INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/libjit/include" )
 INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}" )
 
-ADD_LIBRARY( jit STATIC source/powerpc/PowerPCDisasm.cpp
-                        source/Jit.cpp )
+SET( LIBJIT_SOURCES source/powerpc/PowerPCDisasm.cpp
+                     source/CpuInterpreter.cpp
+                     source/Jit.cpp )
+
+ADD_LIBRARY( jit STATIC ${LIBJIT_SOURCES} )
+
+SET( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-m64 -mcmodel=kernel -std=c++0x -D__64BIT__ -mno-red-zone -fno-rtti -fno-exceptions -fno-stack-protector -Wall -Wextra -Werror" )
+
+ADD_LIBRARY( jit-vmm STATIC ${LIBJIT_SOURCES} )
 

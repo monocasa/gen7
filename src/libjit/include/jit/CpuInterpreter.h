@@ -1,14 +1,13 @@
-#ifndef GEN7_CROSSVMM_VMM_CPU_H
-#define GEN7_CROSSVMM_VMM_CPU_H
+#ifndef GEN7_LIBJIT_CPUINTERPRETER_H
+#define GEN7_LIBJIT_CPUINTERPRETER_H
 
 #include <cstdint>
-#include <cstdio>
 
 namespace jit {
-struct InterInstr;
-} //namespace jit
 
-class Cpu
+struct InterInstr;
+
+class CpuInterpreter
 {
 protected:
 	uint8_t * const GPR_PTR;
@@ -44,10 +43,12 @@ public:
 
 	bool InterpretIntermediate( jit::InterInstr &instr );
 
-	Cpu( void* gprPtr )
+	CpuInterpreter( void* gprPtr )
 	  : GPR_PTR( reinterpret_cast<uint8_t*>( gprPtr ) )
 	{ }
 };
 
-#endif //GEN7_CROSSVMM_VMM_CPU_H
+} //namespace jit
+
+#endif //GEN7_LIBJIT_CPUINTERPRETER_H
 

@@ -1,10 +1,10 @@
 #ifndef GEN7_CROSSVMM_VMM_SH4ACPU_H
 #define GEN7_CROSSVMM_VMM_SH4ACPU_H
 
-#include "Cpu.h"
 #include "MemoryManager.h"
 
 #include "jit/sh4a/Sh4aCpuContext.h"
+#include "jit/CpuInterpreter.h"
 #include "jit/InterInstr.h"
 
 #include <cstdio>
@@ -23,7 +23,7 @@ public:
 	virtual uint32_t Read32( uint64_t addr ) = 0;
 };
 
-class Sh4aCpu : public Cpu
+class Sh4aCpu : public jit::CpuInterpreter
 {
 private:
 	static const uint32_t SR_T_BIT  = 0x00000001;
@@ -114,7 +114,7 @@ public:
 	}
 
 	Sh4aCpu( jit::Sh4aCpuContext &context )
-	  : Cpu( &context.gpr[0] )
+	  : CpuInterpreter( &context.gpr[0] )
 	  , context( context )
 	  , mmu( context, *this )
 	{ }

@@ -8,7 +8,6 @@ ENABLE_LANGUAGE( ASM_NASM )
 ADD_LIBRARY( vmmsyscall STATIC stdlib/src/dlmalloc.c )
 
 ADD_LIBRARY( crossvmm STATIC vmm/Boot.asm
-                             vmm/Cpu.cpp
                              vmm/cxxabiv1.cpp
                              vmm/DcRealMemory.cpp
                              vmm/Hypercall.asm
@@ -23,10 +22,11 @@ ADD_LIBRARY( crossvmm STATIC vmm/Boot.asm
                              vmm/Shtuff.asm
                              vmm/XenonRealMemory.cpp )
 
-TARGET_LINK_LIBRARIES( crossvmm vmmc vmmsyscall jit )
+TARGET_LINK_LIBRARIES( crossvmm vmmc vmmsyscall jit-vmm )
 
 SET( VMMLIBS ${PROJECT_BINARY_DIR}/lib/libcrossvmm.a
-             ${PROJECT_BINARY_DIR}/lib/libvmmsyscall.a )
+             ${PROJECT_BINARY_DIR}/lib/libvmmsyscall.a 
+             ${PROJECT_BINARY_DIR}/lib/libjit-vmm.a )
 
 ADD_CUSTOM_COMMAND( TARGET crossvmm
                     POST_BUILD

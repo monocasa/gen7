@@ -1,14 +1,13 @@
 #ifndef GEN7_CROSSVMM_VMM_PPCCPU_H
 #define GEN7_CROSSVMM_VMM_PPCCPU_H
 
-#include "Cpu.h"
-
 #include "jit/powerpc/XenonCpuContext.h"
+#include "jit/CpuInterpreter.h"
 #include "jit/InterInstr.h"
 
 #include <cstdio>
 
-class PpcCpu : public Cpu
+class PpcCpu : public jit::CpuInterpreter
 {
 private:
 	jit::XenonCpuContext &context;
@@ -87,7 +86,7 @@ public:
 	virtual bool InterpretProcessorSpecific( jit::InterInstr &instr );
 
 	PpcCpu( jit::XenonCpuContext &context )
-	  : Cpu( &context.gpr[0] )
+	  : CpuInterpreter( &context.gpr[0] )
 	  , context( context )
 	  , mmuContext( context )
 	{ }

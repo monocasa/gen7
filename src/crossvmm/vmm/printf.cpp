@@ -440,6 +440,7 @@ putchar(int c, void */*arg*/)
 	hyper_putc( c );
 }
 
+extern "C" 
 void
 printf(const char *fmt, ...)
 {
