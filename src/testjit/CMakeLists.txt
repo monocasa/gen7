@@ -1,6 +1,7 @@
 ADD_DEFINITIONS( "-std=c++0x" )
 
 ADD_EXECUTABLE( testjit powerpc/TestPowerPCDisasm.cpp
+                        powerpc/TestPowerPCIntermediateBuilder.cpp
                         Main.cpp
                         TestCpuInterpreter.cpp
                         TestInterInstr.cpp )

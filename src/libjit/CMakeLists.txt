@@ -2,6 +2,7 @@ INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/libjit/include" )
 INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}" )
 
 SET( LIBJIT_SOURCES source/powerpc/PowerPCDisasm.cpp
+                    source/powerpc/PowerPCIntermediateBuilder.cpp
                     source/CpuInterpreter.cpp )
 
 ADD_LIBRARY( jit STATIC ${LIBJIT_SOURCES} )
