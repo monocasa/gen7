@@ -5,6 +5,18 @@
 
 using namespace jit;
 
+TEST(PowerPCIntermediateBuilder, Unknown)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x03FFFFFF, 0x100 ) );
+	EXPECT_EQ( InstrOp::UNKNOWN_OPCODE, instr[0].op );
+	EXPECT_EQ( 0,          instr[0].args[0] );
+	EXPECT_EQ( 0x03FFFFFF, instr[0].args[1] );
+	EXPECT_EQ( 0x100,      instr[0].args[2] );
+}
+
 TEST(PowerPCIntermediateBuilder, Addi)
 {
 	PowerPCIntermediateBuilder builder;
