@@ -4,7 +4,7 @@
 
 using namespace jit;
 
-TEST(InterInstrTest, Unknown)
+TEST(InterInstr, Unknown)
 {
 	InterInstr instr;
 
@@ -16,7 +16,7 @@ TEST(InterInstrTest, Unknown)
 	ASSERT_EQ( 1, instr.args[2] );
 }
 
-TEST(InterInstrTest, Nop)
+TEST(InterInstr, Nop)
 {
 	InterInstr instr;
 
@@ -25,7 +25,7 @@ TEST(InterInstrTest, Nop)
 	ASSERT_EQ( InstrOp::NOP, instr.op );
 }
 
-TEST(InterInstrTest, SetSystemImm)
+TEST(InterInstr, SetSystemImm)
 {
 	InterInstr instr;
 
@@ -36,7 +36,7 @@ TEST(InterInstrTest, SetSystemImm)
 	ASSERT_EQ( 512, instr.args[1] );
 }
 
-TEST(InterInstrTest, SetSystemReg)
+TEST(InterInstr, SetSystemReg)
 {
 	InterInstr instr;
 
@@ -47,7 +47,7 @@ TEST(InterInstrTest, SetSystemReg)
 	ASSERT_EQ( 512, instr.args[1] );
 }
 
-TEST(InterInstrTest, ReadSystem)
+TEST(InterInstr, ReadSystem)
 {
 	InterInstr instr;
 
@@ -58,7 +58,7 @@ TEST(InterInstrTest, ReadSystem)
 	ASSERT_EQ( 512, instr.args[1] );
 }
 
-TEST(InterInstrTest, MoveReg)
+TEST(InterInstr, MoveReg)
 {
 	InterInstr instr;
 
@@ -69,7 +69,7 @@ TEST(InterInstrTest, MoveReg)
 	ASSERT_EQ( 30, instr.args[1] );
 }
 
-TEST(InterInstrTest, BranchAlways)
+TEST(InterInstr, BranchAlways)
 {
 	InterInstr instr;
 
@@ -79,7 +79,7 @@ TEST(InterInstrTest, BranchAlways)
 	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[0] );
 }
 
-TEST(InterInstrTest, BranchGprNotZero)
+TEST(InterInstr, BranchGprNotZero)
 {
 	InterInstr instr;
 
@@ -90,7 +90,7 @@ TEST(InterInstrTest, BranchGprNotZero)
 	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
 }
 
-TEST(InterInstrTest, LoadImm)
+TEST(InterInstr, LoadImm)
 {
 	InterInstr instr;
 
@@ -101,7 +101,7 @@ TEST(InterInstrTest, LoadImm)
 	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
 }
 
-TEST(InterInstrTest, Add)
+TEST(InterInstr, Add)
 {
 	InterInstr instr;
 
@@ -113,7 +113,7 @@ TEST(InterInstrTest, Add)
 	ASSERT_EQ( 2, instr.args[2] );
 }
 
-TEST(InterInstrTest, AddImm)
+TEST(InterInstr, AddImm)
 {
 	InterInstr instr;
 
@@ -125,7 +125,7 @@ TEST(InterInstrTest, AddImm)
 	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
 }
 
-TEST(InterInstrTest, Sub)
+TEST(InterInstr, Sub)
 {
 	InterInstr instr;
 
@@ -137,7 +137,7 @@ TEST(InterInstrTest, Sub)
 	ASSERT_EQ( 2, instr.args[2] );
 }
 
-TEST(InterInstrTest, SubuImm)
+TEST(InterInstr, SubuImm)
 {
 	InterInstr instr;
 
@@ -149,7 +149,7 @@ TEST(InterInstrTest, SubuImm)
 	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
 }
 
-TEST(InterInstrTest, AndImm)
+TEST(InterInstr, AndImm)
 {
 	InterInstr instr;
 
@@ -161,7 +161,7 @@ TEST(InterInstrTest, AndImm)
 	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
 }
 
-TEST(InterInstrTest, Andc)
+TEST(InterInstr, Andc)
 {
 	InterInstr instr;
 
@@ -173,7 +173,7 @@ TEST(InterInstrTest, Andc)
 	ASSERT_EQ( 2, instr.args[2] );
 }
 
-TEST(InterInstrTest, Or)
+TEST(InterInstr, Or)
 {
 	InterInstr instr;
 
@@ -185,7 +185,7 @@ TEST(InterInstrTest, Or)
 	ASSERT_EQ( 2, instr.args[2] );
 }
 
-TEST(InterInstrTest, OrImm)
+TEST(InterInstr, OrImm)
 {
 	InterInstr instr;
 
@@ -197,7 +197,7 @@ TEST(InterInstrTest, OrImm)
 	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
 }
 
-TEST(InterInstrTest, Sll32Imm)
+TEST(InterInstr, Sll32Imm)
 {
 	InterInstr instr;
 
@@ -209,7 +209,7 @@ TEST(InterInstrTest, Sll32Imm)
 	ASSERT_EQ( 2, instr.args[2] );
 }
 
-TEST(InterInstrTest, Sll64Imm)
+TEST(InterInstr, Sll64Imm)
 {
 	InterInstr instr;
 
@@ -221,7 +221,7 @@ TEST(InterInstrTest, Sll64Imm)
 	ASSERT_EQ( 2, instr.args[2] );
 }
 
-TEST(InterInstrTest, PpcSlbia)
+TEST(InterInstr, PpcSlbia)
 {
 	InterInstr instr;
 
@@ -230,7 +230,7 @@ TEST(InterInstrTest, PpcSlbia)
 	ASSERT_EQ( InstrOp::PPC_SLBIA, instr.op );
 }
 
-TEST(InterInstrTest, PpcSlbmte)
+TEST(InterInstr, PpcSlbmte)
 {
 	InterInstr instr;
 
@@ -241,7 +241,7 @@ TEST(InterInstrTest, PpcSlbmte)
 	ASSERT_EQ( 4, instr.args[1] );
 }
 
-TEST(InterInstrTest, PpcTlbiel)
+TEST(InterInstr, PpcTlbiel)
 {
 	InterInstr instr;
 

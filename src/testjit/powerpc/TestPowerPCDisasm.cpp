@@ -23,12 +23,12 @@ void testDecode( const uint32_t opcode, const uint32_t pc, const char *expectedS
 	ASSERT_STREQ( expectedString, string ) << opcodeString;
 }
 
-TEST(PowerPCDisasmTest, Unknown)
+TEST(PowerPCDisasm, Unknown)
 {
 	testDecode( 0x00000000, 0x00000000, "<UNKNOWN_00000000> OPCOD=0" );
 }
 
-TEST(PowerPCDisasmTest, Branch)
+TEST(PowerPCDisasm, Branch)
 {
 	// Test normal use case
 	testDecode( 0x48000100, 0x00001000, "b\tloc_1100" );

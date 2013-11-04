@@ -70,7 +70,7 @@ public:
 	}
 };
 
-TEST(CpuInterpreterTest, Unknown)
+TEST(CpuInterpreter, Unknown)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -80,7 +80,7 @@ TEST(CpuInterpreterTest, Unknown)
 	ASSERT_FALSE( testCpu.InterpretIntermediate( instr ) );
 }
 
-TEST(CpuInterpreterTest, Nop)
+TEST(CpuInterpreter, Nop)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -100,7 +100,7 @@ TEST(CpuInterpreterTest, Nop)
 	ASSERT_EQ( 0, testCpu.pc );
 }
 
-TEST(CpuInterpreterTest, SetSystemImm)
+TEST(CpuInterpreter, SetSystemImm)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -117,7 +117,7 @@ TEST(CpuInterpreterTest, SetSystemImm)
 	ASSERT_FALSE( testCpu.InterpretIntermediate( instr ) );
 }
 
-TEST(CpuInterpreterTest, SetSystemReg)
+TEST(CpuInterpreter, SetSystemReg)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -136,7 +136,7 @@ TEST(CpuInterpreterTest, SetSystemReg)
 	ASSERT_FALSE( testCpu.InterpretIntermediate( instr ) );
 }
 
-TEST(CpuInterpreterTest, ReadSystem)
+TEST(CpuInterpreter, ReadSystem)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -155,7 +155,7 @@ TEST(CpuInterpreterTest, ReadSystem)
 	ASSERT_FALSE( testCpu.InterpretIntermediate( instr ) );
 }
 
-TEST(CpuInterpreterTest, MoveReg)
+TEST(CpuInterpreter, MoveReg)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -168,7 +168,7 @@ TEST(CpuInterpreterTest, MoveReg)
 	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[2] );
 }
 
-TEST(CpuInterpreterTest, BranchAlways)
+TEST(CpuInterpreter, BranchAlways)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -179,7 +179,7 @@ TEST(CpuInterpreterTest, BranchAlways)
 	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.pc );
 }
 
-TEST(CpuInterpreterTest, BranchGprNotZero)
+TEST(CpuInterpreter, BranchGprNotZero)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -197,7 +197,7 @@ TEST(CpuInterpreterTest, BranchGprNotZero)
 	ASSERT_EQ( 0, testCpu.pc );
 }
 
-TEST(CpuInterpreterTest, LoadImm)
+TEST(CpuInterpreter, LoadImm)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -207,7 +207,7 @@ TEST(CpuInterpreterTest, LoadImm)
 	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
 }
 
-TEST(CpuInterpreterTest, Add)
+TEST(CpuInterpreter, Add)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -222,7 +222,7 @@ TEST(CpuInterpreterTest, Add)
 	ASSERT_EQ( 3, testCpu.gprs[3] );
 }
 
-TEST(CpuInterpreterTest, AddImm)
+TEST(CpuInterpreter, AddImm)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -236,7 +236,7 @@ TEST(CpuInterpreterTest, AddImm)
 	ASSERT_EQ( 3, testCpu.gprs[3] );
 }
 
-TEST(CpuInterpreterTest, Sub)
+TEST(CpuInterpreter, Sub)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -251,7 +251,7 @@ TEST(CpuInterpreterTest, Sub)
 	ASSERT_EQ( 1, testCpu.gprs[3] );
 }
 
-TEST(CpuInterpreterTest, SubuImm)
+TEST(CpuInterpreter, SubuImm)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -264,7 +264,7 @@ TEST(CpuInterpreterTest, SubuImm)
 	ASSERT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[3] );
 }
 
-TEST(CpuInterpreterTest, AndImm)
+TEST(CpuInterpreter, AndImm)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -277,7 +277,7 @@ TEST(CpuInterpreterTest, AndImm)
 	ASSERT_EQ( 0x0000FFFF00000000UL, testCpu.gprs[2] );
 }
 
-TEST(CpuInterpreterTest, Andc)
+TEST(CpuInterpreter, Andc)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -292,7 +292,7 @@ TEST(CpuInterpreterTest, Andc)
 	ASSERT_EQ( 0xFFFFFFFFFFFFFFF0UL, testCpu.gprs[3] );
 }
 
-TEST(CpuInterpreterTest, Or)
+TEST(CpuInterpreter, Or)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -307,7 +307,7 @@ TEST(CpuInterpreterTest, Or)
 	ASSERT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[3] );
 }
 
-TEST(CpuInterpreterTest, OrImm)
+TEST(CpuInterpreter, OrImm)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -320,7 +320,7 @@ TEST(CpuInterpreterTest, OrImm)
 	ASSERT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[2] );
 }
 
-TEST(CpuInterpreterTest, Sll32Imm)
+TEST(CpuInterpreter, Sll32Imm)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
@@ -334,7 +334,7 @@ TEST(CpuInterpreterTest, Sll32Imm)
 	ASSERT_EQ( 0xFFFFFFFF00010000UL, testCpu.gprs[2] );
 }
 
-TEST(CpuInterpreterTest, Sll64Imm)
+TEST(CpuInterpreter, Sll64Imm)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
