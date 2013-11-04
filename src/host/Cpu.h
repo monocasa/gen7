@@ -4,7 +4,7 @@
 #include "sys/Exception.h"
 #include "PhysicalMemory.h"
 
-#include "shared/Util.h"
+#include "util/BitOps.h"
 
 #include <cstdint>
 #include <map>

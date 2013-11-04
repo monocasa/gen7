@@ -3,7 +3,7 @@
 
 #include "jit/Disasm.h"
 
-#include "shared/Util.h"
+#include "util/BitOps.h"
 
 namespace jit {
 

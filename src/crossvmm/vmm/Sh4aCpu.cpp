@@ -2,7 +2,7 @@
 #include "MemoryManager.h"
 #include "Sh4aCpu.h"
 
-#include "shared/Util.h"
+#include "util/BitOps.h"
 
 #include <cstdint>
 #include <cstdio>

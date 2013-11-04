@@ -1,5 +1,5 @@
-#ifndef GEN7_SHARED_UTIL_H
-#define GEN7_SHARED_UTIL_H
+#ifndef GEN7_LIBUTIL_BITOPS_H
+#define GEN7_LIBUTIL_BITOPS_H
 
 namespace util {
 
@@ -15,5 +15,5 @@ static inline T SignExtend( const T x )
 
 } //namespace util
 
-#endif //GEN7_SHARED_UTIL_H
+#endif //GEN7_LIBUTIL_BITOPS_H
 

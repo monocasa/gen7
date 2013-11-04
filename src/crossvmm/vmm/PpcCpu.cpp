@@ -2,7 +2,7 @@
 #include "PpcCpu.h"
 #include "XenonRealMemory.h"
 
-#include "shared/Util.h"
+#include "util/BitOps.h"
 
 #include <cstdio>
 
