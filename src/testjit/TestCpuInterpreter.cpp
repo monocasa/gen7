@@ -78,6 +78,7 @@ TEST(CpuInterpreter, Unknown)
 	instr.BuildUnknown( 5, 0x41, 1 );
 
 	ASSERT_FALSE( testCpu.InterpretIntermediate( instr ) );
+	ASSERT_STREQ( "Unknown opcode 5 (00000041) @ 0000000000000001", testCpu.GetErrorString() );
 }
 
 TEST(CpuInterpreter, Nop)
