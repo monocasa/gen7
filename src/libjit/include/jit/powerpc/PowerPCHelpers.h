@@ -36,6 +36,7 @@ public:
 		OPCD_BRANCH     = 18,
 		OPCD_ORI        = 24,
 		OPCD_ORIS       = 25,
+		OPCD_ROTATE     = 30,
 	};
 
 	static int OPCD( const uint32_t instruction ) {

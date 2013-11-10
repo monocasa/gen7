@@ -56,6 +56,28 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			}
 		}
 
+		case OPCD_ROTATE: {
+			const int rs = GPR64OFFSET( D_RS(nativeInstr) );
+			const int ra = GPR64OFFSET( D_RA(nativeInstr) );
+
+			if( (nativeInstr & 0xFFFF) == 0x07C6 ) { //sldi rs, ra, 32
+				intermediates[0].BuildSll64Imm( rs, ra, 32 );
+			}
+			else if( (nativeInstr & 0xFFFF) == 0x64c6 ) { //sldi rs, ra, 44
+				intermediates[0].BuildSll64Imm( rs, ra, 44 );
+			}
+			else if( (nativeInstr & 0xFFFF) == 0xf806 ) { //sldi rs, ra, 63
+				intermediates[0].BuildSll64Imm( rs, ra, 63 );
+			}
+			else if( (nativeInstr & 0xFFFF) == 0x0040 ) { //clrldi rs, ra, 1
+				intermediates[0].BuildAndImm( rs, ra, 0x7FFFFFFFFFFFFFFFUL );
+			}
+			else {
+				intermediates[0].BuildUnknown( opcd, nativeInstr, pc );
+			}
+			return 1;
+		}
+
 		case OPCD_ORI: {
 			const int rs = GPR64OFFSET( D_RS(nativeInstr) );
 			const int ra = GPR64OFFSET( D_RA(nativeInstr) );
