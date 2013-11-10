@@ -3,6 +3,56 @@
 
 namespace jit {
 
+int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc )
+{
+	const int xo = X_XO(nativeInstr);
+
+	switch( xo ) {
+		case SPECIAL_XO_MTSPR: {
+			const int spr = XFX_SPR(nativeInstr);
+			const int sourceReg = GPR64OFFSET( XFX_RS(nativeInstr) );
+
+			switch( spr ) {
+				case SPR_LR: {
+					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_LR) );
+					break;
+				}
+				case SPR_CTR: {
+					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_CTR) );
+					break;
+				}
+				case SPR_SPRG0: {
+					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_SPRG0) );
+					break;
+				}
+				case SPR_SPRG1: {
+					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_SPRG1) );
+					break;
+				}
+				case SPR_SPRG2: {
+					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_SPRG2) );
+					break;
+				}
+				case SPR_SPRG3: {
+					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_SPRG3) );
+					break;
+				}
+				default: {
+					intermediates[0].BuildSetSystemReg( sourceReg, spr );
+					break;
+				}
+			}
+
+			return 1;
+		}
+
+		default: {
+			intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+			return 1;
+		}
+	}
+}
+
 int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc )
 {
 	const int opcd = OPCD(nativeInstr);
@@ -104,6 +154,10 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 
 			intermediates[0].BuildOrImm( rs, ra, imm );
 			return 1;
+		}
+
+		case OPCD_SPECIAL: {
+			return BuildIntermediateSpecial( intermediates, nativeInstr, pc );
 		}
 
 		default: {

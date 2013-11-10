@@ -474,35 +474,35 @@ int PpcCpu::BuildIntermediate( jit::InterInstr *intermediates, const uint32_t na
 bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 {
 	switch( sysReg ) {
-		case SPR_SRR1: {
+		case jit::PowerPCHelpers::SPR_SRR1: {
 			context.srr1 = value;
 			return true;
 		}
 
-		case SPR_SPRG1: {
+		case jit::PowerPCHelpers::SPR_SPRG1: {
 			context.sprg1 = value;
 			return true;
 		}
 
-		case SPR_HRMOR: {
+		case jit::PowerPCHelpers::SPR_HRMOR: {
 			printf( "PpcCpu:  HRMOR set to %016lx\n", value );
 			context.hrmor = value & 0x000003FFFFF00000;
 			return true;
 		}
 
-		case SPR_LPCR: {
+		case jit::PowerPCHelpers::SPR_LPCR: {
 			printf( "PpcCpu:  LPCR set to %016lx\n", value );
 			context.lpcr = value;
 			return true;
 		}
 
-		case SPR_LPIDR: {
+		case jit::PowerPCHelpers::SPR_LPIDR: {
 			printf( "PpcCpu:  LPIDR set to %016lx\n", value );
 			context.lpidr = value;
 			return true;
 		}
 
-		case SPR_HID6: {
+		case jit::PowerPCHelpers::SPR_HID6: {
 			printf( "PpcCpu:  HID6 set to %016lx\n", value );
 			context.hid6 = value;
 			return true;
@@ -518,22 +518,22 @@ bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 bool PpcCpu::ReadSystemReg( int sysReg, uint64_t &value )
 {
 	switch( sysReg ) {
-		case SPR_LPCR: {
+		case jit::PowerPCHelpers::SPR_LPCR: {
 			value = context.lpcr;
 			return true;
 		}
 
-		case SPR_HID6: {
+		case jit::PowerPCHelpers::SPR_HID6: {
 			value = context.hid6;
 			return true;
 		}
 
-		case SPR_PIR: {
+		case jit::PowerPCHelpers::SPR_PIR: {
 			value = context.coreNum;
 			return true;
 		}
 
-		case SPR_MSR: {
+		case jit::PowerPCHelpers::SPR_MSR: {
 			value = context.msr;
 			return true;
 		}

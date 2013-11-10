@@ -10,35 +10,12 @@
 
 #include <cstdio>
 
-class PpcCpu : public Cpu, public jit::CpuInterpreter, private jit::PowerPCIntermediateBuilder
+class PpcCpu : public Cpu, 
+               public jit::CpuInterpreter, 
+               private jit::PowerPCIntermediateBuilder
 {
 private:
 	jit::XenonCpuContext &context;
-
-	//Not real GPRs
-	static const int GPR_LR    = 32;
-	static const int GPR_CTR   = 33;
-	static const int GPR_SPRG0 = 34;
-	static const int GPR_SPRG1 = 35;
-	static const int GPR_SPRG2 = 36;
-	static const int GPR_SPRG3 = 37;
-
-	//PowerPC SPRs
-	static const int SPR_LR    = 8;
-	static const int SPR_CTR   = 9;
-	static const int SPR_SRR1  = 27;
-	static const int SPR_SPRG0 = 272;
-	static const int SPR_SPRG1 = 273;
-	static const int SPR_SPRG2 = 274;
-	static const int SPR_SPRG3 = 275;
-	static const int SPR_HRMOR = 313;
-	static const int SPR_LPCR  = 318;
-	static const int SPR_LPIDR = 319;
-	static const int SPR_HID6  = 1017;
-	static const int SPR_PIR   = 1023;
-
-	//Not actually real SPRs
-	static const int SPR_MSR = 1024;
 
 	class MmuContext
 	{
