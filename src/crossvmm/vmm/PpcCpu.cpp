@@ -118,7 +118,7 @@ constexpr int GPR32LOWOFFSET( int regNum )
 	return regNum * sizeof(uint64_t);
 }
 
-int PpcCpu::BuildIntermediateBranchConditional( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
+/*int PpcCpu::BuildIntermediateBranchConditional( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc )
 {
 	if( B_LK(nativeInstr) || B_AA(nativeInstr) ) {
 		intermediates[0].BuildUnknown( 16, nativeInstr, pc );
@@ -469,7 +469,7 @@ int PpcCpu::BuildIntermediate( jit::InterInstr *intermediates, const uint32_t na
 			return 1;
 		}
 	}
-}
+}*/
 
 bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 {

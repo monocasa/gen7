@@ -3,13 +3,14 @@
 
 #include "Cpu.h"
 
+#include "jit/powerpc/PowerPCIntermediateBuilder.h"
 #include "jit/powerpc/XenonCpuContext.h"
 #include "jit/CpuInterpreter.h"
 #include "jit/InterInstr.h"
 
 #include <cstdio>
 
-class PpcCpu : public Cpu, public jit::CpuInterpreter
+class PpcCpu : public Cpu, public jit::CpuInterpreter, private jit::PowerPCIntermediateBuilder
 {
 private:
 	jit::XenonCpuContext &context;
@@ -68,10 +69,10 @@ private:
 
 	void DumpContext();
 
-	int BuildIntermediateBranchConditional( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
-	int BuildIntermediateTable19( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
-	int BuildIntermediateSpecial( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
-	int BuildIntermediate( jit::InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc );
+	//int BuildIntermediateBranchConditional( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
+	//int BuildIntermediateTable19( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
+	//int BuildIntermediateSpecial( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
+	//int BuildIntermediate( jit::InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc );
 
 public:
 	virtual void Init();
