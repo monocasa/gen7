@@ -10,7 +10,8 @@ bool CpuInterpreter::InterpretIntermediate( InterInstr &instr )
 	switch( instr.op ) {
 	//Misc
 		case UNKNOWN_OPCODE: {
-			printf( "Unknown opcode %ld (%08lx) @ %016lx\n", instr.args[0], instr.args[1], instr.args[2] );
+			sprintf( errorString, "Unknown opcode %ld (%08lx) @ %016lx", 
+			         instr.args[0], instr.args[1], instr.args[2] );
 			return false;
 		}
 
@@ -231,7 +232,7 @@ bool CpuInterpreter::InterpretIntermediate( InterInstr &instr )
 			if( instr.op >= PROC_LOW ) {
 				return InterpretProcessorSpecific( instr );
 			}
-			printf( "Unknown instr.op %d (0x%lx, 0x%lx, 0x%lx, 0x%lx)\n",
+			sprintf( errorString, "Unknown instr.op %d (0x%lx, 0x%lx, 0x%lx, 0x%lx)\n",
 			        instr.op, instr.args[0], instr.args[1], instr.args[2], instr.args[3] );
 			return false;
 		}

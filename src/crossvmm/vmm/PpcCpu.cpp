@@ -593,6 +593,9 @@ void PpcCpu::Execute()
 
 		for( int i = 0; i < numIntermediates; i++ ) {
 			if( !InterpretIntermediate( intermediates[i] ) ) {
+
+				printf( "Intermediate interpretation failed:\n\t%s\n", GetErrorString() );
+
 				DumpContext();
 				return;
 			}

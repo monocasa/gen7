@@ -2,6 +2,7 @@
 #define GEN7_LIBJIT_CPUINTERPRETER_H
 
 #include <cstdint>
+#include <cstdio>
 
 namespace jit {
 
@@ -11,6 +12,8 @@ class CpuInterpreter
 {
 protected:
 	uint8_t * const GPR_PTR;
+
+	char errorString[ 128 ];
 
 	uint32_t ReadGPR32( int offset ) {
 		return *reinterpret_cast<uint32_t*>( &GPR_PTR[offset] );
@@ -38,9 +41,15 @@ public:
 
 	bool InterpretIntermediate( jit::InterInstr &instr );
 
+	const char * GetErrorString() const {
+		return errorString;
+	}
+
 	CpuInterpreter( void* gprPtr )
 	  : GPR_PTR( reinterpret_cast<uint8_t*>( gprPtr ) )
-	{ }
+	{
+		sprintf( errorString, "No Error" );
+	}
 };
 
 } //namespace jit
