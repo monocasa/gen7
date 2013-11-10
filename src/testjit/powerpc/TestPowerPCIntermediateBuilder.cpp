@@ -98,3 +98,37 @@ TEST(PowerPCIntermediateBuilder, Branch)
 	EXPECT_EQ( 0x00001FFC, instr[0].args[0] );
 }
 
+TEST(PowerPCIntermediateBuilder, Ori)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 6064FFFF : ori      r4, r3, 0xFFFF
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x6064FFFF, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::OR_IMM, instr[0].op );
+	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 4 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 0x0000FFFF, instr[0].args[2] );
+
+	// 00000000 : 60000000 : nop
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x60000000, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::NOP, instr[0].op );
+}
+
+TEST(PowerPCIntermediateBuilder, Oris)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 6464FFFF : oris     r4, r3, 0xFFFF
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x6464FFFF, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::OR_IMM, instr[0].op );
+	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 4 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 0xFFFF0000, instr[0].args[2] );
+
+	// 00000000 : 64000000 : nop
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x64000000, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::NOP, instr[0].op );
+}
+

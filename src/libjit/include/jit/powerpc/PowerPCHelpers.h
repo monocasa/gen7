@@ -34,6 +34,8 @@ public:
 		OPCD_ADDI       = 14,
 		OPCD_ADDIS      = 15,
 		OPCD_BRANCH     = 18,
+		OPCD_ORI        = 24,
+		OPCD_ORIS       = 25,
 	};
 
 	static int OPCD( const uint32_t instruction ) {
