@@ -38,6 +38,24 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			}
 		}
 
+		case OPCD_BRANCH: {
+			uint64_t target = B_LI(nativeInstr);
+
+			if( !B_AA(nativeInstr) ) {
+				target += pc;
+			}
+
+			if( B_LK(nativeInstr) ) {
+				intermediates[0].BuildLoadImm( 32 * sizeof(uint64_t), pc + sizeof(uint32_t) );
+				intermediates[1].BuildBranchAlways( target );
+				return 2;
+			}
+			else {
+				intermediates[0].BuildBranchAlways( target );
+				return 1;
+			}
+		}
+
 		default: {
 			intermediates[0].BuildUnknown( opcd, nativeInstr, pc );
 			return 1;
