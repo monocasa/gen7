@@ -77,8 +77,8 @@ TEST(CpuInterpreter, Unknown)
 
 	instr.BuildUnknown( 5, 0x41, 1 );
 
-	ASSERT_FALSE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_STREQ( "Unknown opcode 5 (00000041) @ 0000000000000001", testCpu.GetErrorString() );
+	EXPECT_FALSE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_STREQ( "Unknown opcode 5 (00000041) @ 0000000000000001", testCpu.GetErrorString() );
 }
 
 TEST(CpuInterpreter, Nop)
@@ -88,17 +88,17 @@ TEST(CpuInterpreter, Nop)
 
 	instr.BuildNop();
 
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
 
 	for( auto gpr : testCpu.gprs ) {
-		ASSERT_EQ( 0, gpr );
+		EXPECT_EQ( 0, gpr );
 	}
 
 	for( auto sysReg : testCpu.sysRegs ) {
-		ASSERT_EQ( 0, sysReg );
+		EXPECT_EQ( 0, sysReg );
 	}
 
-	ASSERT_EQ( 0, testCpu.pc );
+	EXPECT_EQ( 0, testCpu.pc );
 }
 
 TEST(CpuInterpreter, SetSystemImm)
@@ -108,14 +108,14 @@ TEST(CpuInterpreter, SetSystemImm)
 
 	instr.BuildSetSystemImm( 0xFFFFFFFF00000000UL, 512 );
 
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.sysRegs[512] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.sysRegs[512] );
 
 	//Test invalid system reg
 	testCpu.Reset();
 	instr.BuildSetSystemImm( 0xFFFFFFFF00000000UL, TestCpuInterpreter::NUM_SYS_REGS );
 
-	ASSERT_FALSE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_FALSE( testCpu.InterpretIntermediate( instr ) );
 }
 
 TEST(CpuInterpreter, SetSystemReg)
@@ -126,15 +126,15 @@ TEST(CpuInterpreter, SetSystemReg)
 	testCpu.gprs[1] = 0xFFFFFFFF00000000UL;
 	instr.BuildSetSystemReg( testCpu.Gpr64Offset(1), 512 );
 
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.sysRegs[512] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.sysRegs[512] );
 
 	//Test invalid system reg
 	testCpu.Reset();
 	instr.BuildSetSystemReg( 21, TestCpuInterpreter::NUM_SYS_REGS );
 
-	ASSERT_FALSE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_FALSE( testCpu.InterpretIntermediate( instr ) );
 }
 
 TEST(CpuInterpreter, ReadSystem)
@@ -145,15 +145,15 @@ TEST(CpuInterpreter, ReadSystem)
 	testCpu.sysRegs[512] = 0xFFFFFFFF00000000UL;
 	instr.BuildReadSystem( testCpu.Gpr64Offset(1), 512 );
 
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.sysRegs[512] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.sysRegs[512] );
 
 	//Test invalid system reg
 	testCpu.Reset();
 	instr.BuildReadSystem( 21, TestCpuInterpreter::NUM_SYS_REGS );
 
-	ASSERT_FALSE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_FALSE( testCpu.InterpretIntermediate( instr ) );
 }
 
 TEST(CpuInterpreter, MoveReg)
@@ -164,9 +164,9 @@ TEST(CpuInterpreter, MoveReg)
 	testCpu.gprs[1] = 0xFFFFFFFF00000000UL;
 	instr.BuildMoveReg( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2) );
 
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[2] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[2] );
 }
 
 TEST(CpuInterpreter, BranchAlways)
@@ -176,8 +176,8 @@ TEST(CpuInterpreter, BranchAlways)
 
 	instr.BuildBranchAlways( 0xFFFFFFFF00000000UL );
 
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.pc );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.pc );
 }
 
 TEST(CpuInterpreter, BranchGprNotZero)
@@ -187,15 +187,15 @@ TEST(CpuInterpreter, BranchGprNotZero)
 
 	testCpu.gprs[1] = 1;
 	instr.BuildBranchGprNotZero( testCpu.Gpr64Offset(1), 0xFFFFFFFF00000000UL );
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.pc );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.pc );
 
 	testCpu.Reset();
 
 	testCpu.gprs[1] = 0;
 	instr.BuildBranchGprNotZero( testCpu.Gpr64Offset(1), 0xFFFFFFFF00000000UL );
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0, testCpu.pc );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0, testCpu.pc );
 }
 
 TEST(CpuInterpreter, LoadImm)
@@ -204,8 +204,8 @@ TEST(CpuInterpreter, LoadImm)
 	InterInstr instr;
 
 	instr.BuildLoadImm( testCpu.Gpr64Offset(1), 0xFFFFFFFF00000000UL );
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
 }
 
 TEST(CpuInterpreter, Add)
@@ -217,10 +217,10 @@ TEST(CpuInterpreter, Add)
 	testCpu.gprs[2] = 2;
 	instr.BuildAdd( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2),
 	                testCpu.Gpr64Offset(3) );
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 1, testCpu.gprs[1] );
-	ASSERT_EQ( 2, testCpu.gprs[2] );
-	ASSERT_EQ( 3, testCpu.gprs[3] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 1, testCpu.gprs[1] );
+	EXPECT_EQ( 2, testCpu.gprs[2] );
+	EXPECT_EQ( 3, testCpu.gprs[3] );
 }
 
 TEST(CpuInterpreter, AddImm)
@@ -231,10 +231,10 @@ TEST(CpuInterpreter, AddImm)
 	testCpu.gprs[1] = 1;
 	instr.BuildAddImm( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(3),
 	                2 );
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 1, testCpu.gprs[1] );
-	ASSERT_EQ( 0, testCpu.gprs[2] );
-	ASSERT_EQ( 3, testCpu.gprs[3] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 1, testCpu.gprs[1] );
+	EXPECT_EQ( 0, testCpu.gprs[2] );
+	EXPECT_EQ( 3, testCpu.gprs[3] );
 }
 
 TEST(CpuInterpreter, Sub)
@@ -246,10 +246,10 @@ TEST(CpuInterpreter, Sub)
 	testCpu.gprs[2] = 2;
 	instr.BuildSub( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2),
 	                testCpu.Gpr64Offset(3) );
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 1, testCpu.gprs[1] );
-	ASSERT_EQ( 2, testCpu.gprs[2] );
-	ASSERT_EQ( 1, testCpu.gprs[3] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 1, testCpu.gprs[1] );
+	EXPECT_EQ( 2, testCpu.gprs[2] );
+	EXPECT_EQ( 1, testCpu.gprs[3] );
 }
 
 TEST(CpuInterpreter, SubuImm)
@@ -259,10 +259,10 @@ TEST(CpuInterpreter, SubuImm)
 
 	testCpu.gprs[1] = 1;
 	instr.BuildSubuImm( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(3), 2 );
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 1, testCpu.gprs[1] );
-	ASSERT_EQ( 0, testCpu.gprs[2] );
-	ASSERT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[3] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 1, testCpu.gprs[1] );
+	EXPECT_EQ( 0, testCpu.gprs[2] );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[3] );
 }
 
 TEST(CpuInterpreter, AndImm)
@@ -273,9 +273,9 @@ TEST(CpuInterpreter, AndImm)
 	testCpu.gprs[1] = 0xFFFFFFFF00000000UL;
 	instr.BuildAndImm( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2), 
 	                   0x0000FFFFFFFF0000UL );
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
-	ASSERT_EQ( 0x0000FFFF00000000UL, testCpu.gprs[2] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0x0000FFFF00000000UL, testCpu.gprs[2] );
 }
 
 TEST(CpuInterpreter, Andc)
@@ -287,10 +287,10 @@ TEST(CpuInterpreter, Andc)
 	testCpu.gprs[2] = 0x000000000000000FUL;
 	instr.BuildAndc( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2),
 	                 testCpu.Gpr64Offset(3) );
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[1] );
-	ASSERT_EQ( 0x000000000000000FUL, testCpu.gprs[2] );
-	ASSERT_EQ( 0xFFFFFFFFFFFFFFF0UL, testCpu.gprs[3] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[1] );
+	EXPECT_EQ( 0x000000000000000FUL, testCpu.gprs[2] );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFF0UL, testCpu.gprs[3] );
 }
 
 TEST(CpuInterpreter, Or)
@@ -302,10 +302,10 @@ TEST(CpuInterpreter, Or)
 	testCpu.gprs[2] = 0x000000000000000FUL;
 	instr.BuildOr( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2),
 	               testCpu.Gpr64Offset(3) );
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0xFFFFFFFFFFFFFFF0UL, testCpu.gprs[1] );
-	ASSERT_EQ( 0x000000000000000FUL, testCpu.gprs[2] );
-	ASSERT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[3] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFF0UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0x000000000000000FUL, testCpu.gprs[2] );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[3] );
 }
 
 TEST(CpuInterpreter, OrImm)
@@ -316,9 +316,9 @@ TEST(CpuInterpreter, OrImm)
 	testCpu.gprs[1] = 0xFFFFFFFFFFFFFFF0UL;
 	instr.BuildOrImm( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2),
 	                  0x000000000000000FUL );
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0xFFFFFFFFFFFFFFF0UL, testCpu.gprs[1] );
-	ASSERT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[2] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFF0UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[2] );
 }
 
 TEST(CpuInterpreter, Sll32Imm)
@@ -330,9 +330,9 @@ TEST(CpuInterpreter, Sll32Imm)
 	testCpu.gprs[2] = 0xFFFFFFFF00000000UL;
 	instr.BuildSll32Imm( testCpu.Gpr32OffsetLow(1), testCpu.Gpr32OffsetLow(2),
 	                     16 );
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0xFFFFFFFF00000001UL, testCpu.gprs[1] );
-	ASSERT_EQ( 0xFFFFFFFF00010000UL, testCpu.gprs[2] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF00000001UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0xFFFFFFFF00010000UL, testCpu.gprs[2] );
 }
 
 TEST(CpuInterpreter, Sll64Imm)
@@ -343,8 +343,8 @@ TEST(CpuInterpreter, Sll64Imm)
 	testCpu.gprs[1] = 0xFFFFFFFF00000001UL;
 	instr.BuildSll64Imm( testCpu.Gpr32OffsetLow(1), testCpu.Gpr32OffsetLow(2),
 	                     16 );
-	ASSERT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	ASSERT_EQ( 0xFFFFFFFF00000001UL, testCpu.gprs[1] );
-	ASSERT_EQ( 0xFFFF000000010000UL, testCpu.gprs[2] );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF00000001UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0xFFFF000000010000UL, testCpu.gprs[2] );
 }
 

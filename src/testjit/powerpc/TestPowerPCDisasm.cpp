@@ -20,7 +20,7 @@ void testDecode( const uint32_t opcode, const uint32_t pc, const char *expectedS
 
 	sprintf( opcodeString, "%08x : %08x", pc, opcode );
 
-	ASSERT_STREQ( expectedString, string ) << opcodeString;
+	EXPECT_STREQ( expectedString, string ) << opcodeString;
 }
 
 TEST(PowerPCDisasm, Unknown)

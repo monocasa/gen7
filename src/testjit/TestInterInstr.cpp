@@ -10,10 +10,10 @@ TEST(InterInstr, Unknown)
 
 	instr.BuildUnknown( 5, 65, 1 );
 
-	ASSERT_EQ( InstrOp::UNKNOWN_OPCODE, instr.op );
-	ASSERT_EQ( 5, instr.args[0] );
-	ASSERT_EQ( 65, instr.args[1] );
-	ASSERT_EQ( 1, instr.args[2] );
+	EXPECT_EQ( InstrOp::UNKNOWN_OPCODE, instr.op );
+	EXPECT_EQ( 5, instr.args[0] );
+	EXPECT_EQ( 65, instr.args[1] );
+	EXPECT_EQ( 1, instr.args[2] );
 }
 
 TEST(InterInstr, Nop)
@@ -22,7 +22,7 @@ TEST(InterInstr, Nop)
 
 	instr.BuildNop();
 
-	ASSERT_EQ( InstrOp::NOP, instr.op );
+	EXPECT_EQ( InstrOp::NOP, instr.op );
 }
 
 TEST(InterInstr, SetSystemImm)
@@ -31,9 +31,9 @@ TEST(InterInstr, SetSystemImm)
 
 	instr.BuildSetSystemImm( 0xFFFFFFFF00000000UL, 512 );
 
-	ASSERT_EQ( InstrOp::SET_SYS_IMM, instr.op );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[0] );
-	ASSERT_EQ( 512, instr.args[1] );
+	EXPECT_EQ( InstrOp::SET_SYS_IMM, instr.op );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[0] );
+	EXPECT_EQ( 512, instr.args[1] );
 }
 
 TEST(InterInstr, SetSystemReg)
@@ -42,9 +42,9 @@ TEST(InterInstr, SetSystemReg)
 
 	instr.BuildSetSystemReg( 31, 512 );
 
-	ASSERT_EQ( InstrOp::SET_SYS_REG, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 512, instr.args[1] );
+	EXPECT_EQ( InstrOp::SET_SYS_REG, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 512, instr.args[1] );
 }
 
 TEST(InterInstr, ReadSystem)
@@ -53,9 +53,9 @@ TEST(InterInstr, ReadSystem)
 
 	instr.BuildReadSystem( 31, 512 );
 
-	ASSERT_EQ( InstrOp::READ_SYS, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 512, instr.args[1] );
+	EXPECT_EQ( InstrOp::READ_SYS, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 512, instr.args[1] );
 }
 
 TEST(InterInstr, MoveReg)
@@ -64,9 +64,9 @@ TEST(InterInstr, MoveReg)
 
 	instr.BuildMoveReg( 20, 30 );
 
-	ASSERT_EQ( InstrOp::MOVE_REG, instr.op );
-	ASSERT_EQ( 20, instr.args[0] );
-	ASSERT_EQ( 30, instr.args[1] );
+	EXPECT_EQ( InstrOp::MOVE_REG, instr.op );
+	EXPECT_EQ( 20, instr.args[0] );
+	EXPECT_EQ( 30, instr.args[1] );
 }
 
 TEST(InterInstr, BranchAlways)
@@ -75,8 +75,8 @@ TEST(InterInstr, BranchAlways)
 
 	instr.BuildBranchAlways( 0xFFFFFFFF00000000UL );
 
-	ASSERT_EQ( InstrOp::BRANCH_ALWAYS, instr.op );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[0] );
+	EXPECT_EQ( InstrOp::BRANCH_ALWAYS, instr.op );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[0] );
 }
 
 TEST(InterInstr, BranchGprNotZero)
@@ -85,9 +85,9 @@ TEST(InterInstr, BranchGprNotZero)
 
 	instr.BuildBranchGprNotZero( 31, 0xFFFFFFFF00000000UL );
 
-	ASSERT_EQ( InstrOp::BRANCH_GPR_NOT_ZERO, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
+	EXPECT_EQ( InstrOp::BRANCH_GPR_NOT_ZERO, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
 }
 
 TEST(InterInstr, LoadImm)
@@ -96,9 +96,9 @@ TEST(InterInstr, LoadImm)
 
 	instr.BuildLoadImm( 31, 0xFFFFFFFF00000000UL );
 
-	ASSERT_EQ( InstrOp::LOAD_IMM, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
+	EXPECT_EQ( InstrOp::LOAD_IMM, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
 }
 
 TEST(InterInstr, Add)
@@ -107,10 +107,10 @@ TEST(InterInstr, Add)
 
 	instr.BuildAdd( 31, 1, 2 );
 
-	ASSERT_EQ( InstrOp::ADD, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 1, instr.args[1] );
-	ASSERT_EQ( 2, instr.args[2] );
+	EXPECT_EQ( InstrOp::ADD, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 2, instr.args[2] );
 }
 
 TEST(InterInstr, AddImm)
@@ -119,10 +119,10 @@ TEST(InterInstr, AddImm)
 
 	instr.BuildAddImm( 31, 1, 0xFFFFFFFF00000000UL );
 
-	ASSERT_EQ( InstrOp::ADD_IMM, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 1, instr.args[1] );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
+	EXPECT_EQ( InstrOp::ADD_IMM, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
 }
 
 TEST(InterInstr, Sub)
@@ -131,10 +131,10 @@ TEST(InterInstr, Sub)
 
 	instr.BuildSub( 31, 1, 2 );
 
-	ASSERT_EQ( InstrOp::SUB, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 1, instr.args[1] );
-	ASSERT_EQ( 2, instr.args[2] );
+	EXPECT_EQ( InstrOp::SUB, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 2, instr.args[2] );
 }
 
 TEST(InterInstr, SubuImm)
@@ -143,10 +143,10 @@ TEST(InterInstr, SubuImm)
 
 	instr.BuildSubuImm( 31, 1, 0xFFFFFFFF00000000UL );
 
-	ASSERT_EQ( InstrOp::SUBU_IMM, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 1, instr.args[1] );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
+	EXPECT_EQ( InstrOp::SUBU_IMM, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
 }
 
 TEST(InterInstr, AndImm)
@@ -155,10 +155,10 @@ TEST(InterInstr, AndImm)
 
 	instr.BuildAndImm( 31, 1, 0xFFFFFFFF00000000UL );
 
-	ASSERT_EQ( InstrOp::AND_IMM, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 1, instr.args[1] );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
+	EXPECT_EQ( InstrOp::AND_IMM, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
 }
 
 TEST(InterInstr, Andc)
@@ -167,10 +167,10 @@ TEST(InterInstr, Andc)
 
 	instr.BuildAndc( 31, 1, 2 );
 
-	ASSERT_EQ( InstrOp::ANDC, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 1, instr.args[1] );
-	ASSERT_EQ( 2, instr.args[2] );
+	EXPECT_EQ( InstrOp::ANDC, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 2, instr.args[2] );
 }
 
 TEST(InterInstr, Or)
@@ -179,10 +179,10 @@ TEST(InterInstr, Or)
 
 	instr.BuildOr( 31, 1, 2 );
 
-	ASSERT_EQ( InstrOp::OR, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 1, instr.args[1] );
-	ASSERT_EQ( 2, instr.args[2] );
+	EXPECT_EQ( InstrOp::OR, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 2, instr.args[2] );
 }
 
 TEST(InterInstr, OrImm)
@@ -191,10 +191,10 @@ TEST(InterInstr, OrImm)
 
 	instr.BuildOrImm( 31, 1, 0xFFFFFFFF00000000UL );
 
-	ASSERT_EQ( InstrOp::OR_IMM, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 1, instr.args[1] );
-	ASSERT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
+	EXPECT_EQ( InstrOp::OR_IMM, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
 }
 
 TEST(InterInstr, Sll32Imm)
@@ -203,10 +203,10 @@ TEST(InterInstr, Sll32Imm)
 
 	instr.BuildSll32Imm( 31, 1, 2 );
 
-	ASSERT_EQ( InstrOp::SLL32_IMM, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 1, instr.args[1] );
-	ASSERT_EQ( 2, instr.args[2] );
+	EXPECT_EQ( InstrOp::SLL32_IMM, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 2, instr.args[2] );
 }
 
 TEST(InterInstr, Sll64Imm)
@@ -215,10 +215,10 @@ TEST(InterInstr, Sll64Imm)
 
 	instr.BuildSll64Imm( 31, 1, 2 );
 
-	ASSERT_EQ( InstrOp::SLL64_IMM, instr.op );
-	ASSERT_EQ( 31, instr.args[0] );
-	ASSERT_EQ( 1, instr.args[1] );
-	ASSERT_EQ( 2, instr.args[2] );
+	EXPECT_EQ( InstrOp::SLL64_IMM, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 2, instr.args[2] );
 }
 
 TEST(InterInstr, PpcSlbia)
@@ -227,7 +227,7 @@ TEST(InterInstr, PpcSlbia)
 
 	instr.BuildPpcSlbia();
 
-	ASSERT_EQ( InstrOp::PPC_SLBIA, instr.op );
+	EXPECT_EQ( InstrOp::PPC_SLBIA, instr.op );
 }
 
 TEST(InterInstr, PpcSlbmte)
@@ -236,9 +236,9 @@ TEST(InterInstr, PpcSlbmte)
 
 	instr.BuildPpcSlbmte( 2, 4 );
 
-	ASSERT_EQ( InstrOp::PPC_SLBMTE, instr.op );
-	ASSERT_EQ( 2, instr.args[0] );
-	ASSERT_EQ( 4, instr.args[1] );
+	EXPECT_EQ( InstrOp::PPC_SLBMTE, instr.op );
+	EXPECT_EQ( 2, instr.args[0] );
+	EXPECT_EQ( 4, instr.args[1] );
 }
 
 TEST(InterInstr, PpcTlbiel)
@@ -247,7 +247,7 @@ TEST(InterInstr, PpcTlbiel)
 
 	instr.BuildPpcTlbiel( 4 );
 
-	ASSERT_EQ( InstrOp::PPC_TLBIEL, instr.op );
-	ASSERT_EQ( 4, instr.args[0] );
+	EXPECT_EQ( InstrOp::PPC_TLBIEL, instr.op );
+	EXPECT_EQ( 4, instr.args[0] );
 }
 
