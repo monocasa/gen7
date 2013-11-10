@@ -563,8 +563,9 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 
 		case jit::PPC_TLBIEL: {
 			const int rb = instr.args[0];
+			const bool l = instr.args[1];
 
-			printf( "TLBIEL RB=%016lx\n", ReadGPR64(rb) );
+			printf( "TLBIEL RB=%016lx L=%d\n", ReadGPR64(rb), l );
 			return true;
 		}
 

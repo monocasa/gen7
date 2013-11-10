@@ -197,9 +197,10 @@ struct InterInstr
 		args[1] = rb;
 	}
 
-	void BuildPpcTlbiel( int rb ) {
+	void BuildPpcTlbiel( int rb, bool l ) {
 		op = PPC_TLBIEL;
 		args[0] = rb;
+		args[1] = l;
 	}
 };
 

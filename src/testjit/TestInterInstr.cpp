@@ -245,9 +245,10 @@ TEST(InterInstr, PpcTlbiel)
 {
 	InterInstr instr;
 
-	instr.BuildPpcTlbiel( 4 );
+	instr.BuildPpcTlbiel( 4, true );
 
 	EXPECT_EQ( InstrOp::PPC_TLBIEL, instr.op );
 	EXPECT_EQ( 4, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
 }
 

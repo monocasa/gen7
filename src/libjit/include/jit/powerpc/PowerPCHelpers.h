@@ -20,6 +20,13 @@ private:
 
 	static const int B_LI_BITS = 26;
 
+	static const int B_BD_BITS = 16;
+
+	static const uint32_t B_BD_MASK = 0x0000FFFC;
+
+	static const int B_BI_SHIFT = 16;
+	static const int B_BO_SHIFT = 21;
+
 	static const uint32_t D_IMM_MASK = 0x0000FFFF;
 
 	static const int D_RA_SHIFT = 16;
@@ -28,8 +35,20 @@ private:
 
 	static const int D_IMM_BITS = 16;
 
-	static const uint32_t X_XO_MASK = 0x3FF;
+	static const int M_RA_SHIFT = 16;
+	static const int M_RS_SHIFT = 21;
 
+	static const uint32_t X_RC_MASK = 0x000000001;
+
+	static const int X_RB_SHIFT = 11;
+	static const int X_RA_SHIFT = 16;
+	static const int X_RS_SHIFT = 21;
+	static const int X_RT_SHIFT = 21;
+
+	static const int X_L_SHIFT = 21;
+	static const uint32_t X_L_MASK = 0x00000001;
+
+	static const uint32_t X_XO_MASK = 0x3FF;
 	static const int X_XO_SHIFT = 1;
 
 	static const uint32_t XFX_SPR_LO_MASK = 0x01F;
@@ -39,6 +58,13 @@ private:
 
 	static const uint32_t XFX_RS_MASK = 0x1f;
 	static const int XFX_RS_SHIFT = 21;
+
+	static const int XO_RB_SHIFT = 11;
+	static const int XO_RA_SHIFT = 16;
+	static const int XO_RS_SHIFT = 21;
+	static const int XO_RT_SHIFT = 21;
+
+	static const uint32_t XO_RC_MASK = 0x00000001;
 
 public:
 	enum {
@@ -73,15 +99,33 @@ public:
 		OPCD_RESERVED_0 = 0,
 		OPCD_ADDI       = 14,
 		OPCD_ADDIS      = 15,
+		OPCD_BCC        = 16,
 		OPCD_BRANCH     = 18,
+		OPCD_TABLE_19   = 19,
+		OPCD_ROTATE_21  = 21,
 		OPCD_ORI        = 24,
 		OPCD_ORIS       = 25,
-		OPCD_ROTATE     = 30,
+		OPCD_ROTATE_30  = 30,
 		OPCD_SPECIAL    = 31,
 	};
 
 	enum {
-		SPECIAL_XO_MTSPR = 467,
+		SPECIAL_XO_SUBF   = 40,
+		SPECIAL_XO_ANDC   = 60,
+		SPECIAL_XO_MFMSR  = 83,
+		SPECIAL_XO_ADD    = 266,
+		SPECIAL_XO_TLBIEL = 274,
+		SPECIAL_XO_MFSPR  = 339,
+		SPECIAL_XO_SLBMTE = 402,
+		SPECIAL_XO_OR     = 444,
+		SPECIAL_XO_MTSPR  = 467,
+		SPECIAL_XO_SLBIA  = 498,
+		SPECIAL_XO_SYNC   = 598,
+		SPECIAL_XO_EIEIO  = 854,
+	};
+
+	enum {
+		TABLE_19_XO_ISYNC = 150,
 	};
 
 	static int OPCD( const uint32_t instruction ) {
@@ -98,6 +142,18 @@ public:
 
 	static int64_t B_LI( const uint32_t instruction ) {
 		return util::SignExtend<int64_t,B_LI_BITS>( instruction & B_LI_MASK );
+	}
+
+	static int64_t B_BD( const uint32_t instruction ) {
+		return util::SignExtend<int64_t,B_BD_BITS>( instruction & B_BD_MASK );
+	}
+
+	static int B_BI( const uint32_t instruction ) {
+		return (instruction >> B_BI_SHIFT) & REG_MASK;
+	}
+
+	static int B_BO( const uint32_t instruction ) {
+		return (instruction >> B_BO_SHIFT) & REG_MASK;
 	}
 
 	static int64_t D_SI( const uint32_t instruction ) {
@@ -120,8 +176,40 @@ public:
 		return (instruction >> D_RT_SHIFT) & REG_MASK;
 	}
 
+	static int M_RA( const uint32_t instruction ) {
+		return (instruction >> M_RA_SHIFT) & REG_MASK;
+	}
+
+	static int M_RS( const uint32_t instruction ) {
+		return (instruction >> M_RS_SHIFT) & REG_MASK;
+	}
+
+	static bool X_RC( const uint32_t instruction ) {
+		return instruction & X_RC_MASK;
+	}
+
 	static int X_XO( const uint32_t instruction ) {
 		return (instruction >> X_XO_SHIFT) & X_XO_MASK;
+	}
+
+	static int X_RB( const uint32_t instruction ) {
+		return (instruction >> X_RB_SHIFT) & REG_MASK;
+	}
+
+	static int X_RA( const uint32_t instruction ) {
+		return (instruction >> X_RA_SHIFT) & REG_MASK;
+	}
+
+	static int X_RS( const uint32_t instruction ) {
+		return (instruction >> X_RS_SHIFT) & REG_MASK;
+	}
+
+	static int X_RT( const uint32_t instruction ) {
+		return (instruction >> X_RT_SHIFT) & REG_MASK;
+	}
+
+	static bool X_L( const uint32_t instruction ) {
+		return (instruction >> X_L_SHIFT) & X_L_MASK;
 	}
 
 	static int XFX_SPR( const uint32_t instruction ) {
@@ -131,6 +219,26 @@ public:
 
 	static int XFX_RS( const uint32_t instruction ) {
 		return (instruction >> XFX_RS_SHIFT) & XFX_RS_MASK;
+	}
+
+	static bool XO_RC( const uint32_t instruction ) {
+		return instruction & XO_RC_MASK;
+	}
+
+	static int XO_RB( const uint32_t instruction ) {
+		return (instruction >> XO_RB_SHIFT) & REG_MASK;
+	}
+
+	static int XO_RA( const uint32_t instruction ) {
+		return (instruction >> XO_RA_SHIFT) & REG_MASK;
+	}
+
+	static int XO_RS( const uint32_t instruction ) {
+		return (instruction >> XO_RS_SHIFT) & REG_MASK;
+	}
+
+	static int XO_RT( const uint32_t instruction ) {
+		return (instruction >> XO_RT_SHIFT) & REG_MASK;
 	}
 
 };

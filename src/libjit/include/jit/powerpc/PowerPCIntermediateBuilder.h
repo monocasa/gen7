@@ -17,7 +17,9 @@ private:
 		return regNum * sizeof(uint64_t);
 	}
 
+	int BuildIntermediateBcc( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc );
 	int BuildIntermediateSpecial( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc );
+	int BuildIntermediateTable19( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc );
 
 public:
 	virtual int BuildIntermediate( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc );

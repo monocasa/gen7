@@ -3,11 +3,115 @@
 
 namespace jit {
 
+int PowerPCIntermediateBuilder::BuildIntermediateBcc( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc )
+{
+	if( B_LK(nativeInstr) || B_AA(nativeInstr) ) {
+		intermediates[0].BuildUnknown( 16, nativeInstr, pc );
+		return 1;
+	}
+
+	if( B_BI(nativeInstr) ) {
+		intermediates[0].BuildUnknown( 16, nativeInstr, pc );
+		return 1;
+	}
+
+	const uint64_t target = pc + B_BD( nativeInstr );
+
+	switch( B_BO(nativeInstr) ) {
+		case 25: { //bdnz+
+			intermediates[0].BuildSubuImm( GPR64OFFSET(GPR_CTR), GPR64OFFSET(GPR_CTR), 1 );
+			intermediates[1].BuildBranchGprNotZero( GPR64OFFSET(GPR_CTR), target );
+			return 2;
+		}
+
+		default: {
+			intermediates[0].BuildUnknown( 16, nativeInstr, pc );
+			return 1;
+		}
+	}
+}
+
 int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc )
 {
 	const int xo = X_XO(nativeInstr);
 
 	switch( xo ) {
+		case SPECIAL_XO_ADD: {
+			if( X_RC(nativeInstr) ) {
+				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+				return 1;
+			}
+			const int rs = GPR64OFFSET( X_RS(nativeInstr) );
+			const int ra = GPR64OFFSET( X_RA(nativeInstr) );
+			const int rb = GPR64OFFSET( X_RB(nativeInstr) );
+
+			intermediates[0].BuildAdd( rs, rb, ra );
+			return 1;
+		}
+
+		case SPECIAL_XO_ANDC: {
+			if( X_RC(nativeInstr) ) {
+				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+				return 1;
+			}
+			const int rs = GPR64OFFSET( X_RS(nativeInstr) );
+			const int ra = GPR64OFFSET( X_RA(nativeInstr) );
+			const int rb = GPR64OFFSET( X_RB(nativeInstr) );
+
+			intermediates[0].BuildAndc( rs, rb, ra );
+			return 1;
+		}
+
+		case SPECIAL_XO_EIEIO: {
+			intermediates[0].BuildNop();
+			return 1;
+		}
+
+		case SPECIAL_XO_MFMSR: {
+			const int rt = GPR64OFFSET( X_RT(nativeInstr) );
+
+			intermediates[0].BuildReadSystem( rt, SPR_MSR );
+			return 1;
+		}
+
+		case SPECIAL_XO_MFSPR: {
+			const int spr = XFX_SPR(nativeInstr);
+			const int destReg = GPR64OFFSET( XFX_RS(nativeInstr) );
+
+			switch( spr ) {
+				case SPR_LR: {
+					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_LR), destReg );
+					break;
+				}
+				case SPR_CTR: {
+					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_CTR), destReg );
+					break;
+				}
+				case SPR_SPRG0: {
+					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_SPRG0), destReg );
+					break;
+				}
+				case SPR_SPRG1: {
+					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_SPRG1), destReg );
+					break;
+				}
+				case SPR_SPRG2: {
+					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_SPRG2), destReg );
+					break;
+				}
+				case SPR_SPRG3: {
+					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_SPRG3), destReg );
+					break;
+				}
+				default: {
+					intermediates[0].BuildReadSystem( destReg, spr );
+					break;
+				}
+			}
+
+			return 1;
+		}
+
 		case SPECIAL_XO_MTSPR: {
 			const int spr = XFX_SPR(nativeInstr);
 			const int sourceReg = GPR64OFFSET( XFX_RS(nativeInstr) );
@@ -46,8 +150,79 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 			return 1;
 		}
 
+		case SPECIAL_XO_OR: {
+			if( X_RC(nativeInstr) ) {
+				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+				return 1;
+			}
+			const int rs = GPR64OFFSET( X_RS(nativeInstr) );
+			const int ra = GPR64OFFSET( X_RA(nativeInstr) );
+			const int rb = GPR64OFFSET( X_RB(nativeInstr) );
+
+			intermediates[0].BuildOr( rs, rb, ra );
+			return 1;
+		}
+
+		case SPECIAL_XO_SLBIA: {
+			intermediates[0].BuildPpcSlbia();
+			return 1;
+		}
+
+		case SPECIAL_XO_SLBMTE: {
+			const int rs = GPR64OFFSET( X_RS(nativeInstr) );
+			const int rb = GPR64OFFSET( X_RB(nativeInstr) );
+
+			intermediates[0].BuildPpcSlbmte( rs, rb );
+			return 1;
+		}
+
+		case SPECIAL_XO_SUBF: {
+			if( XO_RC(nativeInstr) ) {
+				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+				return 1;
+			}
+
+			const int rt = GPR64OFFSET( XO_RT(nativeInstr) );
+			const int ra = GPR64OFFSET( XO_RA(nativeInstr) );
+			const int rb = GPR64OFFSET( XO_RB(nativeInstr) );
+
+			intermediates[0].BuildSub( ra, rb, rt );
+
+			return 1;
+		}
+
+		case SPECIAL_XO_SYNC: {
+			intermediates[0].BuildNop();
+			return 1;
+		}
+
+		case SPECIAL_XO_TLBIEL: {
+			const int rb = GPR64OFFSET( X_RB(nativeInstr) );
+			const bool l = X_L(nativeInstr);
+
+			intermediates[0].BuildPpcTlbiel( rb, l );
+			return 1;
+		}
+
 		default: {
 			intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+			return 1;
+		}
+	}
+}
+
+int PowerPCIntermediateBuilder::BuildIntermediateTable19( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc )
+{
+	const int xo = X_XO(nativeInstr);
+
+	switch( xo ) {
+		case TABLE_19_XO_ISYNC: {
+			intermediates[0].BuildNop();
+			return 1;
+		}
+
+		default: {
+			intermediates[0].BuildUnknown( xo + 1900000, nativeInstr, pc );
 			return 1;
 		}
 	}
@@ -88,6 +263,10 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			}
 		}
 
+		case OPCD_BCC: {
+			return BuildIntermediateBcc( intermediates, nativeInstr, pc );
+		}
+
 		case OPCD_BRANCH: {
 			uint64_t target = B_LI(nativeInstr);
 
@@ -106,7 +285,21 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			}
 		}
 
-		case OPCD_ROTATE: {
+		case OPCD_ROTATE_21: {
+			const int rs = GPR32LOWOFFSET( M_RS(nativeInstr) );
+			const int ra = GPR32LOWOFFSET( M_RA(nativeInstr) );
+
+			if( (nativeInstr & 0xFFFF) == 0x901A ) { //slwi rs, ra, 18
+				intermediates[0].BuildSll32Imm( rs, ra, 18 );
+			}
+			else {
+				intermediates[0].BuildUnknown( opcd, nativeInstr, pc );
+			}
+
+			return 1;
+		}
+
+		case OPCD_ROTATE_30: {
 			const int rs = GPR64OFFSET( D_RS(nativeInstr) );
 			const int ra = GPR64OFFSET( D_RA(nativeInstr) );
 
@@ -158,6 +351,10 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 
 		case OPCD_SPECIAL: {
 			return BuildIntermediateSpecial( intermediates, nativeInstr, pc );
+		}
+
+		case OPCD_TABLE_19: {
+			return BuildIntermediateTable19( intermediates, nativeInstr, pc );
 		}
 
 		default: {
