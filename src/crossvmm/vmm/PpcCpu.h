@@ -46,11 +46,6 @@ private:
 
 	void DumpContext();
 
-	//int BuildIntermediateBranchConditional( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
-	//int BuildIntermediateTable19( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
-	//int BuildIntermediateSpecial( jit::InterInstr *intermediates, const uint32_t nativeInstr, uint64_t pc );
-	//int BuildIntermediate( jit::InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc );
-
 public:
 	virtual void Init();
 
