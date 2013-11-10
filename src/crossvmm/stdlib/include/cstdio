@@ -1,8 +1,15 @@
 #ifndef STANDALONECPP_CSTDIO
 #define STANDALONECPP_CSTDIO
 
-extern "C" void printf( const char *format, ... )
+extern "C" {
+
+void printf( const char *format, ... )
 __attribute__((format (printf, 1, 2)));
+
+void sprintf( char *str, const char *format, ... )
+__attribute__((format (printf, 2, 3)));
+
+}
 
 #endif //STANDALONECPP_CSTDIO
 

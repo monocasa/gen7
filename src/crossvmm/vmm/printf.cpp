@@ -451,3 +451,31 @@ printf(const char *fmt, ...)
 	va_end(ap);
 }
 
+typedef struct {
+	char *str;
+} buffer_context_t;
+
+static void
+putbuffer(int c, void *arg)
+{
+	buffer_context_t *bufferContext = reinterpret_cast<buffer_context_t*>( arg );
+	*(bufferContext->str++) = c;
+}
+
+extern "C"
+void
+sprintf(char *buffer, const char *fmt, ...)
+{
+	buffer_context_t bufferContext;
+
+	bufferContext.str = buffer;
+
+	va_list ap;
+
+	va_start( ap, fmt );
+	kvprintf( fmt, putbuffer, &bufferContext, 10, ap );
+	va_end( ap );
+
+	*(bufferContext.str++) = '\0';
+}
+
