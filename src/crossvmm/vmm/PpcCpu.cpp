@@ -595,6 +595,7 @@ void PpcCpu::Execute()
 			if( !InterpretIntermediate( intermediates[i] ) ) {
 
 				printf( "Intermediate interpretation failed:\n\t%s\n", GetErrorString() );
+				context.pc -= sizeof(uint32_t);
 
 				DumpContext();
 				return;
