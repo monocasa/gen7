@@ -176,6 +176,21 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 			return 1;
 		}
 
+		case SPECIAL_XO_SLW: {
+			if( X_RC(nativeInstr) ) {
+				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+				return 1;
+			}
+
+			const int rs = GPR64OFFSET( X_RS(nativeInstr) );
+			const int ra = GPR64OFFSET( X_RA(nativeInstr) );
+			const int rb = GPR64OFFSET( X_RB(nativeInstr) );
+
+			intermediates[0].BuildSll32( rs, ra, rb );
+
+			return 1;
+		}
+
 		case SPECIAL_XO_SUBF: {
 			if( XO_RC(nativeInstr) ) {
 				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );

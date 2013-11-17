@@ -329,6 +329,23 @@ TEST(PowerPCIntermediateBuilder, Slbmte)
 	EXPECT_EQ( 5 * sizeof(uint64_t), instr[0].args[1] );
 }
 
+TEST(PowerPCIntermediateBuilder, Slw)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 7ca51830 : slw      r5, r5, r3
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7ca51830, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::SLL32, instr[0].op );
+	EXPECT_EQ( 5 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 5 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[2] );
+
+	// 00000000 : 7ca51830 : slw      r5, r5, r3
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7ca51831, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::UNKNOWN_OPCODE, instr[0].op );
+}
+
 TEST(PowerPCIntermediateBuilder, Slwi)
 {
 	PowerPCIntermediateBuilder builder;
