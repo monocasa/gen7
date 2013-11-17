@@ -35,7 +35,8 @@ enum InstrOp
 	OR_IMM,
 
 	//Shift
-	SLL32_IMM = 500,
+	SLL32 = 500,
+	SLL32_IMM,
 	SLL64_IMM,
 
 	//Processor Specific Region
@@ -172,6 +173,13 @@ struct InterInstr
 	}
 
 //Shift/Rotate
+	void BuildSll32( int sourceReg, int destReg, int shiftReg ) {
+		op = SLL32;
+		args[0] = sourceReg;
+		args[1] = destReg;
+		args[2] = shiftReg;
+	}
+
 	void BuildSll32Imm( int sourceReg, int destReg, int shift ) {
 		op = SLL32_IMM;
 		args[0] = sourceReg;

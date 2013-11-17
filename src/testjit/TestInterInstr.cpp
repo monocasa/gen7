@@ -197,6 +197,19 @@ TEST(InterInstr, OrImm)
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
 }
 
+TEST(InterInstr, Sll32)
+{
+	InterInstr instr;
+
+	instr.BuildSll32( 31, 1, 16 );
+
+	EXPECT_EQ( InstrOp::SLL32, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 16, instr.args[2] );
+}
+
+
 TEST(InterInstr, Sll32Imm)
 {
 	InterInstr instr;
