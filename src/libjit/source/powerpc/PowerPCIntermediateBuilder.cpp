@@ -67,6 +67,26 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 			return 1;
 		}
 
+		case SPECIAL_XO_LWARX: {
+			const int rt = X_RT(nativeInstr);
+			const int ra = X_RA(nativeInstr);
+			const int rb = X_RB(nativeInstr);
+
+			if( 0 == ra ) {
+				intermediates[0].BuildLoad32Linked( GPR64OFFSET(rb),
+				                                    GPR32LOWOFFSET(rt) );
+			}
+			else {
+				intermediates[0].BuildLoad32IndexedLinked( GPR64OFFSET(rb),
+				                                           GPR64OFFSET(ra),
+				                                           GPR32LOWOFFSET(rt) );
+			}
+
+			intermediates[1].BuildLoad32Imm( GPR32HIGHOFFSET(rt), 0 );
+
+			return 2;
+		}
+
 		case SPECIAL_XO_MFMSR: {
 			const int rt = GPR64OFFSET( X_RT(nativeInstr) );
 
@@ -258,7 +278,7 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 				return 1;
 			}
 			else {
-				intermediates[0].BuildLoadImm( GPR64OFFSET(rt), imm );
+				intermediates[0].BuildLoad64Imm( GPR64OFFSET(rt), imm );
 				return 1;
 			}
 		}			
@@ -273,7 +293,7 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 				return 1;
 			}
 			else {
-				intermediates[0].BuildLoadImm( GPR64OFFSET(rt), imm );
+				intermediates[0].BuildLoad64Imm( GPR64OFFSET(rt), imm );
 				return 1;
 			}
 		}
@@ -290,7 +310,7 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			}
 
 			if( B_LK(nativeInstr) ) {
-				intermediates[0].BuildLoadImm( 32 * sizeof(uint64_t), pc + sizeof(uint32_t) );
+				intermediates[0].BuildLoad64Imm( 32 * sizeof(uint64_t), pc + sizeof(uint32_t) );
 				intermediates[1].BuildBranchAlways( target );
 				return 2;
 			}

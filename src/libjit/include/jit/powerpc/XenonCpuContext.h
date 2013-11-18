@@ -25,6 +25,9 @@ struct XenonCpuContext : public CpuContext {
 
 	uint64_t pc;
 
+	bool isReserved;
+	uint64_t reservation;
+
 	uint64_t msr;
 	uint64_t hrmor;
 	uint64_t srr0;

@@ -32,6 +32,9 @@ struct Sh4aCpuContext : public jit::CpuContext {
 
 	uint32_t sq[ 16 ];
 
+	bool isReserved;
+	uint64_t reservation;
+
 	Sh4aCpuContext()
 	  : CpuContext( jit::CpuType::SH4A, 0 )
 	{ }

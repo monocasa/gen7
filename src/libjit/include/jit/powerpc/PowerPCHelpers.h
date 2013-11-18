@@ -110,6 +110,7 @@ public:
 	};
 
 	enum {
+		SPECIAL_XO_LWARX  = 20,
 		SPECIAL_XO_SLW    = 24,
 		SPECIAL_XO_SUBF   = 40,
 		SPECIAL_XO_ANDC   = 60,

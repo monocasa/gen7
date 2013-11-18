@@ -90,15 +90,49 @@ TEST(InterInstr, BranchGprNotZero)
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
 }
 
-TEST(InterInstr, LoadImm)
+TEST(InterInstr, Load32Imm)
 {
 	InterInstr instr;
 
-	instr.BuildLoadImm( 31, 0xFFFFFFFF00000000UL );
+	instr.BuildLoad32Imm( 31, 0xFFFFFFFF00000000UL );
 
-	EXPECT_EQ( InstrOp::LOAD_IMM, instr.op );
+	EXPECT_EQ( InstrOp::LD_32_IMM, instr.op );
 	EXPECT_EQ( 31, instr.args[0] );
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
+}
+
+TEST(InterInstr, Load64Imm)
+{
+	InterInstr instr;
+
+	instr.BuildLoad64Imm( 31, 0xFFFFFFFF00000000UL );
+
+	EXPECT_EQ( InstrOp::LD_64_IMM, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
+}
+
+TEST(InterInstr, Load32Linked)
+{
+	InterInstr instr;
+
+	instr.BuildLoad32Linked( 1, 2 );
+
+	EXPECT_EQ( InstrOp::LD_32_L, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+}
+
+TEST(InterInstr, Load32IndexedLinked)
+{
+	InterInstr instr;
+
+	instr.BuildLoad32IndexedLinked( 1, 2, 3 );
+
+	EXPECT_EQ( InstrOp::LD_32_IDX_L, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+	EXPECT_EQ( 3, instr.args[2] );
 }
 
 TEST(InterInstr, Add)
@@ -208,7 +242,6 @@ TEST(InterInstr, Sll32)
 	EXPECT_EQ( 1, instr.args[1] );
 	EXPECT_EQ( 16, instr.args[2] );
 }
-
 
 TEST(InterInstr, Sll32Imm)
 {

@@ -20,7 +20,10 @@ enum InstrOp
 	BRANCH_GPR_NOT_ZERO,
 
 	//Load/Store
-	LOAD_IMM = 200,
+	LD_32_IMM = 200,
+	LD_64_IMM,
+	LD_32_L,
+	LD_32_IDX_L,
 
 	//Arithmetic
 	ADD = 300,
@@ -108,10 +111,29 @@ struct InterInstr
 	}
 
 //Load/Store
-	void BuildLoadImm( int destReg, uint64_t value ) {
-		op = LOAD_IMM;
+	void BuildLoad32Imm( int destReg, uint64_t value ) {
+		op = LD_32_IMM;
 		args[0] = destReg;
 		args[1] = value;
+	}
+
+	void BuildLoad64Imm( int destReg, uint64_t value ) {
+		op = LD_64_IMM;
+		args[0] = destReg;
+		args[1] = value;
+	}
+
+	void BuildLoad32Linked( int sourceReg, int destReg ) {
+		op = LD_32_L;
+		args[0] = sourceReg;
+		args[1] = destReg;
+	}
+
+	void BuildLoad32IndexedLinked( int sourceReg, int offsetReg, int destReg ) {
+		op = LD_32_IDX_L;
+		args[0] = sourceReg;
+		args[1] = offsetReg;
+		args[2] = destReg;
 	}
 
 //Arithmetic

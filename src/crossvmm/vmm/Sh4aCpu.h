@@ -3,6 +3,7 @@
 
 #include "Cpu.h"
 #include "MemoryManager.h"
+#include "ThirtyTwoBitMemoryPolicy.h"
 
 #include "jit/sh4a/Sh4aCpuContext.h"
 #include "jit/CpuInterpreter.h"
@@ -24,7 +25,7 @@ public:
 	virtual uint32_t Read32( uint64_t addr ) = 0;
 };
 
-class Sh4aCpu : public Cpu, public jit::CpuInterpreter
+class Sh4aCpu : public Cpu, public jit::CpuInterpreter<ThirtyTwoBitMemoryPolicy>
 {
 private:
 	static const uint32_t SR_T_BIT  = 0x00000001;
@@ -115,7 +116,7 @@ public:
 	}
 
 	Sh4aCpu( jit::Sh4aCpuContext &context )
-	  : CpuInterpreter( &context.gpr[0] )
+	  : CpuInterpreter( &context.gpr[0], context.isReserved, context.reservation )
 	  , context( context )
 	  , mmu( context, *this )
 	{ }

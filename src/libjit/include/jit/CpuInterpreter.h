@@ -1,15 +1,18 @@
 #ifndef GEN7_LIBJIT_CPUINTERPRETER_H
 #define GEN7_LIBJIT_CPUINTERPRETER_H
 
+#include "jit/InterInstr.h"
+
 #include <cstdint>
 #include <cstdio>
 
 namespace jit {
 
-struct InterInstr;
-
-class CpuInterpreter
+template<class MemoryPolicy>
+class CpuInterpreter : public MemoryPolicy
 {
+	using MemoryPolicy::ReadMem32;
+
 protected:
 	uint8_t * const GPR_PTR;
 
@@ -31,6 +34,9 @@ protected:
 		*reinterpret_cast<uint64_t*>( &GPR_PTR[offset] ) = value;
 	}
 
+	bool &isReserved;
+	uint64_t &reservation;
+
 public:
 	virtual void SetPC( uint64_t newPc ) = 0;
 
@@ -45,12 +51,300 @@ public:
 		return errorString;
 	}
 
-	CpuInterpreter( void* gprPtr )
+	CpuInterpreter( void* gprPtr, bool &isReserved, uint64_t &reservation )
 	  : GPR_PTR( reinterpret_cast<uint8_t*>( gprPtr ) )
+	  , isReserved( isReserved )
+	  , reservation( reservation )
 	{
 		sprintf( errorString, "No Error" );
 	}
 };
+
+template<class MemoryPolicy>
+bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
+{
+	switch( instr.op ) {
+	//Misc
+		case UNKNOWN_OPCODE: {
+			sprintf( errorString, "Unknown opcode %ld (%08lx) @ %016lx", 
+			         instr.args[0], instr.args[1], instr.args[2] );
+			return false;
+		}
+
+		case NOP: {
+			return true;
+		}
+
+		case SET_SYS_IMM: {
+			const uint64_t imm = instr.args[0];
+			const int sourceReg = instr.args[1];
+
+			return SetSystemReg( sourceReg, imm );
+		}
+
+		case SET_SYS_REG: {
+			const int sourceReg = instr.args[0];
+			const int sysReg = instr.args[1];
+
+			uint64_t result = ReadGPR64( sourceReg );
+			return SetSystemReg( sysReg, result );
+		}
+
+		case READ_SYS: {
+			const int destReg = instr.args[0];
+			const int sysReg = instr.args[1];
+
+			uint64_t result = 0;
+			if( !ReadSystemReg( sysReg, result ) ) {
+				return false;
+			}
+			SetGPR64( destReg, result );
+			return true;
+		}
+
+		case MOVE_REG: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+
+			uint64_t result = ReadGPR64( sourceReg );
+			SetGPR64( destReg, result );
+			return true;
+		}
+
+	//Branch
+		case BRANCH_ALWAYS: {
+			const uint64_t target = instr.args[0];
+
+			SetPC( target );
+			return true;
+		}
+
+		case BRANCH_GPR_NOT_ZERO: {
+			const int gpr = instr.args[0];
+			const uint64_t target = instr.args[1];
+
+			uint64_t value = ReadGPR64(gpr);
+
+			if( value != 0 ) {
+				SetPC( target );
+			}
+
+			return true;
+		}
+
+	//Load/Store
+		case LD_32_IMM: {
+			const int gpr = instr.args[0];
+			const uint32_t imm = instr.args[1];
+
+			SetGPR32( gpr, imm );
+			return true;
+		}
+
+		case LD_64_IMM: {
+			const int gpr = instr.args[0];
+			const uint64_t imm = instr.args[1];
+
+			SetGPR64( gpr, imm );
+			return true;
+		}
+
+		case LD_32_L: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+
+			const uint64_t addr = ReadGPR64( sourceReg );
+
+			reservation = addr;
+			isReserved = true;
+
+			const uint32_t value = ReadMem32( addr );
+
+			SetGPR32( destReg, value );
+			return true;
+		}
+
+		case LD_32_IDX_L: {
+			const int sourceReg = instr.args[0];
+			const int offsetReg = instr.args[1];
+			const int destReg = instr.args[2];
+
+			const uint64_t addr = ReadGPR64( sourceReg ) + ReadGPR64( offsetReg );
+
+			reservation = addr;
+			isReserved = true;
+
+			const uint32_t value = ReadMem32( addr );
+
+			SetGPR32( destReg, value );
+			return true;
+		}
+
+	//Arithmetic
+		case ADD: {
+			const int sourceReg0 = instr.args[0];
+			const int sourceReg1 = instr.args[1];
+			const int destReg = instr.args[2];
+
+			uint64_t sourceValue0 = ReadGPR64( sourceReg0 );
+			uint64_t sourceValue1 = ReadGPR64( sourceReg1 );
+
+			uint64_t result = sourceValue0 + sourceValue1;
+
+			SetGPR64( destReg, result );
+
+			return true;
+		}
+
+		case ADD_IMM: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const uint64_t imm = instr.args[2];
+
+			uint64_t sourceValue = ReadGPR64( sourceReg );
+
+			uint64_t result = sourceValue + imm;
+
+			SetGPR64( destReg, result );
+
+			return true;
+		}
+
+		case SUB: {
+			const int sourceReg0 = instr.args[0];
+			const int sourceReg1 = instr.args[1];
+			const int destReg = instr.args[2];
+
+			uint64_t sourceValue0 = ReadGPR64( sourceReg0 );
+			uint64_t sourceValue1 = ReadGPR64( sourceReg1 );
+
+			uint64_t result = ~sourceValue0 + sourceValue1 + 1;
+
+			SetGPR64( destReg, result );
+
+			return true;
+		} 
+
+		case SUBU_IMM: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const uint64_t imm = instr.args[2];
+
+			uint64_t sourceValue = ReadGPR64( sourceReg );
+
+			uint64_t result = sourceValue - imm;
+
+			SetGPR64( destReg, result );
+
+			return true;
+		}
+
+	//Logic
+		case AND_IMM: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const uint64_t imm = instr.args[2];
+
+			uint64_t sourceValue = ReadGPR64( sourceReg );
+
+			uint64_t result = sourceValue & imm;
+
+			SetGPR64( destReg, result );
+
+			return true;
+		}
+
+		case ANDC: {
+			const int sourceReg0 = instr.args[0];
+			const int sourceReg1 = instr.args[1];
+			const int destReg = instr.args[2];
+
+			uint64_t sourceValue0 = ReadGPR64( sourceReg0 );
+			uint64_t sourceValue1 = ReadGPR64( sourceReg1 );
+
+			uint64_t value = sourceValue0 & ~sourceValue1;
+
+			SetGPR64( destReg, value );
+
+			return true;
+		}
+
+		case OR: {
+			const int sourceReg0 = instr.args[0];
+			const int sourceReg1 = instr.args[1];
+			const int destReg = instr.args[2];
+
+			uint64_t sourceValue0 = ReadGPR64( sourceReg0 );
+			uint64_t sourceValue1 = ReadGPR64( sourceReg1 );
+
+			uint64_t value = sourceValue0 | sourceValue1;
+
+			SetGPR64( destReg, value );
+
+			return true;
+		}
+
+		case OR_IMM: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const uint64_t imm = instr.args[2];
+
+			uint64_t sourceValue = ReadGPR64( sourceReg );
+
+			uint64_t result = sourceValue | imm;
+
+			SetGPR64( destReg, result );
+
+			return true;
+			return true;
+		}
+
+	//Shift/Rotate
+		case SLL32: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const int shiftReg = instr.args[2];
+
+			uint32_t result = ReadGPR32( sourceReg ) << ReadGPR32( shiftReg );
+
+			SetGPR32( destReg, result );
+
+			return true;
+		}
+
+		case SLL32_IMM: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const int shift = instr.args[2];
+
+			uint32_t result = ReadGPR32( sourceReg ) << shift;
+
+			SetGPR32( destReg, result );
+
+			return true;
+		}
+			
+		case SLL64_IMM: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const int shift = instr.args[2];
+
+			uint64_t result = ReadGPR64( sourceReg ) << shift;
+
+			SetGPR64( destReg, result );
+			return true;
+		}
+
+		default: {
+			if( instr.op >= PROC_LOW ) {
+				return InterpretProcessorSpecific( instr );
+			}
+			sprintf( errorString, "Unknown instr.op %d (0x%lx, 0x%lx, 0x%lx, 0x%lx)\n",
+			         instr.op, instr.args[0], instr.args[1], instr.args[2], instr.args[3] );
+			return false;
+		}
+	}
+}
 
 } //namespace jit
 

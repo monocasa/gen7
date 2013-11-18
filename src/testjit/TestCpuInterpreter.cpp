@@ -3,9 +3,52 @@
 
 #include <gtest/gtest.h>
 
+#include <map>
+#include <vector>
+
 using namespace jit;
 
-class TestCpuInterpreter : public CpuInterpreter
+class TestMemoryPolicy
+{
+public:
+	struct Access {
+		uint64_t addr;
+		uint64_t value;
+		enum Type : int {
+			READ32
+		} type;
+
+		Access( Type type, uint64_t addr, uint64_t value )
+		  : addr( addr )
+		  , value( value )
+		  , type( type )
+		{ }
+	};
+
+protected:
+	uint32_t ReadMem32( uint64_t addr ) {
+		uint32_t value = 0;
+
+		if( data32.end() != data32.find(addr) ) {
+			value = data32[ addr ];
+		}
+
+		accesses.push_back( Access(Access::Type::READ32, addr, value) );
+
+		return value;
+	}
+
+public:
+	std::map<uint64_t, uint32_t> data32;
+	std::vector<Access> accesses;
+
+	void ResetMemoryPolicy() {
+		data32.clear();
+		accesses.clear();
+	}
+};
+
+class TestCpuInterpreter : public CpuInterpreter<TestMemoryPolicy>
 {
 public:
 	static const int NUM_GPRS = 32;
@@ -14,6 +57,9 @@ public:
 	uint64_t pc;
 	uint64_t gprs[ NUM_GPRS ];
 	uint64_t sysRegs[ NUM_SYS_REGS ];
+
+	bool isReserved;
+	uint64_t reservation;
 
 	virtual void SetPC( uint64_t newPc ) {
 		pc = newPc;
@@ -61,10 +107,22 @@ public:
 		}
 
 		pc = 0;
+		isReserved = false;
+		reservation = 0;
+
+		ResetMemoryPolicy();
+	}
+
+	bool IsReserved() const {
+		return isReserved;
+	}
+
+	uint64_t Reservation() const {
+		return reservation;
 	}
 
 	TestCpuInterpreter()
-	  : CpuInterpreter( &gprs[0] )
+	  : CpuInterpreter( &gprs[0], isReserved, reservation )
 	{
 		Reset();
 	}
@@ -198,12 +256,76 @@ TEST(CpuInterpreter, BranchGprNotZero)
 	EXPECT_EQ( 0, testCpu.pc );
 }
 
-TEST(CpuInterpreter, LoadImm)
+TEST(CpuInterpreter, Load32Imm)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
 
-	instr.BuildLoadImm( testCpu.Gpr64Offset(1), 0xFFFFFFFF00000000UL );
+	instr.BuildLoad32Imm( testCpu.Gpr32OffsetLow(1), 0xFFFF0000UL );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0x00000000FFFF0000, testCpu.gprs[1] );
+
+	testCpu.Reset();
+
+	instr.BuildLoad32Imm( testCpu.Gpr32OffsetHigh(1), 0xFFFF0000UL );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFF000000000000, testCpu.gprs[1] );
+}
+
+TEST(CpuInterpreter, Load32Linked)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0x0000000000000100UL;
+	testCpu.gprs[2] = 0xFFFFFFFF00000000UL;
+	testCpu.data32[ 0x100 ] = 0x55555555;
+
+	instr.BuildLoad32Linked( testCpu.Gpr64Offset(1), testCpu.Gpr32OffsetLow(2) );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0x0000000000000100UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0xFFFFFFFF55555555UL, testCpu.gprs[2] );
+	EXPECT_TRUE( testCpu.IsReserved() );
+	EXPECT_EQ( 0x0000000000000100UL, testCpu.Reservation() );
+
+	ASSERT_EQ( 1, testCpu.accesses.size() );
+	EXPECT_EQ( TestCpuInterpreter::Access::Type::READ32, testCpu.accesses[0].type );
+	EXPECT_EQ( 0x0000000000000100UL, testCpu.accesses[0].addr );
+	EXPECT_EQ( 0x0000000055555555UL, testCpu.accesses[0].value );
+}
+
+TEST(CpuInterpreter, Load32IndexedLinked)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0x0000000000000100UL;
+	testCpu.gprs[2] = 0x0000000000001000UL;
+	testCpu.gprs[3] = 0xFFFFFFFF00000000UL;
+	testCpu.data32[ 0x1100 ] = 0x55555555;
+
+	instr.BuildLoad32IndexedLinked( testCpu.Gpr64Offset(1), 
+	                                testCpu.Gpr64Offset(2),
+	                                testCpu.Gpr32OffsetLow(3) );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0x0000000000000100UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0x0000000000001000UL, testCpu.gprs[2] );
+	EXPECT_EQ( 0xFFFFFFFF55555555UL, testCpu.gprs[3] );
+	EXPECT_TRUE( testCpu.IsReserved() );
+	EXPECT_EQ( 0x0000000000001100UL, testCpu.Reservation() );
+
+	ASSERT_EQ( 1, testCpu.accesses.size() );
+	EXPECT_EQ( TestCpuInterpreter::Access::Type::READ32, testCpu.accesses[0].type );
+	EXPECT_EQ( 0x0000000000001100UL, testCpu.accesses[0].addr );
+	EXPECT_EQ( 0x0000000055555555UL, testCpu.accesses[0].value );
+}
+
+TEST(CpuInterpreter, Load64Imm)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	instr.BuildLoad64Imm( testCpu.Gpr64Offset(1), 0xFFFFFFFF00000000UL );
 	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
 }

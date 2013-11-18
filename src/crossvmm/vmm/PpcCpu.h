@@ -2,6 +2,7 @@
 #define GEN7_CROSSVMM_VMM_PPCCPU_H
 
 #include "Cpu.h"
+#include "ThirtyTwoBitMemoryPolicy.h"
 
 #include "jit/powerpc/PowerPCIntermediateBuilder.h"
 #include "jit/powerpc/XenonCpuContext.h"
@@ -11,7 +12,7 @@
 #include <cstdio>
 
 class PpcCpu : public Cpu, 
-               public jit::CpuInterpreter, 
+               public jit::CpuInterpreter<ThirtyTwoBitMemoryPolicy>, 
                private jit::PowerPCIntermediateBuilder
 {
 private:
@@ -61,7 +62,7 @@ public:
 	virtual bool InterpretProcessorSpecific( jit::InterInstr &instr );
 
 	PpcCpu( jit::XenonCpuContext &context )
-	  : CpuInterpreter( &context.gpr[0] )
+	  : CpuInterpreter( &context.gpr[0], context.isReserved, context.reservation )
 	  , context( context )
 	  , mmuContext( context )
 	{ }
