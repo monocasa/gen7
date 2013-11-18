@@ -13,6 +13,10 @@ public:
 	uint32_t ReadMem32( uint64_t addr ) {
 		return *MakePtr<uint32_t>( addr );
 	}
+
+	void WriteMem32( uint64_t addr, uint32_t value ) {
+		*MakePtr<uint32_t>( addr ) = value;
+	}
 };
 
 #endif //GEN7_CROSSVMM_VMM_THIRTYTWOBITMEMORYPOLICY_H

@@ -62,7 +62,7 @@ void PpcCpu::DumpContext()
 	printf( "  r24 %16lx |   r25 %16lx |   r26 %16lx |   r27 %16lx\n", context.gpr[24], context.gpr[25], context.gpr[26], context.gpr[27] );
 	printf( "  r28 %16lx |   r29 %16lx |   r30 %16lx |   r31 %16lx\n", context.gpr[28], context.gpr[29], context.gpr[30], context.gpr[31] );
 	printf( "   pc %16lx |   msr %16lx |   ctr %16lx |    lr %16lx\n", context.pc, context.msr, context.ctr, context.lr );
-	printf( " srr0 %16lx |  srr1 %16lx | hrmor %16lx\n", context.srr0, context.srr1, context.hrmor );
+	printf( "   cr %16x | srr0 %16lx |  srr1 %16lx | hrmor %16lx\n", context.ReadCr(), context.srr0, context.srr1, context.hrmor );
 	printf( " hid6 %16lx | lpidr %16lx |  lpcr %16lx\n", context.hid6, context.lpidr, context.lpcr );
 	printf( "sprg0 %16lx | sprg1 %16lx | sprg2 %16lx | sprg3 %16lx\n", context.sprg0, context.sprg1, context.sprg2, context.sprg3 );
 }
@@ -170,6 +170,29 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			const bool l = instr.args[1];
 
 			printf( "TLBIEL RB=%016lx L=%d\n", ReadGPR64(rb), l );
+			return true;
+		}
+
+		case jit::PPC_STWCX: {
+			const int addrReg = instr.args[0];
+			const int offsetReg = instr.args[1];
+			const int valueReg = instr.args[2];
+
+			uint64_t addr = ReadGPR64( addrReg );
+			if( offsetReg != 0 ) {
+				addr += ReadGPR64( offsetReg );
+			}
+
+			context.cr[0].nybble = 0;
+
+			if( isReserved && reservation == addr ) {
+				WriteMem32( addr, ReadGPR64(valueReg) );
+
+				isReserved = false;
+
+				context.cr[0].eq = 1;
+			}
+
 			return true;
 		}
 

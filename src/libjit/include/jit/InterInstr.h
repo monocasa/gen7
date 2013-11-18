@@ -49,6 +49,7 @@ enum InstrOp
 	PPC_SLBIA = PROC_LOW,
 	PPC_SLBMTE,
 	PPC_TLBIEL,
+	PPC_STWCX,
 };
 
 struct InterInstr
@@ -231,6 +232,13 @@ struct InterInstr
 		op = PPC_TLBIEL;
 		args[0] = rb;
 		args[1] = l;
+	}
+
+	void BuildPpcStwcx( int sourceReg, int offsetReg, int destReg ) {
+		op = PPC_STWCX;
+		args[0] = sourceReg;
+		args[1] = offsetReg;
+		args[2] = destReg;
 	}
 };
 

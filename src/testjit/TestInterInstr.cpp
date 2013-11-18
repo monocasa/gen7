@@ -298,3 +298,15 @@ TEST(InterInstr, PpcTlbiel)
 	EXPECT_EQ( 1, instr.args[1] );
 }
 
+TEST(InterInstr, PpcStwcx)
+{
+	InterInstr instr;
+
+	instr.BuildPpcStwcx( 1, 2, 3 );
+
+	EXPECT_EQ( InstrOp::PPC_STWCX, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+	EXPECT_EQ( 3, instr.args[2] );
+}
+

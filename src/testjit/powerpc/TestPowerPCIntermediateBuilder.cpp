@@ -384,6 +384,19 @@ TEST(PowerPCIntermediateBuilder, Slwi)
 	EXPECT_EQ( 18, instr[0].args[2] );
 }
 
+TEST(PowerPCIntermediateBuilder, Stwcx)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 7cc0192d : stwcx.   r6, r0, r3
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7cc0192d, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::PPC_STWCX, instr[0].op );
+	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 0 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 6 * sizeof(uint64_t), instr[0].args[2] );
+}
+
 TEST(PowerPCIntermediateBuilder, Subf)
 {
 	PowerPCIntermediateBuilder builder;
