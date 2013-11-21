@@ -4,35 +4,24 @@
 
 TEST(XenonCpuContext, ConditionRegister)
 {
-	jit::ConditionRegister cr;
-
-	cr.nybble = 0;
-	cr.so = 1;
-	EXPECT_EQ( 1, cr.nybble );
-
-	cr.nybble = 0;
-	cr.eq = 1;
-	EXPECT_EQ( 2, cr.nybble );
-
-	cr.nybble = 0;
-	cr.gt = 1;
-	EXPECT_EQ( 4, cr.nybble );
-
-	cr.nybble = 0;
-	cr.lt = 1;
-	EXPECT_EQ( 8, cr.nybble );
-
 	jit::XenonCpuContext context( 0 );
+	context.cr = 0;
 
-	context.cr[0].nybble = 1;
-	context.cr[1].nybble = 2;
-	context.cr[2].nybble = 3;
-	context.cr[3].nybble = 4;
-	context.cr[4].nybble = 5;
-	context.cr[5].nybble = 6;
-	context.cr[6].nybble = 7;
-	context.cr[7].nybble = 8;
+	context.SetCrSo( 0 );
+	context.SetCrEq( 1 );
+	context.SetCrGt( 2 );
+	context.SetCrLt( 3 );
 
-	EXPECT_EQ( 0x12345678, context.ReadCr() );
+	EXPECT_EQ( 0x12480000, context.cr );
+
+	EXPECT_EQ( 1, context.ReadCr( 0 ) ); 
+	EXPECT_EQ( 2, context.ReadCr( 1 ) );
+	EXPECT_EQ( 4, context.ReadCr( 2 ) );
+	EXPECT_EQ( 8, context.ReadCr( 3 ) );
+
+	context.ClearCr( 1 );
+	context.ClearCr( 2 );
+
+	EXPECT_EQ( 0x10080000, context.cr );
 }
 

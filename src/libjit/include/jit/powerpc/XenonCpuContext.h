@@ -32,12 +32,12 @@ struct XenonCpuContext : public CpuContext {
 	uint64_t sprg2;
 	uint64_t sprg3;
 
+	uint32_t cr;
+
 	uint64_t fpr[32];
 	VmxReg   vmx[128];
 
 	uint64_t pc;
-
-	ConditionRegister cr[8];
 
 	bool isReserved;
 	uint64_t reservation;
@@ -50,13 +50,45 @@ struct XenonCpuContext : public CpuContext {
 	uint64_t lpidr;
 	uint64_t lpcr;
 
-	uint32_t ReadCr() const {
-		uint32_t ret = 0;
-		for( int i = 0; i < 8; i++ ) {
-			ret <<= 4;
-			ret |= cr[i].nybble & 0xF;
-		}
-		return ret;
+	void ClearCr( int num ) {
+		unsigned int mask = 0xF0000000U >> (num * 4);
+		cr &= ~mask;
+	}
+
+	unsigned int ReadCr( int num ) {
+		return (cr >> ((7 - num) * 4)) & 0xF;
+	}
+
+	void SetCrSo( int num ) {
+		cr |= (0x10000000 >> (num * 4));
+	}
+
+	void SetCrEq( int num ) {
+		cr |= (0x20000000 >> (num * 4));
+	}
+
+	void SetCrGt( int num ) {
+		cr |= (0x40000000 >> (num * 4));
+	}
+
+	void SetCrLt( int num ) {
+		cr |= (0x80000000 >> (num * 4));
+	}
+
+	void ClearCrSo( int num ) {
+		cr &= ~(0x10000000 >> (num * 4));
+	}
+
+	void ClearCrEq( int num ) {
+		cr &= ~(0x20000000 >> (num * 4));
+	}
+
+	void ClearCrGt( int num ) {
+		cr &= ~(0x40000000 >> (num * 4));
+	}
+
+	void ClearCrLt( int num ) {
+		cr &= ~(0x80000000 >> (num * 4));
 	}
 
 	XenonCpuContext( int coreNum )
