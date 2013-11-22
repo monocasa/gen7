@@ -261,6 +261,16 @@ int PowerPCIntermediateBuilder::BuildIntermediateTable19( InterInstr *intermedia
 	const int xo = X_XO(nativeInstr);
 
 	switch( xo ) {
+		case TABLE_19_XO_BCLR: {
+			if( nativeInstr == 0x4e800020 ) { //blr
+				intermediates[0].BuildBranchGpr64( GPR64OFFSET(GPR_LR) );
+			}
+			else {
+				intermediates[0].BuildUnknown( xo + 1900000, nativeInstr, pc );
+			}
+			return 1;
+		}
+
 		case TABLE_19_XO_ISYNC: {
 			intermediates[0].BuildNop();
 			return 1;

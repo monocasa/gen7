@@ -119,6 +119,14 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
+		case BRANCH_GPR64: {
+			const int gpr = instr.args[0];
+
+			SetPC( ReadGPR64(gpr) );
+
+			return true;
+		}
+
 		case BRANCH_GPR32_MASK_ZERO: {
 			const int gpr = instr.args[0];
 			const uint32_t mask = instr.args[1];
