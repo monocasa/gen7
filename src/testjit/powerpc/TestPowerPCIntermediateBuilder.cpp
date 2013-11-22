@@ -106,7 +106,7 @@ TEST(PowerPCIntermediateBuilder, Bdnz)
 	EXPECT_EQ( 33 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 33 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 1, instr[0].args[2] );
-	EXPECT_EQ( InstrOp::BRANCH_GPR_NOT_ZERO, instr[1].op );
+	EXPECT_EQ( InstrOp::BRANCH_GPR64_NOT_ZERO, instr[1].op );
 	EXPECT_EQ( 33 * sizeof(uint64_t), instr[1].args[0] );
 	EXPECT_EQ( 0x1ffc, instr[1].args[1] );
 }

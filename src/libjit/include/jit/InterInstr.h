@@ -17,7 +17,7 @@ enum InstrOp
 
 	//Branch
 	BRANCH_ALWAYS = 100,
-	BRANCH_GPR_NOT_ZERO,
+	BRANCH_GPR64_NOT_ZERO,
 
 	//Load/Store
 	LD_32_IMM = 200,
@@ -105,8 +105,8 @@ struct InterInstr
 		args[0] = target;
 	}
 
-	void BuildBranchGprNotZero( int gpr, uint64_t target ) {
-		op = BRANCH_GPR_NOT_ZERO;
+	void BuildBranchGpr64NotZero( int gpr, uint64_t target ) {
+		op = BRANCH_GPR64_NOT_ZERO;
 		args[0] = gpr;
 		args[1] = target;
 	}

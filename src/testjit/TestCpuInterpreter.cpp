@@ -238,20 +238,20 @@ TEST(CpuInterpreter, BranchAlways)
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.pc );
 }
 
-TEST(CpuInterpreter, BranchGprNotZero)
+TEST(CpuInterpreter, BranchGpr64NotZero)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
 
 	testCpu.gprs[1] = 1;
-	instr.BuildBranchGprNotZero( testCpu.Gpr64Offset(1), 0xFFFFFFFF00000000UL );
+	instr.BuildBranchGpr64NotZero( testCpu.Gpr64Offset(1), 0xFFFFFFFF00000000UL );
 	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.pc );
 
 	testCpu.Reset();
 
 	testCpu.gprs[1] = 0;
-	instr.BuildBranchGprNotZero( testCpu.Gpr64Offset(1), 0xFFFFFFFF00000000UL );
+	instr.BuildBranchGpr64NotZero( testCpu.Gpr64Offset(1), 0xFFFFFFFF00000000UL );
 	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
 	EXPECT_EQ( 0, testCpu.pc );
 }

@@ -119,7 +119,7 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
-		case BRANCH_GPR_NOT_ZERO: {
+		case BRANCH_GPR64_NOT_ZERO: {
 			const int gpr = instr.args[0];
 			const uint64_t target = instr.args[1];
 

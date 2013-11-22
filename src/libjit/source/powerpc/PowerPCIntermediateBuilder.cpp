@@ -20,7 +20,7 @@ int PowerPCIntermediateBuilder::BuildIntermediateBcc( InterInstr *intermediates,
 	switch( B_BO(nativeInstr) ) {
 		case 25: { //bdnz+
 			intermediates[0].BuildSubuImm( GPR64OFFSET(GPR_CTR), GPR64OFFSET(GPR_CTR), 1 );
-			intermediates[1].BuildBranchGprNotZero( GPR64OFFSET(GPR_CTR), target );
+			intermediates[1].BuildBranchGpr64NotZero( GPR64OFFSET(GPR_CTR), target );
 			return 2;
 		}
 
