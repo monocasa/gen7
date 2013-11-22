@@ -78,6 +78,11 @@ void PpcCpu::Init()
 bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 {
 	switch( sysReg ) {
+		case jit::PowerPCHelpers::SPR_SRR0: {
+			context.srr0 = value;
+			return true;
+		}
+
 		case jit::PowerPCHelpers::SPR_SRR1: {
 			context.srr1 = value;
 			return true;

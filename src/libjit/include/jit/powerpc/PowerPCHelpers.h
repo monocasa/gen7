@@ -87,6 +87,7 @@ public:
 	enum {
 		SPR_LR    = 8,
 		SPR_CTR   = 9,
+		SPR_SRR0  = 26,
 		SPR_SRR1  = 27,
 		SPR_SPRG0 = 272,
 		SPR_SPRG1 = 273,
