@@ -75,6 +75,7 @@ public:
 		GPR_SPRG1 = 35,
 		GPR_SPRG2 = 36,
 		GPR_SPRG3 = 37,
+		GPR_CR    = 38,
 	};
 
 	enum {

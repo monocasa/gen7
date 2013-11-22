@@ -111,6 +111,19 @@ TEST(PowerPCIntermediateBuilder, Bdnz)
 	EXPECT_EQ( 0x1ffc, instr[1].args[1] );
 }
 
+TEST(PowerPcIntermediateBuilder, Bne)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00002000 : 40c2fffc : bne-     loc_1ffc
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x40c2fffc, 0x00002000 ) );
+	EXPECT_EQ( InstrOp::BRANCH_GPR32_MASK_ZERO, instr[0].op );
+	EXPECT_EQ( 38 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 0x20000000, instr[0].args[1] );
+	EXPECT_EQ( 0x1ffc, instr[0].args[2] );
+}
+
 TEST(PowerPCIntermediateBuilder, Branch)
 {
 	PowerPCIntermediateBuilder builder;

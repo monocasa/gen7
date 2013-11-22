@@ -79,6 +79,18 @@ TEST(InterInstr, BranchAlways)
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[0] );
 }
 
+TEST(InterInstr, BranchGpr32MaskZero)
+{
+	InterInstr instr;
+
+	instr.BuildBranchGpr32MaskZero( 31, 0x01234567, 0xFFFFFFFF00000000UL );
+
+	EXPECT_EQ( InstrOp::BRANCH_GPR32_MASK_ZERO, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 0x01234567, instr.args[1] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
+}
+
 TEST(InterInstr, BranchGpr64NotZero)
 {
 	InterInstr instr;

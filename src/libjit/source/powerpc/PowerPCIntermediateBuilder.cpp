@@ -10,14 +10,14 @@ int PowerPCIntermediateBuilder::BuildIntermediateBcc( InterInstr *intermediates,
 		return 1;
 	}
 
-	if( B_BI(nativeInstr) ) {
-		intermediates[0].BuildUnknown( 16, nativeInstr, pc );
-		return 1;
-	}
-
 	const uint64_t target = pc + B_BD( nativeInstr );
 
 	switch( B_BO(nativeInstr) ) {
+		case 6: { //bcc cr clear-
+			intermediates[0].BuildBranchGpr32MaskZero( GPR32LOWOFFSET(GPR_CR), 0x80000000 >> B_BI(nativeInstr), target );
+			return 1;
+		}
+
 		case 25: { //bdnz+
 			intermediates[0].BuildSubuImm( GPR64OFFSET(GPR_CTR), GPR64OFFSET(GPR_CTR), 1 );
 			intermediates[1].BuildBranchGpr64NotZero( GPR64OFFSET(GPR_CTR), target );
@@ -25,7 +25,7 @@ int PowerPCIntermediateBuilder::BuildIntermediateBcc( InterInstr *intermediates,
 		}
 
 		default: {
-			intermediates[0].BuildUnknown( 16, nativeInstr, pc );
+			intermediates[0].BuildUnknown( 1600000 + B_BO(nativeInstr), nativeInstr, pc );
 			return 1;
 		}
 	}
