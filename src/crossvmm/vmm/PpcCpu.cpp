@@ -71,6 +71,11 @@ void PpcCpu::MmuContext::EnableRelocation()
 	//mm.ClearLowerPml3( 0x0000030000000000UL );
 }
 
+bool PpcCpu::MmuContext::IsInstructionMapped( uint64_t /*addr*/ )
+{
+	return !((context.msr & 0x30) != 0);
+}
+
 void PpcCpu::DumpContext()
 {
 	printf( "   r0 %16lx |    r1 %16lx |    r2 %16lx |    r3 %16lx\n", context.gpr[ 0], context.gpr[ 1], context.gpr[ 2], context.gpr[ 3] );
@@ -322,6 +327,14 @@ void PpcCpu::Execute()
 	jit::InterInstr intermediates[ 10 ];
 
 	while( running ) {
+		if( !mmuContext.IsInstructionMapped( context.pc ) ) {
+			printf( "PpcCpu:  ISI @ %08lx\n", context.pc );
+			context.srr0 = context.pc;
+			context.srr1 = context.msr;
+			SetMsr( context.msr & ~0x30 );
+			SetPC( 0x400 );
+		}
+
 		const uint32_t instruction = *PC;
 
 		//DumpContext();

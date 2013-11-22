@@ -42,6 +42,8 @@ private:
 		void DisableRelocation();
 		void EnableRelocation();
 
+		bool IsInstructionMapped( uint64_t addr );
+
 		MmuContext( jit::XenonCpuContext &context )
 		  : context( context )
 		{ }
