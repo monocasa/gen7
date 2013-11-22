@@ -196,6 +196,54 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
+		case jit::PPC_CMPLDI: {
+			const int ra = instr.args[0];
+			const int cr = instr.args[1];
+			const uint32_t imm = instr.args[2];
+
+			const uint64_t value = ReadGPR64( ra );
+
+			context.ClearCr( cr );
+
+			if( value < imm ) {
+				context.SetCrLt( cr );
+			}
+			else if( value > imm ) {
+				context.SetCrGt( cr );
+			}
+			else {
+				context.SetCrEq( cr );
+			}
+
+			//TODO:  Here we need to set cr so
+
+			return true;
+		}
+
+		case jit::PPC_CMPLWI: {
+			const int ra = instr.args[0];
+			const int cr = instr.args[1];
+			const uint32_t imm = instr.args[2];
+
+			const uint64_t value = ReadGPR32( ra );
+
+			context.ClearCr( cr );
+
+			if( value < imm ) {
+				context.SetCrLt( cr );
+			}
+			else if( value > imm ) {
+				context.SetCrGt( cr );
+			}
+			else {
+				context.SetCrEq( cr );
+			}
+
+			//TODO:  Here we need to set cr so
+
+			return true;
+		}
+
 		default: {
 			printf( "Unimplemented PowerPC specific op %d\n", instr.op );
 			return false;

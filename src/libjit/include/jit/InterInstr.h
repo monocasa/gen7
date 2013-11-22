@@ -19,6 +19,7 @@ enum InstrOp
 	BRANCH_ALWAYS = 100,
 	BRANCH_GPR64,
 	BRANCH_GPR32_MASK_ZERO,
+	BRANCH_GPR32_MASK_NOT_ZERO,
 	BRANCH_GPR64_NOT_ZERO,
 
 	//Load/Store
@@ -52,6 +53,8 @@ enum InstrOp
 	PPC_SLBMTE,
 	PPC_TLBIEL,
 	PPC_STWCX,
+	PPC_CMPLWI,
+	PPC_CMPLDI,
 };
 
 struct InterInstr
@@ -114,6 +117,13 @@ struct InterInstr
 
 	void BuildBranchGpr32MaskZero( int gpr, uint32_t mask, uint64_t target ) {
 		op = BRANCH_GPR32_MASK_ZERO;
+		args[0] = gpr;
+		args[1] = mask;
+		args[2] = target;
+	}
+
+	void BuildBranchGpr32MaskNotZero( int gpr, uint32_t mask, uint64_t target ) {
+		op = BRANCH_GPR32_MASK_NOT_ZERO;
 		args[0] = gpr;
 		args[1] = mask;
 		args[2] = target;
@@ -253,6 +263,20 @@ struct InterInstr
 		args[0] = sourceReg;
 		args[1] = offsetReg;
 		args[2] = destReg;
+	}
+
+	void BuildPpcCmplwi( int reg, int cr, uint32_t imm ) {
+		op = PPC_CMPLWI;
+		args[0] = reg;
+		args[1] = cr;
+		args[2] = imm;
+	}
+
+	void BuildPpcCmpldi( int reg, int cr, uint32_t imm ) {
+		op = PPC_CMPLDI;
+		args[0] = reg;
+		args[1] = cr;
+		args[2] = imm;
 	}
 };
 

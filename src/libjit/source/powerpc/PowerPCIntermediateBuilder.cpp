@@ -18,6 +18,11 @@ int PowerPCIntermediateBuilder::BuildIntermediateBcc( InterInstr *intermediates,
 			return 1;
 		}
 
+		case 12: { //bcc cr set
+			intermediates[0].BuildBranchGpr32MaskNotZero( GPR32LOWOFFSET(GPR_CR), 0x80000000 >> B_BI(nativeInstr), target );
+			return 1;
+		}
+
 		case 25: { //bdnz+
 			intermediates[0].BuildSubuImm( GPR64OFFSET(GPR_CTR), GPR64OFFSET(GPR_CTR), 1 );
 			intermediates[1].BuildBranchGpr64NotZero( GPR64OFFSET(GPR_CTR), target );
@@ -338,6 +343,21 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 				intermediates[0].BuildBranchAlways( target );
 				return 1;
 			}
+		}
+
+		case OPCD_CMPLI: {
+			const int ra = D_RA(nativeInstr);
+			const uint32_t imm = D_UI(nativeInstr);
+			const int cr = D_BF(nativeInstr);
+
+			if( D_L(nativeInstr) ) {
+				intermediates[0].BuildPpcCmpldi( GPR64OFFSET(ra), cr, imm );
+			}
+			else {
+				intermediates[0].BuildPpcCmplwi( GPR32LOWOFFSET(ra), cr, imm );
+			}
+
+			return 1;
 		}
 
 		case OPCD_ROTATE_21: {

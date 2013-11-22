@@ -101,6 +101,18 @@ TEST(InterInstr, BranchGpr32MaskZero)
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
 }
 
+TEST(InterInstr, BranchGpr32MaskNotZero)
+{
+	InterInstr instr;
+
+	instr.BuildBranchGpr32MaskNotZero( 31, 0x01234567, 0xFFFFFFFF00000000UL );
+
+	EXPECT_EQ( InstrOp::BRANCH_GPR32_MASK_NOT_ZERO, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 0x01234567, instr.args[1] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
+}
+
 TEST(InterInstr, BranchGpr64NotZero)
 {
 	InterInstr instr;
@@ -327,6 +339,30 @@ TEST(InterInstr, PpcStwcx)
 	instr.BuildPpcStwcx( 1, 2, 3 );
 
 	EXPECT_EQ( InstrOp::PPC_STWCX, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+	EXPECT_EQ( 3, instr.args[2] );
+}
+
+TEST(InterInstr, PpcCmplwi)
+{
+	InterInstr instr;
+
+	instr.BuildPpcCmplwi( 1, 2, 3 );
+
+	EXPECT_EQ( InstrOp::PPC_CMPLWI, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+	EXPECT_EQ( 3, instr.args[2] );
+}
+
+TEST(InterInstr, PpcCmpldi)
+{
+	InterInstr instr;
+
+	instr.BuildPpcCmpldi( 1, 2, 3 );
+
+	EXPECT_EQ( InstrOp::PPC_CMPLDI, instr.op );
 	EXPECT_EQ( 1, instr.args[0] );
 	EXPECT_EQ( 2, instr.args[1] );
 	EXPECT_EQ( 3, instr.args[2] );

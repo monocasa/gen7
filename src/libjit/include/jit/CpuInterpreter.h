@@ -139,6 +139,18 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
+		case BRANCH_GPR32_MASK_NOT_ZERO: {
+			const int gpr = instr.args[0];
+			const uint32_t mask = instr.args[1];
+			const uint64_t target = instr.args[2];
+
+			if( (ReadGPR32(gpr) & mask) != 0 ) {
+				SetPC( target );
+			}
+
+			return true;
+		}
+
 		case BRANCH_GPR64_NOT_ZERO: {
 			const int gpr = instr.args[0];
 			const uint64_t target = instr.args[1];

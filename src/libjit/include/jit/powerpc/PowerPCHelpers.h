@@ -33,6 +33,12 @@ private:
 	static const int D_RS_SHIFT = 21;
 	static const int D_RT_SHIFT = 21;
 
+	static const int D_L_SHIFT = 21;
+	static const uint32_t D_L_MASK = 0x00000001;
+
+	static const int D_BF_SHIFT = 23;
+	static const uint32_t D_BF_MASK = 0x00000007;
+
 	static const int D_IMM_BITS = 16;
 
 	static const int M_RA_SHIFT = 16;
@@ -98,6 +104,7 @@ public:
 
 	enum {
 		OPCD_RESERVED_0 = 0,
+		OPCD_CMPLI      = 10,
 		OPCD_ADDI       = 14,
 		OPCD_ADDIS      = 15,
 		OPCD_BCC        = 16,
@@ -179,6 +186,14 @@ public:
 
 	static int D_RT( const uint32_t instruction ) {
 		return (instruction >> D_RT_SHIFT) & REG_MASK;
+	}
+
+	static bool D_L( const uint32_t instruction ) {
+		return (instruction >> D_L_SHIFT) & D_L_MASK;
+	}
+
+	static int D_BF( const uint32_t instruction ) {
+		return (instruction >> D_BF_SHIFT) & D_BF_MASK;
 	}
 
 	static int M_RA( const uint32_t instruction ) {
