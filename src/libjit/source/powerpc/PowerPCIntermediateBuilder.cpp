@@ -281,6 +281,11 @@ int PowerPCIntermediateBuilder::BuildIntermediateTable19( InterInstr *intermedia
 			return 1;
 		}
 
+		case TABLE_19_XO_RFID: {
+			intermediates[0].BuildPpcRfid();
+			return 1;
+		}
+
 		default: {
 			intermediates[0].BuildUnknown( xo + 1900000, nativeInstr, pc );
 			return 1;

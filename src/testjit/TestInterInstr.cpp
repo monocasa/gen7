@@ -368,3 +368,12 @@ TEST(InterInstr, PpcCmpldi)
 	EXPECT_EQ( 3, instr.args[2] );
 }
 
+TEST(InterInstr, PpcRfid)
+{
+	InterInstr instr;
+
+	instr.BuildPpcRfid();
+
+	EXPECT_EQ( InstrOp::PPC_RFID, instr.op );
+}
+

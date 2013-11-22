@@ -25,3 +25,14 @@ TEST(XenonCpuContext, ConditionRegister)
 	EXPECT_EQ( 0x10080000, context.cr );
 }
 
+TEST(XenonCpuContext, Msr)
+{
+	jit::XenonCpuContext context( 0 );
+
+	context.msr = 0x0000000000000000UL;
+	EXPECT_FALSE( context.Is64Bit() );
+
+	context.msr = 0x8000000000000000UL;
+	EXPECT_TRUE( context.Is64Bit() );
+}
+

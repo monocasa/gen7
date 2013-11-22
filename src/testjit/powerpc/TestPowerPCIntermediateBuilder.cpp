@@ -395,6 +395,16 @@ TEST(PowerPCIntermediateBuilder, Oris)
 	EXPECT_EQ( InstrOp::NOP, instr[0].op );
 }
 
+TEST(PowerPCIntermediateBuilder, Rfid)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 4c000024 : rfid
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x4c000024, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::PPC_RFID, instr[0].op );
+}
+
 TEST(PowerPCIntermediateBuilder, Slbia)
 {
 	PowerPCIntermediateBuilder builder;

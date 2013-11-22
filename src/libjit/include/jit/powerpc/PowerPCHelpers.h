@@ -138,6 +138,7 @@ public:
 
 	enum {
 		TABLE_19_XO_BCLR  = 16,
+		TABLE_19_XO_RFID  = 18,
 		TABLE_19_XO_ISYNC = 150,
 	};
 

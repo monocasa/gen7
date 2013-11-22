@@ -39,6 +39,9 @@ private:
 
 		void MapFull();
 
+		void DisableRelocation();
+		void EnableRelocation();
+
 		MmuContext( jit::XenonCpuContext &context )
 		  : context( context )
 		{ }
@@ -47,14 +50,14 @@ private:
 
 	void DumpContext();
 
+	void SetMsr( uint64_t newMsr );
+
 public:
 	virtual void Init();
 
 	virtual void Execute();
 
-	virtual void SetPC( uint64_t pc ) {
-		context.pc = pc;
-	}
+	virtual void SetPC( uint64_t pc );
 
 	virtual bool SetSystemReg( int sysReg, uint64_t value );
 	virtual bool ReadSystemReg( int sysReg, uint64_t &value );

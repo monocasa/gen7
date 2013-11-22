@@ -91,6 +91,10 @@ struct XenonCpuContext : public CpuContext {
 		cr &= ~(0x80000000 >> (num * 4));
 	}
 
+	bool Is64Bit() {
+		return msr & 0x8000000000000000UL;
+	}
+
 	XenonCpuContext( int coreNum )
 	  : CpuContext( jit::CpuType::XENON, coreNum )
 	{ }

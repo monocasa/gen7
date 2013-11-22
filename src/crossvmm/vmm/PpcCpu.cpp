@@ -6,6 +6,8 @@
 
 #include <cstdio>
 
+extern "C" void hyper_quit();
+
 void PpcCpu::MmuContext::Init()
 {
 	for( int i = 0; i < NUM_HVREALMODE_PML3S; i++ ) {
@@ -45,10 +47,28 @@ void PpcCpu::MmuContext::MapFull()
 	hvRealModePml3s[ 3 ][ 2 ] = (((uint64_t)xenonReal.GetRamPml2(2)) - 0xFFFFFFFF80000000UL) | 1;
 	hvRealModePml3s[ 3 ][ 3 ] = (((uint64_t)xenonReal.GetRamPml2(3)) - 0xFFFFFFFF80000000UL) | 1;
 
+	ir32Pml3[ 0 ] = (((uint64_t)&ir32Pml2s[ 0 ]) - 0xFFFFFFFF80000000) | 1;
+	ir32Pml3[ 1 ] = (((uint64_t)&ir32Pml2s[ 1 ]) - 0xFFFFFFFF80000000) | 1;
+	ir32Pml3[ 2 ] = (((uint64_t)&ir32Pml2s[ 2 ]) - 0xFFFFFFFF80000000) | 1;
+	ir32Pml3[ 3 ] = (((uint64_t)&ir32Pml2s[ 3 ]) - 0xFFFFFFFF80000000) | 1;
+
+	DisableRelocation();
+}
+
+void PpcCpu::MmuContext::DisableRelocation()
+{
 	mm.SetLowerPml3( hvRealModePml3s[ 0 ], 0x0000000000000000UL );
 	mm.SetLowerPml3( hvRealModePml3s[ 1 ], 0x0000010000000000UL );
 	mm.SetLowerPml3( hvRealModePml3s[ 2 ], 0x0000020000000000UL );
 	mm.SetLowerPml3( hvRealModePml3s[ 3 ], 0x0000030000000000UL );
+}
+
+void PpcCpu::MmuContext::EnableRelocation()
+{
+	mm.SetLowerPml3( ir32Pml3, 0x0000000000000000UL );
+	//mm.ClearLowerPml3( 0x0000010000000000UL );
+	//mm.ClearLowerPml3( 0x0000020000000000UL );
+	//mm.ClearLowerPml3( 0x0000030000000000UL );
 }
 
 void PpcCpu::DumpContext()
@@ -67,6 +87,29 @@ void PpcCpu::DumpContext()
 	printf( "sprg0 %16lx | sprg1 %16lx | sprg2 %16lx | sprg3 %16lx\n", context.sprg0, context.sprg1, context.sprg2, context.sprg3 );
 }
 
+void PpcCpu::SetMsr( uint64_t newMsr )
+{
+	switch( newMsr & 0x30 ) {
+		case 0x00: {
+			mmuContext.DisableRelocation();
+			break;
+		}
+
+		case 0x30: {
+			mmuContext.EnableRelocation();
+			break;
+		}
+
+		default: {
+			printf( "msr set to %08lx.  Relocations don't match\n", context.msr );
+			hyper_quit();
+			break;
+		}
+	}
+
+	context.msr = newMsr;
+}
+
 void PpcCpu::Init()
 {
 	mmuContext.Init();
@@ -74,6 +117,15 @@ void PpcCpu::Init()
 }
 
 #define PC ((uint32_t*)context.pc)
+
+void PpcCpu::SetPC( uint64_t pc )
+{
+	if( !context.Is64Bit() ) {
+		pc = (uint32_t)pc;
+	}
+
+	context.pc = pc;
+}
 
 bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 {
@@ -245,6 +297,13 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			}
 
 			//TODO:  Here we need to set cr so
+
+			return true;
+		}
+
+		case jit::PPC_RFID: {
+			SetMsr( context.srr1 );
+			SetPC( context.srr0 );
 
 			return true;
 		}
