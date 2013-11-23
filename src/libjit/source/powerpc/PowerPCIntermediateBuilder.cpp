@@ -399,30 +399,37 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			const int rs = GPR64OFFSET( D_RS(nativeInstr) );
 			const int ra = GPR64OFFSET( D_RA(nativeInstr) );
 
-			if( (nativeInstr & 0xFFFF) == 0x07C6 ) { //sldi rs, ra, 32
-				intermediates[0].BuildSll64Imm( rs, ra, 32 );
-				return 1;
-			}
-			else if( (nativeInstr & 0xFFFF) == 0x64c6 ) { //sldi rs, ra, 44
-				intermediates[0].BuildSll64Imm( rs, ra, 44 );
-				return 1;
-			}
-			else if( (nativeInstr & 0xFFFF) == 0xf806 ) { //sldi rs, ra, 63
-				intermediates[0].BuildSll64Imm( rs, ra, 63 );
-				return 1;
-			}
-			else if( (nativeInstr & 0xFFFF) == 0x0040 ) { //clrldi rs, ra, 1
-				intermediates[0].BuildAndImm( rs, ra, 0x7FFFFFFFFFFFFFFFUL );
-				return 1;
-			}
-			else if( (nativeInstr & 0xFFFF) == 0x2722) { //extrdi rs, ra, 4, 32
-				intermediates[0].BuildAndImm( rs, ra, 0xF0000000 );
-				intermediates[1].BuildSlr64Imm( ra, ra, 32 - 4 );
-				return 2;
-			}
-			else {
-				intermediates[0].BuildUnknown( opcd, nativeInstr, pc );
-				return 1;
+			switch( nativeInstr & 0xFFFF ) {
+				case 0x07C6: { //sldi rs, ra, 32
+					intermediates[0].BuildSll64Imm( rs, ra, 32 );
+					return 1;
+				}
+
+				case 0x64c6: { //sldi rs, ra, 44
+					intermediates[0].BuildSll64Imm( rs, ra, 44 );
+					return 1;
+				}
+
+				case 0xf806: { //sldi rs, ra, 63
+					intermediates[0].BuildSll64Imm( rs, ra, 63 );
+					return 1;
+				}
+
+				case 0x0040: { //clrldi rs, ra, 1
+					intermediates[0].BuildAndImm( rs, ra, 0x7FFFFFFFFFFFFFFFUL );
+					return 1;
+				}
+
+				case 0x2722: { //extrdi rs, ra, 4, 32
+					intermediates[0].BuildAndImm( rs, ra, 0xF0000000 );
+					intermediates[1].BuildSlr64Imm( ra, ra, 32 - 4 );
+					return 2;
+				}
+
+				default: {
+					intermediates[0].BuildUnknown( opcd, nativeInstr, pc );
+					return 1;
+				}
 			}
 		}
 
