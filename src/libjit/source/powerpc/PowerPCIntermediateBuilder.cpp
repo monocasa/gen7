@@ -400,6 +400,11 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			const int ra = GPR64OFFSET( D_RA(nativeInstr) );
 
 			switch( nativeInstr & 0xFFFF ) {
+				case 0x1764: { //sldi rs, ra, 2
+					intermediates[0].BuildSll64Imm( rs, ra, 2 );
+					return 1;
+				}
+
 				case 0x07C6: { //sldi rs, ra, 32
 					intermediates[0].BuildSll64Imm( rs, ra, 32 );
 					return 1;
