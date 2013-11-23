@@ -169,6 +169,29 @@ TEST(InterInstr, Load32IndexedLinked)
 	EXPECT_EQ( 3, instr.args[2] );
 }
 
+TEST(InterInstr, Store64)
+{
+	InterInstr instr;
+
+	instr.BuildStore64( 1, 2 );
+
+	EXPECT_EQ( InstrOp::ST_64, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+}
+
+TEST(InterInstr, Store64RegOffset)
+{
+	InterInstr instr;
+
+	instr.BuildStore64RegOffset( 1, 2, -1 );
+
+	EXPECT_EQ( InstrOp::ST_64_REG_OFF, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+	EXPECT_EQ( -1, instr.args[2] );
+}
+
 TEST(InterInstr, Add)
 {
 	InterInstr instr;

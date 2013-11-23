@@ -17,6 +17,12 @@ public:
 	void WriteMem32( uint64_t addr, uint32_t value ) {
 		*MakePtr<uint32_t>( addr ) = value;
 	}
+
+	void WriteMem64( uint64_t addr, uint64_t value ) {
+		uint32_t *ptr = MakePtr<uint32_t>( addr );
+		ptr[0] = value >> 32;
+		ptr[1] = value;
+	}
 };
 
 #endif //GEN7_CROSSVMM_VMM_THIRTYTWOBITMEMORYPOLICY_H

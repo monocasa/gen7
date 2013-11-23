@@ -15,7 +15,8 @@ public:
 		uint64_t addr;
 		uint64_t value;
 		enum Type : int {
-			READ32
+			READ32,
+			WRITE64
 		} type;
 
 		Access( Type type, uint64_t addr, uint64_t value )
@@ -38,12 +39,20 @@ protected:
 		return value;
 	}
 
+	void WriteMem64( uint64_t addr, uint64_t value ) {
+		data64[ addr ] = value;
+
+		accesses.push_back( Access(Access::Type::WRITE64, addr, value) );
+	}
+
 public:
 	std::map<uint64_t, uint32_t> data32;
+	std::map<uint64_t, uint64_t> data64;
 	std::vector<Access> accesses;
 
 	void ResetMemoryPolicy() {
 		data32.clear();
+		data64.clear();
 		accesses.clear();
 	}
 };
@@ -373,8 +382,47 @@ TEST(CpuInterpreter, Load64Imm)
 	InterInstr instr;
 
 	instr.BuildLoad64Imm( testCpu.Gpr64Offset(1), 0xFFFFFFFF00000000UL );
+
 	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
+}
+
+TEST(CpuInterpreter, Store64)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0x0123456789ABCDEFUL;
+
+	instr.BuildStore64( testCpu.Gpr64Offset(1), 0x0000000000001100UL );
+
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0x0123456789ABCDEFUL, testCpu.gprs[1] );
+
+	ASSERT_EQ( 1, testCpu.accesses.size() );
+	EXPECT_EQ( TestCpuInterpreter::Access::Type::WRITE64, testCpu.accesses[0].type );
+	EXPECT_EQ( 0x0000000000001100UL, testCpu.accesses[0].addr );
+	EXPECT_EQ( 0x0123456789ABCDEFUL, testCpu.accesses[0].value );
+}
+
+TEST(CpuInterpreter, Store64RegOffset)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0x0123456789ABCDEFUL;
+	testCpu.gprs[2] = 0x0000000000001000UL;
+
+	instr.BuildStore64RegOffset( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2), 0x0000000000000100 );
+
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0x0123456789ABCDEFUL, testCpu.gprs[1] );
+	EXPECT_EQ( 0x0000000000001000UL, testCpu.gprs[2] );
+
+	ASSERT_EQ( 1, testCpu.accesses.size() );
+	EXPECT_EQ( TestCpuInterpreter::Access::Type::WRITE64, testCpu.accesses[0].type );
+	EXPECT_EQ( 0x0000000000001100UL, testCpu.accesses[0].addr );
+	EXPECT_EQ( 0x0123456789ABCDEFUL, testCpu.accesses[0].value );
 }
 
 TEST(CpuInterpreter, Add)

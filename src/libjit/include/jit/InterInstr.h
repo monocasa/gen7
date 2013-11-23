@@ -27,6 +27,8 @@ enum InstrOp
 	LD_64_IMM,
 	LD_32_L,
 	LD_32_IDX_L,
+	ST_64,
+	ST_64_REG_OFF,
 
 	//Arithmetic
 	ADD = 300,
@@ -160,6 +162,19 @@ struct InterInstr
 		args[0] = sourceReg;
 		args[1] = offsetReg;
 		args[2] = destReg;
+	}
+
+	void BuildStore64( int sourceReg, uint64_t addr ) {
+		op = ST_64;
+		args[0] = sourceReg;
+		args[1] = addr;
+	}
+
+	void BuildStore64RegOffset( int sourceReg, int addrReg, int64_t offset ) {
+		op = ST_64_REG_OFF;
+		args[0] = sourceReg;
+		args[1] = addrReg;
+		args[2] = offset;
 	}
 
 //Arithmetic

@@ -41,6 +41,12 @@ private:
 
 	static const int D_IMM_BITS = 16;
 
+	static const uint32_t DS_DS_MASK = 0x0000FFFC;
+	static const int DS_DS_BITS = 16;
+
+	static const int DS_RA_SHIFT = 16;
+	static const int DS_RS_SHIFT = 21;
+
 	static const int M_RA_SHIFT = 16;
 	static const int M_RS_SHIFT = 21;
 
@@ -116,6 +122,7 @@ public:
 		OPCD_ORIS       = 25,
 		OPCD_ROTATE_30  = 30,
 		OPCD_SPECIAL    = 31,
+		OPCD_STD        = 62,
 	};
 
 	enum {
@@ -196,6 +203,18 @@ public:
 
 	static int D_BF( const uint32_t instruction ) {
 		return (instruction >> D_BF_SHIFT) & D_BF_MASK;
+	}
+
+	static int64_t DS_DS( const uint32_t instruction ) {
+		return util::SignExtend<int64_t,DS_DS_BITS>( instruction & DS_DS_MASK );
+	}
+
+	static int DS_RA( const uint32_t instruction ) {
+		return (instruction >> DS_RA_SHIFT) & REG_MASK;
+	}
+
+	static int DS_RS( const uint32_t instruction ) {
+		return (instruction >> DS_RS_SHIFT) & REG_MASK;
 	}
 
 	static int M_RA( const uint32_t instruction ) {
