@@ -447,6 +447,17 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 					return 1;
 				}
 
+				case 0x04a0: { //clrldi rs, ra, 50
+					intermediates[0].BuildAndImm( rs, ra, 0x0000000000003FFFUl );
+					return 1;
+				}
+
+				case 0x5224: { //extldi rs, ra, 41, 10
+					intermediates[0].BuildAndImm( rs, ra, 0x00FFC000 );
+					intermediates[1].BuildSll64Imm( ra, ra, 40 );
+					return 2;
+				}
+
 				case 0x2722: { //extrdi rs, ra, 4, 32
 					intermediates[0].BuildAndImm( rs, ra, 0xF0000000 );
 					intermediates[1].BuildSlr64Imm( ra, ra, 32 - 4 );
