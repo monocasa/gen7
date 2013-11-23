@@ -335,6 +335,18 @@ TEST(InterInstr, Sll64Imm)
 	EXPECT_EQ( 2, instr.args[2] );
 }
 
+TEST(InterInstr, Slr64Imm)
+{
+	InterInstr instr;
+
+	instr.BuildSlr64Imm( 31, 1, 2 );
+
+	EXPECT_EQ( InstrOp::SLR64_IMM, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 2, instr.args[2] );
+}
+
 TEST(InterInstr, PpcSlbia)
 {
 	InterInstr instr;

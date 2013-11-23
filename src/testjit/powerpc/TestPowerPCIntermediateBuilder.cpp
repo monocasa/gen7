@@ -359,6 +359,19 @@ TEST(PowerPCIntermediateBuilder, Rotate)
 	EXPECT_EQ( 5 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 5 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 0x7FFFFFFFFFFFFFFFUL, instr[0].args[2] );
+
+	// 00000000 : 78642722 : extrdi   r4, r3, 4, 32
+	EXPECT_EQ( 2, builder.BuildIntermediate( instr, 0x78642722, 0x00000000 ) );
+
+	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 4 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 0xF0000000, instr[0].args[2] );
+
+	EXPECT_EQ( InstrOp::SLR64_IMM, instr[1].op );
+	EXPECT_EQ( 4 * sizeof(uint64_t), instr[1].args[0] );
+	EXPECT_EQ( 4 * sizeof(uint64_t), instr[1].args[1] );
+	EXPECT_EQ( 32 - 4, instr[1].args[2] );
 }
 
 TEST(PowerPCIntermediateBuilder, Or)

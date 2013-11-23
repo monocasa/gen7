@@ -401,6 +401,17 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			SetGPR64( destReg, result );
 			return true;
 		}
+			
+		case SLR64_IMM: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const int shift = instr.args[2];
+
+			uint64_t result = ReadGPR64( sourceReg ) >> shift;
+
+			SetGPR64( destReg, result );
+			return true;
+		}
 
 		default: {
 			if( instr.op >= PROC_LOW ) {

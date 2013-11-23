@@ -190,6 +190,11 @@ bool PpcCpu::ReadSystemReg( int sysReg, uint64_t &value )
 			return true;
 		}
 
+		case jit::PowerPCHelpers::SPR_SRR0: {
+			value = context.srr0;
+			return true;
+		}
+
 		case jit::PowerPCHelpers::SPR_LPCR: {
 			value = context.lpcr;
 			return true;

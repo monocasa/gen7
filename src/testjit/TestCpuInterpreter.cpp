@@ -578,3 +578,16 @@ TEST(CpuInterpreter, Sll64Imm)
 	EXPECT_EQ( 0xFFFF000000010000UL, testCpu.gprs[2] );
 }
 
+TEST(CpuInterpreter, Slr64Imm)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0xFFFFFFFF00000001UL;
+	instr.BuildSlr64Imm( testCpu.Gpr32OffsetLow(1), testCpu.Gpr32OffsetLow(2),
+	                     16 );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF00000001UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0x0000FFFFFFFF0000UL, testCpu.gprs[2] );
+}
+
