@@ -91,6 +91,7 @@ public:
 	};
 
 	enum {
+		SPR_XER   = 1,
 		SPR_LR    = 8,
 		SPR_CTR   = 9,
 		SPR_SRR0  = 26,

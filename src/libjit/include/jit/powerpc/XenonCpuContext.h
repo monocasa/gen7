@@ -33,6 +33,7 @@ struct XenonCpuContext : public CpuContext {
 	uint64_t sprg3;
 
 	uint32_t cr;
+	uint32_t xer;
 
 	uint64_t fpr[32];
 	VmxReg   vmx[128];
