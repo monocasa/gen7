@@ -223,13 +223,26 @@ TEST(CpuInterpreter, ReadSystem)
 	EXPECT_FALSE( testCpu.InterpretIntermediate( instr ) );
 }
 
-TEST(CpuInterpreter, MoveReg)
+TEST(CpuInterpreter, MoveReg32)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0xFFFFFFFF55555555UL;
+	instr.BuildMoveReg32( testCpu.Gpr32OffsetLow(1), testCpu.Gpr64Offset(2) );
+
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF55555555UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0x0000000055555555UL, testCpu.gprs[2] );
+}
+
+TEST(CpuInterpreter, MoveReg64)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
 
 	testCpu.gprs[1] = 0xFFFFFFFF00000000UL;
-	instr.BuildMoveReg( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2) );
+	instr.BuildMoveReg64( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2) );
 
 	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );

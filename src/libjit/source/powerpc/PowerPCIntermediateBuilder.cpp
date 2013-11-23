@@ -1,6 +1,8 @@
 #include "jit/powerpc/PowerPCIntermediateBuilder.h"
 #include "jit/InterInstr.h"
 
+#include <cstdio>
+
 namespace jit {
 
 int PowerPCIntermediateBuilder::BuildIntermediateBcc( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc )
@@ -92,6 +94,20 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 			return 2;
 		}
 
+		case SPECIAL_XO_MFCR: {
+			const int rt = XFX_RT(nativeInstr);
+
+			if( (nativeInstr >> 20) & 1 ) {
+				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+				return 1;
+			}
+
+			intermediates[0].BuildMoveReg32( GPR32LOWOFFSET(GPR_CR), GPR32LOWOFFSET(rt) );
+			intermediates[1].BuildLoad32Imm( GPR32HIGHOFFSET(rt), 0 );
+
+			return 2;
+		}
+
 		case SPECIAL_XO_MFMSR: {
 			const int rt = GPR64OFFSET( X_RT(nativeInstr) );
 
@@ -105,27 +121,27 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 
 			switch( spr ) {
 				case SPR_LR: {
-					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_LR), destReg );
+					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_LR), destReg );
 					break;
 				}
 				case SPR_CTR: {
-					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_CTR), destReg );
+					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_CTR), destReg );
 					break;
 				}
 				case SPR_SPRG0: {
-					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_SPRG0), destReg );
+					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_SPRG0), destReg );
 					break;
 				}
 				case SPR_SPRG1: {
-					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_SPRG1), destReg );
+					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_SPRG1), destReg );
 					break;
 				}
 				case SPR_SPRG2: {
-					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_SPRG2), destReg );
+					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_SPRG2), destReg );
 					break;
 				}
 				case SPR_SPRG3: {
-					intermediates[0].BuildMoveReg( GPR64OFFSET(GPR_SPRG3), destReg );
+					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_SPRG3), destReg );
 					break;
 				}
 				default: {
@@ -143,27 +159,27 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 
 			switch( spr ) {
 				case SPR_LR: {
-					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_LR) );
+					intermediates[0].BuildMoveReg64( sourceReg, GPR64OFFSET(GPR_LR) );
 					break;
 				}
 				case SPR_CTR: {
-					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_CTR) );
+					intermediates[0].BuildMoveReg64( sourceReg, GPR64OFFSET(GPR_CTR) );
 					break;
 				}
 				case SPR_SPRG0: {
-					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_SPRG0) );
+					intermediates[0].BuildMoveReg64( sourceReg, GPR64OFFSET(GPR_SPRG0) );
 					break;
 				}
 				case SPR_SPRG1: {
-					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_SPRG1) );
+					intermediates[0].BuildMoveReg64( sourceReg, GPR64OFFSET(GPR_SPRG1) );
 					break;
 				}
 				case SPR_SPRG2: {
-					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_SPRG2) );
+					intermediates[0].BuildMoveReg64( sourceReg, GPR64OFFSET(GPR_SPRG2) );
 					break;
 				}
 				case SPR_SPRG3: {
-					intermediates[0].BuildMoveReg( sourceReg, GPR64OFFSET(GPR_SPRG3) );
+					intermediates[0].BuildMoveReg64( sourceReg, GPR64OFFSET(GPR_SPRG3) );
 					break;
 				}
 				default: {

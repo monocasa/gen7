@@ -13,7 +13,8 @@ enum InstrOp
 	SET_SYS_IMM,
 	SET_SYS_REG,
 	READ_SYS,
-	MOVE_REG,
+	MOVE_REG32,
+	MOVE_REG64,
 
 	//Branch
 	BRANCH_ALWAYS = 100,
@@ -101,8 +102,14 @@ struct InterInstr
 		args[1] = sysReg;
 	}
 
-	void BuildMoveReg( int sourceReg, int destReg ) {
-		op = MOVE_REG;
+	void BuildMoveReg32( int sourceReg, int destReg ) {
+		op = MOVE_REG32;
+		args[0] = sourceReg;
+		args[1] = destReg;
+	}
+
+	void BuildMoveReg64( int sourceReg, int destReg ) {
+		op = MOVE_REG64;
 		args[0] = sourceReg;
 		args[1] = destReg;
 	}

@@ -68,8 +68,8 @@ private:
 	static const uint32_t XFX_SPR_HI_MASK = 0x3E0;
 	static const int XFX_SPR_HI_SHIFT = 6;
 
-	static const uint32_t XFX_RS_MASK = 0x1f;
 	static const int XFX_RS_SHIFT = 21;
+	static const int XFX_RT_SHIFT = 21;
 
 	static const int XO_RB_SHIFT = 11;
 	static const int XO_RA_SHIFT = 16;
@@ -126,6 +126,7 @@ public:
 	};
 
 	enum {
+		SPECIAL_XO_MFCR   = 19,
 		SPECIAL_XO_LWARX  = 20,
 		SPECIAL_XO_SLW    = 24,
 		SPECIAL_XO_SUBF   = 40,
@@ -259,7 +260,11 @@ public:
 	}
 
 	static int XFX_RS( const uint32_t instruction ) {
-		return (instruction >> XFX_RS_SHIFT) & XFX_RS_MASK;
+		return (instruction >> XFX_RS_SHIFT) & REG_MASK;
+	}
+
+	static int XFX_RT( const uint32_t instruction ) {
+		return (instruction >> XFX_RT_SHIFT) & REG_MASK;
 	}
 
 	static bool XO_RC( const uint32_t instruction ) {

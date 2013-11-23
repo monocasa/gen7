@@ -103,7 +103,16 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
-		case MOVE_REG: {
+		case MOVE_REG32: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+
+			uint32_t result = ReadGPR32( sourceReg );
+			SetGPR32( destReg, result );
+			return true;
+		}
+
+		case MOVE_REG64: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];
 

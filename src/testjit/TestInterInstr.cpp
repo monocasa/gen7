@@ -58,13 +58,24 @@ TEST(InterInstr, ReadSystem)
 	EXPECT_EQ( 512, instr.args[1] );
 }
 
-TEST(InterInstr, MoveReg)
+TEST(InterInstr, MoveReg32)
 {
 	InterInstr instr;
 
-	instr.BuildMoveReg( 20, 30 );
+	instr.BuildMoveReg32( 20, 30 );
 
-	EXPECT_EQ( InstrOp::MOVE_REG, instr.op );
+	EXPECT_EQ( InstrOp::MOVE_REG32, instr.op );
+	EXPECT_EQ( 20, instr.args[0] );
+	EXPECT_EQ( 30, instr.args[1] );
+}
+
+TEST(InterInstr, MoveReg64)
+{
+	InterInstr instr;
+
+	instr.BuildMoveReg64( 20, 30 );
+
+	EXPECT_EQ( InstrOp::MOVE_REG64, instr.op );
 	EXPECT_EQ( 20, instr.args[0] );
 	EXPECT_EQ( 30, instr.args[1] );
 }
