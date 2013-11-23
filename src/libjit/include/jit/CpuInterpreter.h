@@ -191,6 +191,29 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
+		case LD_32: {
+			int destReg = instr.args[0];
+			uint64_t addr = instr.args[1];
+
+			const uint64_t value = ReadMem32( addr );
+
+			SetGPR32( destReg, value );
+
+			return true;
+		}
+
+		case LD_32_REG_OFF: {
+			int destReg = instr.args[0];
+			int addrReg = instr.args[1];
+			int64_t offset = instr.args[2];
+
+			const uint64_t value = ReadMem32( offset + ReadGPR64(addrReg) );
+
+			SetGPR32( destReg, value );
+
+			return true;
+		}
+
 		case LD_32_L: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];

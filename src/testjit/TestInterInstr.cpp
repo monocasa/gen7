@@ -157,6 +157,29 @@ TEST(InterInstr, Load64Imm)
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
 }
 
+TEST(InterInstr, Load32)
+{
+	InterInstr instr;
+
+	instr.BuildLoad32( 1, 0xFFFFFFFF00000000UL );
+
+	EXPECT_EQ( InstrOp::LD_32, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
+}
+
+TEST(InterInstr, Load32RegOffset)
+{
+	InterInstr instr;
+
+	instr.BuildLoad32RegOffset( 1, 2, -1 );
+
+	EXPECT_EQ( InstrOp::LD_32_REG_OFF, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+	EXPECT_EQ( -1, instr.args[2] );
+}
+
 TEST(InterInstr, Load32Linked)
 {
 	InterInstr instr;

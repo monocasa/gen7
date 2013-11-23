@@ -33,6 +33,10 @@ private:
 	static const int D_RS_SHIFT = 21;
 	static const int D_RT_SHIFT = 21;
 
+	static const int D_D_BITS = 16;
+
+	static const uint32_t D_D_MASK = 0x0000FFFF;
+
 	static const int D_L_SHIFT = 21;
 	static const uint32_t D_L_MASK = 0x00000001;
 
@@ -123,6 +127,7 @@ public:
 		OPCD_ORIS       = 25,
 		OPCD_ROTATE_30  = 30,
 		OPCD_SPECIAL    = 31,
+		OPCD_LWZ        = 32,
 		OPCD_STD        = 62,
 	};
 
@@ -177,6 +182,10 @@ public:
 
 	static int B_BO( const uint32_t instruction ) {
 		return (instruction >> B_BO_SHIFT) & REG_MASK;
+	}
+
+	static int64_t D_D( const uint32_t instruction ) {
+		return util::SignExtend<int64_t,D_D_BITS>( instruction & D_D_MASK );
 	}
 
 	static int64_t D_SI( const uint32_t instruction ) {
