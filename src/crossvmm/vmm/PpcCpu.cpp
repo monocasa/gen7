@@ -200,6 +200,11 @@ bool PpcCpu::ReadSystemReg( int sysReg, uint64_t &value )
 			return true;
 		}
 
+		case jit::PowerPCHelpers::SPR_PPE_TLB_INDEX_HINT: {
+			value = mmuContext.GetTlbHint();
+			return true;
+		}
+
 		case jit::PowerPCHelpers::SPR_HID6: {
 			value = context.hid6;
 			return true;

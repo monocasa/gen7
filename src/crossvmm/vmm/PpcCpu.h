@@ -21,6 +21,8 @@ private:
 	class MmuContext
 	{
 	private:
+		static const int NUM_TLB_ENTRIES = 1024;
+
 		static const int NUM_HVREALMODE_PML3S = 4;
 
 		static const int NUM_IR32_PML2S = 4;
@@ -34,6 +36,8 @@ private:
 		uint64_t* ir32Pml2s[ NUM_IR32_PML2S ]; //PML2s for instruction relocate/32 bit
 		uint64_t* ir32Pml1s[ NUM_IR32_PML1S ]; //PML1s for instruction relocate/32 bit
 
+		int nextTlbHint;
+
 	public:
 		void Init();
 
@@ -44,8 +48,13 @@ private:
 
 		bool IsInstructionMapped( uint64_t addr );
 
+		int GetTlbHint() {
+			return (nextTlbHint++) & (NUM_TLB_ENTRIES - 1);
+		} 
+
 		MmuContext( jit::XenonCpuContext &context )
 		  : context( context )
+		  , nextTlbHint( 0x3FF )
 		{ }
 
 	} mmuContext;
