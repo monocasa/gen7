@@ -54,6 +54,12 @@ private:
 	static const int M_RA_SHIFT = 16;
 	static const int M_RS_SHIFT = 21;
 
+	static const uint32_t MD_RC_MASK = 0x00000001;
+
+	static const uint32_t MDS_XO_MASK = 0x0000000F;
+
+	static const int MDS_XO_SHIFT = 1;
+
 	static const uint32_t X_RC_MASK = 0x000000001;
 
 	static const int X_RB_SHIFT = 11;
@@ -235,6 +241,14 @@ public:
 
 	static int M_RS( const uint32_t instruction ) {
 		return (instruction >> M_RS_SHIFT) & REG_MASK;
+	}
+
+	static bool MD_RC( const uint32_t instruction ) {
+		return instruction & MD_RC_MASK;
+	}
+
+	static int MDS_XO( const uint32_t instruction ) {
+		return (instruction >> MDS_XO_SHIFT) & MDS_XO_MASK;
 	}
 
 	static bool X_RC( const uint32_t instruction ) {

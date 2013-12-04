@@ -46,7 +46,8 @@ enum InstrOp
 	OR_IMM,
 
 	//Shift
-	SLL32 = 500,
+	ROL64_IMM = 500,
+	SLL32,
 	SLL32_IMM,
 	SLL64_IMM,
 	SLR64_IMM,
@@ -259,6 +260,13 @@ struct InterInstr
 	}
 
 //Shift/Rotate
+	void BuildRol64Imm( int sourceReg, int destReg, int rotate ) {
+		op = ROL64_IMM;
+		args[0] = sourceReg;
+		args[1] = destReg;
+		args[2] = rotate;
+	}
+
 	void BuildSll32( int sourceReg, int destReg, int shiftReg ) {
 		op = SLL32;
 		args[0] = sourceReg;

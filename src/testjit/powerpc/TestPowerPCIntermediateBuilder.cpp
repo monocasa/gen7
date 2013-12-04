@@ -397,31 +397,54 @@ TEST(PowerPCIntermediateBuilder, Rotate)
 	EXPECT_EQ( 6 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 0x0000000000003FFFUL, instr[0].args[2] );
 
-	// 00000000 : 78642722 : extrdi   r4, r3, 4, 32
-	EXPECT_EQ( 2, builder.BuildIntermediate( instr, 0x78642722, 0x00000000 ) );
-
+	// 00000000 : 786203e4 : clrrdi   r2, r3, 16
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x786203e4, 0x00000000 ) );
 	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
 	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
-	EXPECT_EQ( 4 * sizeof(uint64_t), instr[0].args[1] );
-	EXPECT_EQ( 0xF0000000, instr[0].args[2] );
-
-	EXPECT_EQ( InstrOp::SLR64_IMM, instr[1].op );
-	EXPECT_EQ( 4 * sizeof(uint64_t), instr[1].args[0] );
-	EXPECT_EQ( 4 * sizeof(uint64_t), instr[1].args[1] );
-	EXPECT_EQ( 32 - 4, instr[1].args[2] );
+	EXPECT_EQ( 2 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 0xFFFFFFFFFFFF0000UL, instr[0].args[2] );
 
 	// 00000000 : 78855224 : extldi   r5, r4, 41, 10
 	EXPECT_EQ( 2, builder.BuildIntermediate( instr, 0x78855224, 0x00000000 ) );
 
-	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( InstrOp::ROL64_IMM, instr[0].op );
 	EXPECT_EQ( 4 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 5 * sizeof(uint64_t), instr[0].args[1] );
-	EXPECT_EQ( 0x00FFC000, instr[0].args[2] );
+	EXPECT_EQ( 10, instr[0].args[2] );
 
-	EXPECT_EQ( InstrOp::SLL64_IMM, instr[1].op );
+	EXPECT_EQ( InstrOp::AND_IMM, instr[1].op );
 	EXPECT_EQ( 5 * sizeof(uint64_t), instr[1].args[0] );
 	EXPECT_EQ( 5 * sizeof(uint64_t), instr[1].args[1] );
-	EXPECT_EQ( 41 - 1, instr[1].args[2] );
+	EXPECT_EQ( 0xFFFFFFFFFF800000UL, instr[1].args[2] );
+
+	// 00000000 : 78642722 : extrdi   r4, r3, 4, 32
+	EXPECT_EQ( 2, builder.BuildIntermediate( instr, 0x78642722, 0x00000000 ) );
+
+	EXPECT_EQ( InstrOp::ROL64_IMM, instr[0].op );
+	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 4 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 36, instr[0].args[2] );
+
+	EXPECT_EQ( InstrOp::AND_IMM, instr[1].op );
+	EXPECT_EQ( 4 * sizeof(uint64_t), instr[1].args[0] );
+	EXPECT_EQ( 4 * sizeof(uint64_t), instr[1].args[1] );
+	EXPECT_EQ( 0xF, instr[1].args[2] );
+
+	// 00000000 : 7862a4e2 : extrdi   r2, r3, 13, 39
+	EXPECT_EQ( 2, builder.BuildIntermediate( instr, 0x7862a4e2, 0x00000000 ) );
+
+	EXPECT_EQ( InstrOp::ROL64_IMM, instr[0].op );
+	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 2 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 52, instr[0].args[2] );
+
+	EXPECT_EQ( InstrOp::AND_IMM, instr[1].op );
+	EXPECT_EQ( 2 * sizeof(uint64_t), instr[1].args[0] );
+	EXPECT_EQ( 2 * sizeof(uint64_t), instr[1].args[1] );
+	EXPECT_EQ( 0x01FFF, instr[1].args[2] );
+
+	//// 00000000 : 78442c0e : insrdi   r4, r2, 11, 16
+	//EXPECT_EQ( 0, builder.BuildIntermediate( instr, 0x78442c0e, 0x00000000 ) );
 }
 
 TEST(PowerPCIntermediateBuilder, Or)
