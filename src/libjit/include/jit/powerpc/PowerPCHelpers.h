@@ -98,6 +98,7 @@ public:
 		GPR_SPRG2 = 36,
 		GPR_SPRG3 = 37,
 		GPR_CR    = 38,
+		GPR_TEMP  = 39,
 	};
 
 	enum {
@@ -114,6 +115,9 @@ public:
 		SPR_LPCR               = 318,
 		SPR_LPIDR              = 319,
 		SPR_PPE_TLB_INDEX_HINT = 946,
+		SPR_PPE_TLB_INDEX      = 947,
+		SPR_PPE_TLB_VPN        = 948,
+		SPR_PPE_TLB_RPN        = 949,
 		SPR_HID6               = 1017,
 		SPR_PIR                = 1023,
 

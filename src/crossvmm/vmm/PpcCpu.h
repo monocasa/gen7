@@ -21,6 +21,17 @@ private:
 	class MmuContext
 	{
 	private:
+		struct TlbEntry {
+			uint64_t vpn;
+			uint64_t rpn;
+			uint32_t vpnFlags;
+			uint32_t rpnFlags;
+
+			bool IsValid() {
+				return (vpnFlags & 1) != 0;
+			}
+		};
+
 		static const int NUM_TLB_ENTRIES = 1024;
 
 		static const int NUM_HVREALMODE_PML3S = 4;
@@ -38,6 +49,11 @@ private:
 
 		int nextTlbHint;
 
+		int currentTlbIndex;
+		uint64_t latchedRpn;
+
+		TlbEntry tlbEntries[ 256 ][ 4 ];
+
 	public:
 		void Init();
 
@@ -48,9 +64,15 @@ private:
 
 		bool IsInstructionMapped( uint64_t addr );
 
-		int GetTlbHint() {
-			return (nextTlbHint++) & (NUM_TLB_ENTRIES - 1);
-		} 
+		int GetTlbHint();
+
+		void WriteTlbIndex( uint64_t value ) {
+			currentTlbIndex = (value & 0x3FF);
+		}
+
+		void WriteTlbVpn( uint64_t value );
+
+		void WriteTlbRpn( uint64_t value );
 
 		MmuContext( jit::XenonCpuContext &context )
 		  : context( context )

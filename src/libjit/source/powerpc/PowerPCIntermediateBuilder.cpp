@@ -468,9 +468,15 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 
 				case 6:
 				case 7: {
-					printf( "%08x rldimi sh=%d me=%d\n", nativeInstr, sh, mb );
-					intermediates[0].BuildUnknown( opcd, nativeInstr, pc );
-					return 1;
+					int numBits = 64 - sh - mb;
+					uint64_t mask = 0xFFFFFFFFFFFFFFFF >> (64 - numBits);
+					mask <<= sh;
+
+					intermediates[0].BuildAndcImm( ra, ra, mask );
+					intermediates[1].BuildRol64Imm( rs, GPR64OFFSET(GPR_TEMP), sh );
+					intermediates[2].BuildAndImm( GPR64OFFSET(GPR_TEMP), GPR64OFFSET(GPR_TEMP), mask );
+					intermediates[3].BuildOr( GPR64OFFSET(GPR_TEMP), ra, ra );
+					return 4;
 				}
 
 				default: {

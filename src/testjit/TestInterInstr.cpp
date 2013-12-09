@@ -298,6 +298,18 @@ TEST(InterInstr, Andc)
 	EXPECT_EQ( 2, instr.args[2] );
 }
 
+TEST(InterInstr, AndcImm)
+{
+	InterInstr instr;
+
+	instr.BuildAndcImm( 31, 1, 0xFFFFFFFF00000000UL );
+
+	EXPECT_EQ( InstrOp::ANDC_IMM, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
+}
+
 TEST(InterInstr, Or)
 {
 	InterInstr instr;

@@ -76,6 +76,27 @@ bool PpcCpu::MmuContext::IsInstructionMapped( uint64_t /*addr*/ )
 	return !((context.msr & 0x30) != 0);
 }
 
+int PpcCpu::MmuContext::GetTlbHint() {
+	int suggested = (nextTlbHint++) & (NUM_TLB_ENTRIES - 1);
+	int index = (suggested >> 2) & 0xFF;
+	int set = 8 >> (suggested & 3);
+
+	return (index << 4) | set;
+}
+
+void PpcCpu::MmuContext::WriteTlbVpn( uint64_t value )
+{
+	uint64_t avpn = value & 0xFFFFFFFFFFFFFF80UL;
+	avpn <<= 16;
+	printf( "tlbIndex[%d] avpn=%016lx valid=%s\n", currentTlbIndex, avpn, (value&1)?"true":"false" );
+}
+
+void PpcCpu::MmuContext::WriteTlbRpn( uint64_t value )
+{
+	uint64_t rpn = value & 0xFFFFFFFFFFFF0000UL;
+	printf( "tlbIndex[%d] rpn=%016lx\n", currentTlbIndex, rpn );
+}
+
 void PpcCpu::DumpContext()
 {
 	printf( "   r0 %16lx |    r1 %16lx |    r2 %16lx |    r3 %16lx\n", context.gpr[ 0], context.gpr[ 1], context.gpr[ 2], context.gpr[ 3] );
@@ -166,6 +187,24 @@ bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 		case jit::PowerPCHelpers::SPR_LPIDR: {
 			printf( "PpcCpu:  LPIDR set to %016lx\n", value );
 			context.lpidr = value;
+			return true;
+		}
+
+		case jit::PowerPCHelpers::SPR_PPE_TLB_INDEX: {
+			printf( "PpcCpu:  PPE_TLB_Index set to %016lx\n", value );
+			mmuContext.WriteTlbIndex( value );
+			return true;
+		}
+
+		case jit::PowerPCHelpers::SPR_PPE_TLB_VPN: {
+			printf( "PpcCpu:  PPE_TLB_Vpn set to %016lx\n", value );
+			mmuContext.WriteTlbVpn( value );
+			return true;
+		}
+
+		case jit::PowerPCHelpers::SPR_PPE_TLB_RPN: {
+			printf( "PpcCpu:  PPE_TLB_Rpn set to %016lx\n", value );
+			mmuContext.WriteTlbRpn( value );
 			return true;
 		}
 
@@ -343,6 +382,10 @@ void PpcCpu::Execute()
 	jit::InterInstr intermediates[ 10 ];
 
 	while( running ) {
+		if( context.pc == 0x80006aec) {
+			context.pc = 0x8FFF6aec;
+		}
+
 		if( !mmuContext.IsInstructionMapped( context.pc ) ) {
 			printf( "PpcCpu:  ISI @ %08lx\n", context.pc );
 			context.srr0 = context.pc;

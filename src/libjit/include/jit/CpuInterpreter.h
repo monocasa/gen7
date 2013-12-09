@@ -359,6 +359,20 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
+		case ANDC_IMM: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const uint64_t imm = instr.args[2];
+
+			uint64_t sourceValue = ReadGPR64( sourceReg );
+
+			uint64_t result = sourceValue & ~imm;
+
+			SetGPR64( destReg, result );
+
+			return true;
+		}
+
 		case OR: {
 			const int sourceReg0 = instr.args[0];
 			const int sourceReg1 = instr.args[1];

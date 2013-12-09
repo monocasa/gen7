@@ -35,6 +35,8 @@ struct XenonCpuContext : public CpuContext {
 	uint32_t cr;
 	uint32_t xer;
 
+	uint64_t temp;  //used for intermediate ops
+
 	uint64_t fpr[32];
 	VmxReg   vmx[128];
 
@@ -50,6 +52,10 @@ struct XenonCpuContext : public CpuContext {
 	uint64_t hid6;
 	uint64_t lpidr;
 	uint64_t lpcr;
+
+	uint64_t ppetlbindex;
+	uint64_t ppetlbvpn;
+	uint64_t ppetlbrpn;
 
 	void ClearCr( int num ) {
 		unsigned int mask = 0xF0000000U >> (num * 4);
