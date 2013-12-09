@@ -16,4 +16,5 @@ ADD_SUBDIRECTORY( crossvmm )
 ADD_SUBDIRECTORY( host )
 ADD_SUBDIRECTORY( libjit )
 ADD_SUBDIRECTORY( testjit )
+ADD_SUBDIRECTORY( tools/xenosdis )
 
