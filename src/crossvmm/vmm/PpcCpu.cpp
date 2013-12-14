@@ -382,10 +382,6 @@ void PpcCpu::Execute()
 	jit::InterInstr intermediates[ 10 ];
 
 	while( running ) {
-		if( context.pc == 0x80006aec) {
-			context.pc = 0x8FFF6aec;
-		}
-
 		if( !mmuContext.IsInstructionMapped( context.pc ) ) {
 			printf( "PpcCpu:  ISI @ %08lx\n", context.pc );
 			context.srr0 = context.pc;
