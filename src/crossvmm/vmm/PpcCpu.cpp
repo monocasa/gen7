@@ -8,6 +8,33 @@
 
 extern "C" void hyper_quit();
 
+void PpcCpu::MmuContext::SetNewVpn( uint64_t value, int index, int set )
+{
+	if( tlbEntries[index][set].IsValid() ) {
+		printf( "rewriting valid tlb entry %d.%d\n", index, set );
+		hyper_quit();
+	}
+	tlbEntries[index][set].vpn = value;
+
+	if( tlbEntries[index][set].IsValid() ) {
+		Map16MPage( tlbEntries[index][set].GetVpn(), tlbEntries[index][set].GetRpn() );
+	}
+	nextTlbHint++;
+}
+
+void PpcCpu::MmuContext::Map16MPage( uint64_t vpn, uint64_t rpn )
+{
+	printf( "mapping 16MiB page %08lx(%08lx)->%08lx\n", rpn, xenonReal.GetVmmPhysForXenonPhys(rpn), vpn );
+	int pml2 = (vpn >> 30) & 0x3;
+	int pmle = (vpn >> 21) & 0x1ff;
+
+	uint64_t phys = xenonReal.GetVmmPhysForXenonPhys( rpn );
+
+	for( int i = 0; i < 8; i++ ) {
+		ir32Pml2s[pml2][pmle + i] = (phys + ((2 * 1024 * 1024UL) * i)) | 0x83;
+	}
+}
+
 void PpcCpu::MmuContext::Init()
 {
 	for( int i = 0; i < NUM_HVREALMODE_PML3S; i++ ) {
@@ -47,10 +74,10 @@ void PpcCpu::MmuContext::MapFull()
 	hvRealModePml3s[ 3 ][ 2 ] = (((uint64_t)xenonReal.GetRamPml2(2)) - 0xFFFFFFFF80000000UL) | 1;
 	hvRealModePml3s[ 3 ][ 3 ] = (((uint64_t)xenonReal.GetRamPml2(3)) - 0xFFFFFFFF80000000UL) | 1;
 
-	ir32Pml3[ 0 ] = (((uint64_t)&ir32Pml2s[ 0 ]) - 0xFFFFFFFF80000000) | 1;
-	ir32Pml3[ 1 ] = (((uint64_t)&ir32Pml2s[ 1 ]) - 0xFFFFFFFF80000000) | 1;
-	ir32Pml3[ 2 ] = (((uint64_t)&ir32Pml2s[ 2 ]) - 0xFFFFFFFF80000000) | 1;
-	ir32Pml3[ 3 ] = (((uint64_t)&ir32Pml2s[ 3 ]) - 0xFFFFFFFF80000000) | 1;
+	ir32Pml3[ 0 ] = (((uint64_t)ir32Pml2s[ 0 ]) - 0xFFFFFFFF80000000) | 1;
+	ir32Pml3[ 1 ] = (((uint64_t)ir32Pml2s[ 1 ]) - 0xFFFFFFFF80000000) | 1;
+	ir32Pml3[ 2 ] = (((uint64_t)ir32Pml2s[ 2 ]) - 0xFFFFFFFF80000000) | 1;
+	ir32Pml3[ 3 ] = (((uint64_t)ir32Pml2s[ 3 ]) - 0xFFFFFFFF80000000) | 1;
 
 	DisableRelocation();
 }
@@ -71,13 +98,30 @@ void PpcCpu::MmuContext::EnableRelocation()
 	//mm.ClearLowerPml3( 0x0000030000000000UL );
 }
 
-bool PpcCpu::MmuContext::IsInstructionMapped( uint64_t /*addr*/ )
+bool PpcCpu::MmuContext::IsInstructionMapped( uint64_t addr )
 {
-	return !((context.msr & 0x30) != 0);
+	if( context.msr & 0x30 ) {
+		for( int i = 0 ; i < 256; i++ ) {
+			for( int j = 0; j < 4; j++ ) {
+				TlbEntry *entry = &tlbEntries[i][j];
+				if( !entry->IsValid() ) {
+					continue;
+				}
+				if( addr >= entry->GetVpn() && addr < entry->GetVpn() ) {
+					return true;
+				}
+			}
+		}
+		printf( "No tlb entry found for addr %08lx\n", addr );
+		return false;
+	}
+	else {
+		return true;
+	}
 }
 
 int PpcCpu::MmuContext::GetTlbHint() {
-	int suggested = (nextTlbHint++) & (NUM_TLB_ENTRIES - 1);
+	int suggested = (nextTlbHint) & (NUM_TLB_ENTRIES - 1);
 	int index = (suggested >> 2) & 0xFF;
 	int set = 8 >> (suggested & 3);
 
@@ -89,12 +133,27 @@ void PpcCpu::MmuContext::WriteTlbVpn( uint64_t value )
 	uint64_t avpn = value & 0xFFFFFFFFFFFFFF80UL;
 	avpn <<= 16;
 	printf( "tlbIndex[%d] avpn=%016lx valid=%s\n", currentTlbIndex, avpn, (value&1)?"true":"false" );
+
+	for( int i = 0; i < 4; i++ ) {
+		const int flag = 0x8 >> i;
+		if( flag & currentTlbSets ) {
+			printf( "setting vpn for set flag %x\n", flag );
+			SetNewVpn( value, currentTlbIndex, i );
+		}
+	}
 }
 
 void PpcCpu::MmuContext::WriteTlbRpn( uint64_t value )
 {
 	uint64_t rpn = value & 0xFFFFFFFFFFFF0000UL;
-	printf( "tlbIndex[%d] rpn=%016lx\n", currentTlbIndex, rpn );
+	printf( "tlbIndex[%d][%x] rpn=%016lx\n", currentTlbIndex, currentTlbSets, rpn );
+	for( int i = 0; i < 4; i++ ) {
+		const int flag = 0x8 >> i;
+		if( flag & currentTlbSets ) {
+			printf( "setting rpn for set flag %x\n", flag );
+			tlbEntries[ currentTlbIndex ][ i ].rpn = value;
+		}
+	}
 }
 
 void PpcCpu::DumpContext()

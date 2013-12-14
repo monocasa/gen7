@@ -24,11 +24,17 @@ private:
 		struct TlbEntry {
 			uint64_t vpn;
 			uint64_t rpn;
-			uint32_t vpnFlags;
-			uint32_t rpnFlags;
 
 			bool IsValid() {
-				return (vpnFlags & 1) != 0;
+				return (vpn & 1) != 0;
+			}
+
+			uint64_t GetVpn() {
+				return (vpn << 16) & 0xFF000000;
+			}
+
+			uint64_t GetRpn() {
+				return rpn & 0xFFFFFFFFFF000000UL;
 			}
 		};
 
@@ -50,9 +56,12 @@ private:
 		int nextTlbHint;
 
 		int currentTlbIndex;
-		uint64_t latchedRpn;
+		int currentTlbSets;
 
 		TlbEntry tlbEntries[ 256 ][ 4 ];
+
+		void SetNewVpn( uint64_t value, int tlbIndex, int tlbSet );
+		void Map16MPage( uint64_t vpn, uint64_t rpn );
 
 	public:
 		void Init();
@@ -67,7 +76,8 @@ private:
 		int GetTlbHint();
 
 		void WriteTlbIndex( uint64_t value ) {
-			currentTlbIndex = (value & 0x3FF);
+			currentTlbIndex = ((value >> 4) & 0xFF);
+			currentTlbSets = value & 0xf;
 		}
 
 		void WriteTlbVpn( uint64_t value );

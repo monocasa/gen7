@@ -39,3 +39,23 @@ void XenonRealMemory::Init()
 	MapUpperRealSpace();
 }
 
+uint64_t XenonRealMemory::GetVmmPhysForXenonPhys( uint64_t xenonPhys )
+{
+	const int region = (xenonPhys >> 40) & 0x3;
+	const uint64_t regionOffset = xenonPhys & 0x00000000FFFFFFFFUL;
+	switch( region ) {
+		default:
+		case 0: //normal ram
+			return regionOffset + XENON_RAM_PHYS_BASE;
+
+		case 1: //encrypted/hashed ram
+			return regionOffset + XENON_RAM_PHYS_BASE;
+
+		case 2: //soc space
+			return regionOffset + XENON_SOC_PHYS_BASE;
+
+		case 3: //encrypted ram
+			return regionOffset + XENON_RAM_PHYS_BASE;
+	}
+}
+

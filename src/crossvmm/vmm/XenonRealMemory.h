@@ -25,6 +25,8 @@ public:
 	}
 
 	void Init();
+
+	uint64_t GetVmmPhysForXenonPhys( uint64_t xenonPhys );
 };
 
 extern XenonRealMemory xenonReal;
