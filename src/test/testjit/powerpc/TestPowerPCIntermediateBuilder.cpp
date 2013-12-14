@@ -572,6 +572,13 @@ TEST(PowerPCIntermediateBuilder, Slwi)
 	PowerPCIntermediateBuilder builder;
 	InterInstr instr[10];
 
+	// 00000000 : 5463482c : slwi     r3, r3, 9
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x5463482c, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::SLL32_IMM, instr[0].op );
+	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 9, instr[0].args[2] );
+
 	// 00000000 : 5463901a : slwi     r3, r3, 18
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x5463901a, 0x00000000 ) );
 	EXPECT_EQ( InstrOp::SLL32_IMM, instr[0].op );
