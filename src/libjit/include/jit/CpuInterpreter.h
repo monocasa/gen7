@@ -12,6 +12,7 @@ template<class MemoryPolicy>
 class CpuInterpreter : public MemoryPolicy
 {
 	using MemoryPolicy::ReadMem32;
+	using MemoryPolicy::ReadMem64;
 	using MemoryPolicy::WriteMem64;
 
 protected:
@@ -210,6 +211,18 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			const uint64_t value = ReadMem32( offset + ReadGPR64(addrReg) );
 
 			SetGPR32( destReg, value );
+
+			return true;
+		}
+
+		case LD_64_REG_OFF: {
+			int destReg = instr.args[0];
+			int addrReg = instr.args[1];
+			int64_t offset = instr.args[2];
+
+			const uint64_t value = ReadMem64( offset + ReadGPR64(addrReg) );
+
+			SetGPR64( destReg, value );
 
 			return true;
 		}

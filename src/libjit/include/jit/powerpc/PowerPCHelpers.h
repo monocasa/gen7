@@ -139,6 +139,7 @@ public:
 		OPCD_ROTATE_30  = 30,
 		OPCD_SPECIAL    = 31,
 		OPCD_LWZ        = 32,
+		OPCD_LD         = 58,
 		OPCD_STD        = 62,
 	};
 

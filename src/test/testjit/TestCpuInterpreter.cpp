@@ -16,6 +16,7 @@ public:
 		uint64_t value;
 		enum Type : int {
 			READ32,
+			READ64,
 			WRITE64
 		} type;
 
@@ -34,7 +35,21 @@ protected:
 			value = data32[ addr ];
 		}
 
+		printf( "readMem32\n" );
+
 		accesses.push_back( Access(Access::Type::READ32, addr, value) );
+
+		return value;
+	}
+
+	uint64_t ReadMem64( uint64_t addr ) {
+		uint64_t value = 0;
+
+		if( data64.end() != data64.find(addr) ) {
+			value = data64[ addr ];
+		}
+
+		accesses.push_back( Access(Access::Type::READ64, addr, value) );
 
 		return value;
 	}
@@ -376,6 +391,25 @@ TEST(CpuInterpreter, Load32RegOffset)
 	EXPECT_EQ( TestCpuInterpreter::Access::Type::READ32, testCpu.accesses[0].type );
 	EXPECT_EQ( 0x0000000000001100UL, testCpu.accesses[0].addr );
 	EXPECT_EQ( 0x0000000055555555UL, testCpu.accesses[0].value );
+}
+
+TEST(CpuInterpreter, Load64RegOffset)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0xFFFFFFFF00000000UL;
+	testCpu.gprs[2] = 0x0000000000001000UL;
+	testCpu.data64[ 0x1100 ] = 0x5555555555555555UL;
+
+	instr.BuildLoad64RegOffset( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2), 0x0000000000000100UL );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0x5555555555555555UL, testCpu.gprs[1] );
+
+	ASSERT_EQ( 1, testCpu.accesses.size() );
+	EXPECT_EQ( TestCpuInterpreter::Access::Type::READ64, testCpu.accesses[0].type );
+	EXPECT_EQ( 0x0000000000001100UL, testCpu.accesses[0].addr );
+	EXPECT_EQ( 0x5555555555555555UL, testCpu.accesses[0].value );
 }
 
 TEST(CpuInterpreter, Load32Linked)

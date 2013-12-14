@@ -14,6 +14,14 @@ public:
 		return *MakePtr<uint32_t>( addr );
 	}
 
+	uint64_t ReadMem64( uint64_t addr ) {
+		uint32_t *ptr = MakePtr<uint32_t>( addr );
+		uint64_t ret = ((uint64_t)ptr[0]) << 32;
+		ret |= ptr[1];
+
+		return ret;
+	}
+
 	void WriteMem32( uint64_t addr, uint32_t value ) {
 		*MakePtr<uint32_t>( addr ) = value;
 	}

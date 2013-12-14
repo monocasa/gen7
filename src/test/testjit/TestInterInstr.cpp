@@ -180,6 +180,18 @@ TEST(InterInstr, Load32RegOffset)
 	EXPECT_EQ( -1, instr.args[2] );
 }
 
+TEST(InterInstr, Load64RegOffset)
+{
+	InterInstr instr;
+
+	instr.BuildLoad64RegOffset( 1, 2, -1 );
+
+	EXPECT_EQ( InstrOp::LD_64_REG_OFF, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+	EXPECT_EQ( -1, instr.args[2] );
+}
+
 TEST(InterInstr, Load32Linked)
 {
 	InterInstr instr;

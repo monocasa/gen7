@@ -28,6 +28,7 @@ enum InstrOp
 	LD_64_IMM,
 	LD_32,
 	LD_32_REG_OFF,
+	LD_64_REG_OFF,
 	LD_32_L,
 	LD_32_IDX_L,
 	ST_64,
@@ -171,6 +172,13 @@ struct InterInstr
 
 	void BuildLoad32RegOffset( int destReg, int addrReg, int64_t offset ) {
 		op = LD_32_REG_OFF;
+		args[0] = destReg;
+		args[1] = addrReg;
+		args[2] = offset;
+	}
+
+	void BuildLoad64RegOffset( int destReg, int addrReg, int64_t offset ) {
+		op = LD_64_REG_OFF;
 		args[0] = destReg;
 		args[1] = addrReg;
 		args[2] = offset;

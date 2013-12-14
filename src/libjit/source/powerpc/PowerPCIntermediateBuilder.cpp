@@ -522,6 +522,21 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			return BuildIntermediateSpecial( intermediates, nativeInstr, pc );
 		}
 
+		case OPCD_LD: {
+			const int rs = DS_RS(nativeInstr);
+			const int ra = DS_RA(nativeInstr);
+			const int64_t offset = DS_DS(nativeInstr);
+
+			//if( 0 == ra ) {
+			//	intermediates[0].BuildStore64( GPR64OFFSET(rs), offset );
+			//}
+			//else {
+				intermediates[0].BuildLoad64RegOffset( GPR64OFFSET(rs), GPR64OFFSET(ra), offset );
+			//}
+
+			return 1;
+		}
+
 		case OPCD_STD: {
 			const int rs = DS_RS(nativeInstr);
 			const int ra = DS_RA(nativeInstr);
