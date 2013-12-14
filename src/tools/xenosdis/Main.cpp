@@ -76,12 +76,12 @@ int main( int argc, char *argv[] )
 	if( strcmp("vs", argv[1]) == 0 ) {
 		shaderBinary = testVertexShader;
 		shaderBinarySize = sizeof(testVertexShader);
-		printf( "~~~~ vs.vsu ~~~~\n" );
+		printf( "==== vs.vsu ====\n" );
 	}
 	else if( strcmp("ps", argv[1]) == 0 ) {
 		shaderBinary = testPixelShader;
 		shaderBinarySize = sizeof(testPixelShader);
-		printf( "~~~~ ps.psu ~~~~\n" );
+		printf( "==== ps.psu ====\n" );
 	}
 	else {
 		usage( argv[0] );
@@ -90,7 +90,10 @@ int main( int argc, char *argv[] )
 
 	std::unique_ptr<xenosdis::XenosShader> shader( new xenosdis::XenosShader( shaderBinary, shaderBinarySize ) );
 
+	printf( "~~~~ HEADER ~~~~\n" );
 	shader->PrintHeader( stdout );
+	printf( "~~~~ uC HEADER ~~~~\n" );
+	shader->PrintUcHeader( stdout );
 
 	return 0;
 }
