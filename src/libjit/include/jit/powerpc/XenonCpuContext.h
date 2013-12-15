@@ -54,10 +54,7 @@ struct XenonCpuContext : public CpuContext {
 	uint64_t hid6;
 	uint64_t lpidr;
 	uint64_t lpcr;
-
-	uint64_t ppetlbindex;
-	uint64_t ppetlbvpn;
-	uint64_t ppetlbrpn;
+	uint64_t dar;
 
 	void ClearCr( int num ) {
 		unsigned int mask = 0xF0000000U >> (num * 4);

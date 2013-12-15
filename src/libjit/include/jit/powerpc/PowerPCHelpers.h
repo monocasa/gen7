@@ -109,6 +109,7 @@ public:
 		SPR_XER                = 1,
 		SPR_LR                 = 8,
 		SPR_CTR                = 9,
+		SPR_DAR                = 19,
 		SPR_SRR0               = 26,
 		SPR_SRR1               = 27,
 		SPR_SPRG0              = 272,

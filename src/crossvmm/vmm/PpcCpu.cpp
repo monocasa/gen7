@@ -169,7 +169,7 @@ void PpcCpu::DumpContext()
 	printf( "  r24 %16lx |   r25 %16lx |   r26 %16lx |   r27 %16lx\n", context.gpr[24], context.gpr[25], context.gpr[26], context.gpr[27] );
 	printf( "  r28 %16lx |   r29 %16lx |   r30 %16lx |   r31 %16lx\n", context.gpr[28], context.gpr[29], context.gpr[30], context.gpr[31] );
 	printf( "   pc %16lx |   msr %16lx |   ctr %16lx |    lr %16lx\n", context.pc, context.msr, context.ctr, context.lr );
-	printf( "   cr         %08x |   xer %16lx\n", context.cr, context.xer );
+	printf( "   cr         %08x |   xer %16lx |   dar %16lx\n", context.cr, context.xer, context.dar );
 	printf( " srr0 %16lx |  srr1 %16lx | hrmor %16lx |  hid6 %16lx\n", context.srr0, context.srr1, context.hrmor, context.hid6 );
 	printf( "lpidr %16lx |  lpcr %16lx\n", context.lpidr, context.lpcr );
 	printf( "sprg0 %16lx | sprg1 %16lx | sprg2 %16lx | sprg3 %16lx\n", context.sprg0, context.sprg1, context.sprg2, context.sprg3 );
@@ -315,6 +315,11 @@ bool PpcCpu::ReadSystemReg( int sysReg, uint64_t &value )
 	switch( sysReg ) {
 		case jit::PowerPCHelpers::SPR_XER: {
 			value = context.xer;
+			return true;
+		}
+
+		case jit::PowerPCHelpers::SPR_DAR: {
+			value = context.dar;
 			return true;
 		}
 
@@ -485,7 +490,17 @@ void PpcCpu::Execute()
 		else {
 			context.pc -= sizeof(uint32_t);
 			printf( "PpcCpu:  DSI @ %08lx(accessing %08lx)\n", context.pc, faultingAddr );
-			hyper_quit();
+			context.srr0 = context.pc;
+			context.srr1 = context.msr;
+			if( (context.msr & 0x8000000000000000UL) != 0 ) {
+				context.dar = faultingAddr;
+			}
+			else {
+				context.dar = faultingAddr & 0x00000000FFFFFFFFUL;
+			}
+
+			SetMsr( context.msr & ~0x30 );
+			SetPC( 0x300 );
 		}
 	}
 
