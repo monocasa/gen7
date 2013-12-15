@@ -639,6 +639,30 @@ TEST(PowerPCIntermediateBuilder, Std)
 	EXPECT_EQ( -4, instr[0].args[2] );
 }
 
+TEST(PowerPCIntermediateBuilder, Stw)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 90200014 : stw      r1,0x14(0)
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x90200014, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::ST_32, instr[0].op );
+	EXPECT_EQ( 1 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 0x14, instr[0].args[1] );
+
+	// 00000000 : 90010014 : stw      r0,0x14(r1)
+	EXPECT_EQ( 2, builder.BuildIntermediate( instr, 0x90010014, 0x00000000 ) );
+
+	EXPECT_EQ( InstrOp::ADD_IMM, instr[0].op );
+	EXPECT_EQ( 1  * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 40 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 0x14, instr[0].args[2] );
+
+	EXPECT_EQ( InstrOp::ST_32_REG, instr[1].op );
+	EXPECT_EQ( 0  * sizeof(uint64_t), instr[1].args[0] );
+	EXPECT_EQ( 40 * sizeof(uint64_t), instr[1].args[1] );
+}
+
 TEST(PowerPCIntermediateBuilder, Stwcx)
 {
 	PowerPCIntermediateBuilder builder;

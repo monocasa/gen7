@@ -227,6 +227,17 @@ TEST(InterInstr, Load32IndexedLinked)
 	EXPECT_EQ( 3, instr.args[2] );
 }
 
+TEST(InterInstr, Store32)
+{
+	InterInstr instr;
+
+	instr.BuildStore32( 1, 2 );
+
+	EXPECT_EQ( InstrOp::ST_32, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+}
+
 TEST(InterInstr, Store64)
 {
 	InterInstr instr;
