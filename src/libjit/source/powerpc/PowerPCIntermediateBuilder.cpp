@@ -443,7 +443,13 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			const int rs = GPR32LOWOFFSET( M_RS(nativeInstr) );
 			const int ra = GPR32LOWOFFSET( M_RA(nativeInstr) );
 
-			if( (nativeInstr & 0xFFFF) == 0x482c ) { //slwi rs, ra, 9
+			if( (nativeInstr & 0xFFFF) == 0x003a ) { //clrrwi rs, ra, 2
+				intermediates[0].BuildAndImm( rs, ra, 0x00000000FFFFFFFCUL );
+			}
+			else if( (nativeInstr & 0xFFFF) == 0x0038 ) { //clrrwi rs, ra, 3
+				intermediates[0].BuildAndImm( rs, ra, 0x00000000FFFFFFF8UL );
+			}
+			else if( (nativeInstr & 0xFFFF) == 0x482c ) { //slwi rs, ra, 9
 				intermediates[0].BuildSll32Imm( rs, ra, 9 );
 			}
 			else if( (nativeInstr & 0xFFFF) == 0x901A ) { //slwi rs, ra, 18

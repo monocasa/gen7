@@ -209,6 +209,26 @@ TEST(PowerPCIntermediateBuilder, Branch)
 	EXPECT_EQ( 0x00001FFC, instr[0].args[0] );
 }
 
+TEST(PowerPCIntermediateBuilder, Clrrwi)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 541f0038 : clrrwi   r31, r0, 3
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x541f0038, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( 0  * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 31 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 0x00000000FFFFFFF8, instr[0].args[2] );
+
+	// 00000000 : 5529003a : clrrwi   r9, r9, 2
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x5529003a, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( 9 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 9 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 0x00000000FFFFFFFC, instr[0].args[2] );
+}
+
 TEST(PowerPCIntermediateBuilder, Cmpdi)
 {
 	PowerPCIntermediateBuilder builder;
