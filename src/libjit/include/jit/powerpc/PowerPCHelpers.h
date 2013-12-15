@@ -133,6 +133,7 @@ public:
 	enum {
 		OPCD_RESERVED_0 = 0,
 		OPCD_CMPLI      = 10,
+		OPCD_CMPI       = 11,
 		OPCD_ADDI       = 14,
 		OPCD_ADDIS      = 15,
 		OPCD_BCC        = 16,

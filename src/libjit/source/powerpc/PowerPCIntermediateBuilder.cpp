@@ -378,6 +378,21 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			}
 		}
 
+		case OPCD_CMPI: {
+			const int ra = D_RA(nativeInstr);
+			const int32_t imm = D_SI(nativeInstr);
+			const int cr = D_BF(nativeInstr);
+
+			if( D_L(nativeInstr) ) {
+				intermediates[0].BuildPpcCmpdi( GPR64OFFSET(ra), cr, imm );
+			}
+			else {
+				intermediates[0].BuildPpcCmpwi( GPR32LOWOFFSET(ra), cr, imm );
+			}
+
+			return 1;
+		}
+
 		case OPCD_CMPLI: {
 			const int ra = D_RA(nativeInstr);
 			const uint32_t imm = D_UI(nativeInstr);

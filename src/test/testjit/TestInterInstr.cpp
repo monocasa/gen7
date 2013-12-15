@@ -483,13 +483,25 @@ TEST(InterInstr, PpcStwcx)
 	EXPECT_EQ( 3, instr.args[2] );
 }
 
-TEST(InterInstr, PpcCmplwi)
+TEST(InterInstr, PpcCmpdi)
 {
 	InterInstr instr;
 
-	instr.BuildPpcCmplwi( 1, 2, 3 );
+	instr.BuildPpcCmpdi( 1, 2, 3 );
 
-	EXPECT_EQ( InstrOp::PPC_CMPLWI, instr.op );
+	EXPECT_EQ( InstrOp::PPC_CMPDI, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+	EXPECT_EQ( 3, instr.args[2] );
+}
+
+TEST(InterInstr, PpcCmpwi)
+{
+	InterInstr instr;
+
+	instr.BuildPpcCmpwi( 1, 2, 3 );
+
+	EXPECT_EQ( InstrOp::PPC_CMPWI, instr.op );
 	EXPECT_EQ( 1, instr.args[0] );
 	EXPECT_EQ( 2, instr.args[1] );
 	EXPECT_EQ( 3, instr.args[2] );
@@ -502,6 +514,18 @@ TEST(InterInstr, PpcCmpldi)
 	instr.BuildPpcCmpldi( 1, 2, 3 );
 
 	EXPECT_EQ( InstrOp::PPC_CMPLDI, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+	EXPECT_EQ( 3, instr.args[2] );
+}
+
+TEST(InterInstr, PpcCmplwi)
+{
+	InterInstr instr;
+
+	instr.BuildPpcCmplwi( 1, 2, 3 );
+
+	EXPECT_EQ( InstrOp::PPC_CMPLWI, instr.op );
 	EXPECT_EQ( 1, instr.args[0] );
 	EXPECT_EQ( 2, instr.args[1] );
 	EXPECT_EQ( 3, instr.args[2] );
