@@ -95,6 +95,22 @@ TEST(PowerPCIntermediateBuilder, Andc)
 	EXPECT_EQ( InstrOp::UNKNOWN_OPCODE, instr[0].op );
 }
 
+TEST(PowerPCIntermediateBuilder, Bcl)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00002000 : 429f0005 : bcl      loc_2004
+	EXPECT_EQ( 2, builder.BuildIntermediate( instr, 0x429f0005, 0x00002000 ) );
+
+	EXPECT_EQ( InstrOp::BRANCH_ALWAYS, instr[0].op );
+	EXPECT_EQ( 0x2004, instr[0].args[0] );
+
+	EXPECT_EQ( InstrOp::LD_64_IMM, instr[1].op );
+	EXPECT_EQ( 32 * sizeof(uint64_t), instr[1].args[0] );
+	EXPECT_EQ( 0x2004, instr[1].args[1] );
+}
+
 TEST(PowerPCIntermediateBuilder, Bdnz)
 {
 	PowerPCIntermediateBuilder builder;

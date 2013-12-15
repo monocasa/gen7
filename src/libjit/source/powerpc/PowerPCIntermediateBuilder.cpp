@@ -5,30 +5,37 @@
 
 namespace jit {
 
-int PowerPCIntermediateBuilder::BuildIntermediateBcc( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc )
+int PowerPCIntermediateBuilder::BuildIntermediateBcc( InterInstr *intermediates, uint32_t nativeInstr, const uint64_t pc )
 {
-	if( B_LK(nativeInstr) || B_AA(nativeInstr) ) {
-		intermediates[0].BuildUnknown( 16, nativeInstr, pc );
+	if( B_AA(nativeInstr) ) {
+		intermediates[0].BuildUnknown( 1600000 + 1025, nativeInstr, pc );
 		return 1;
 	}
 
 	const uint64_t target = pc + B_BD( nativeInstr );
 
+	int instrCount = 0;
+
 	switch( B_BO(nativeInstr) ) {
 		case 6: { //bcc cr clear-
-			intermediates[0].BuildBranchGpr32MaskZero( GPR32LOWOFFSET(GPR_CR), 0x80000000 >> B_BI(nativeInstr), target );
-			return 1;
+			intermediates[instrCount++].BuildBranchGpr32MaskZero( GPR32LOWOFFSET(GPR_CR), 0x80000000 >> B_BI(nativeInstr), target );
+			break;
 		}
 
 		case 12: { //bcc cr set
-			intermediates[0].BuildBranchGpr32MaskNotZero( GPR32LOWOFFSET(GPR_CR), 0x80000000 >> B_BI(nativeInstr), target );
-			return 1;
+			intermediates[instrCount++].BuildBranchGpr32MaskNotZero( GPR32LOWOFFSET(GPR_CR), 0x80000000 >> B_BI(nativeInstr), target );
+			break;
+		}
+
+		case 20: { //branch always
+			intermediates[instrCount++].BuildBranchAlways( target );
+			break;
 		}
 
 		case 25: { //bdnz+
-			intermediates[0].BuildSubuImm( GPR64OFFSET(GPR_CTR), GPR64OFFSET(GPR_CTR), 1 );
-			intermediates[1].BuildBranchGpr64NotZero( GPR64OFFSET(GPR_CTR), target );
-			return 2;
+			intermediates[instrCount++].BuildSubuImm( GPR64OFFSET(GPR_CTR), GPR64OFFSET(GPR_CTR), 1 );
+			intermediates[instrCount++].BuildBranchGpr64NotZero( GPR64OFFSET(GPR_CTR), target );
+			break;
 		}
 
 		default: {
@@ -36,6 +43,12 @@ int PowerPCIntermediateBuilder::BuildIntermediateBcc( InterInstr *intermediates,
 			return 1;
 		}
 	}
+
+	if( B_LK(nativeInstr) ) {
+		intermediates[instrCount++].BuildLoad64Imm( GPR64OFFSET(GPR_LR), pc + sizeof(uint32_t) );
+	}
+
+	return instrCount;
 }
 
 int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc )
