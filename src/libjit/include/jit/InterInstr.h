@@ -56,6 +56,7 @@ enum InstrOp
 	SLL32,
 	SLL32_IMM,
 	SLL64_IMM,
+	SLR32_IMM,
 	SLR64_IMM,
 
 	//Processor Specific Region
@@ -333,6 +334,13 @@ struct InterInstr
 
 	void BuildSll64Imm( int sourceReg, int destReg, int shift ) {
 		op = SLL64_IMM;
+		args[0] = sourceReg;
+		args[1] = destReg;
+		args[2] = shift;
+	}
+
+	void BuildSlr32Imm( int sourceReg, int destReg, int shift ) {
+		op = SLR32_IMM;
 		args[0] = sourceReg;
 		args[1] = destReg;
 		args[2] = shift;

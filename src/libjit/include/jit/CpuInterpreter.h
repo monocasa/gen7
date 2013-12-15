@@ -492,6 +492,18 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			SetGPR64( destReg, result );
 			return true;
 		}
+
+		case SLR32_IMM: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const int shift = instr.args[2];
+
+			uint32_t result = ReadGPR32( sourceReg ) >> shift;
+
+			SetGPR32( destReg, result );
+
+			return true;
+		}
 			
 		case SLR64_IMM: {
 			const int sourceReg = instr.args[0];
