@@ -5,7 +5,8 @@ SET( CMAKE_ASM_NASM_OBJECT_FORMAT "elf64" )
 
 ENABLE_LANGUAGE( ASM_NASM )
 
-ADD_LIBRARY( vmmsyscall STATIC stdlib/src/dlmalloc.c )
+ADD_LIBRARY( vmmsyscall STATIC stdlib/src/amd64/makecontext.asm
+                               stdlib/src/dlmalloc.c )
 
 ADD_LIBRARY( crossvmm STATIC vmm/Boot.asm
                              vmm/cxxabiv1.cpp

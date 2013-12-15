@@ -1,3 +1,4 @@
+#include "InterruptManager.h"
 #include "MemoryManager.h"
 #include "PpcCpu.h"
 #include "XenonRealMemory.h"
@@ -195,6 +196,29 @@ void PpcCpu::SetMsr( uint64_t newMsr )
 	}
 
 	context.msr = newMsr;
+}
+
+void PpcCpu::OnInterpPageFault( PageFaultReason /*reason*/, uint64_t addr, InterruptRegs *regs )
+{
+	regs->rdi = error_context.mc_rdi;
+	regs->rsi = error_context.mc_rsi;
+	regs->rdx = error_context.mc_rdx;
+	regs->rcx = error_context.mc_rcx;
+	regs->r8  = error_context.mc_r8;
+	regs->r9  = error_context.mc_r9;
+	regs->rax = error_context.mc_rax;
+	regs->rbx = error_context.mc_rbx;
+	regs->rbp = error_context.mc_rbp;
+	regs->r10 = error_context.mc_r10;
+	regs->r11 = error_context.mc_r11;
+	regs->r12 = error_context.mc_r12;
+	regs->r13 = error_context.mc_r13;
+	regs->r14 = error_context.mc_r14;
+	regs->r15 = error_context.mc_r15;
+	regs->rip = error_context.mc_rip;
+	regs->rsp = error_context.mc_rsp;
+
+	faultingAddr = addr;
 }
 
 void PpcCpu::Init()
@@ -446,32 +470,53 @@ void PpcCpu::Execute()
 
 	jit::InterInstr intermediates[ 10 ];
 
-	while( running ) {
-		if( !mmuContext.IsInstructionMapped( context.pc ) ) {
+	int status;
+
+	mm.RegisterLowerHandler( &interpPageFaultHandler );
+
+	if( (status = getmcontext(&error_context)) != 0) {
+		if( readingInstructions ) {
 			printf( "PpcCpu:  ISI @ %08lx\n", context.pc );
 			context.srr0 = context.pc;
 			context.srr1 = context.msr;
 			SetMsr( context.msr & ~0x30 );
 			SetPC( 0x400 );
 		}
+		else {
+			context.pc -= sizeof(uint32_t);
+			printf( "PpcCpu:  DSI @ %08lx(accessing %08lx)\n", context.pc, faultingAddr );
+			hyper_quit();
+		}
+	}
 
-		const uint32_t instruction = *PC;
+	while( running ) {
+		int numIntermediates = 0;
 
-		//DumpContext();
-		//printf( "%08lx : %04x\n", context.pc, instruction );
+		{//Fetch phase
+			readingInstructions = true;
 
-		int numIntermediates = BuildIntermediate( intermediates, instruction, context.pc );
+			const uint32_t instruction = *PC;
 
-		context.pc += sizeof(uint32_t);
+			//DumpContext();
+			//printf( "%08lx : %04x\n", context.pc, instruction );
 
-		for( int i = 0; i < numIntermediates; i++ ) {
-			if( !InterpretIntermediate( intermediates[i] ) ) {
+			numIntermediates = BuildIntermediate( intermediates, instruction, context.pc );
 
-				printf( "Intermediate interpretation failed:\n\t%s\n", GetErrorString() );
-				context.pc -= sizeof(uint32_t);
+			context.pc += sizeof(uint32_t);
+		}
 
-				DumpContext();
-				return;
+		{//Execute phase
+			readingInstructions = false;
+
+			for( int i = 0; i < numIntermediates; i++ ) {
+				if( !InterpretIntermediate( intermediates[i] ) ) {
+
+					printf( "Intermediate interpretation failed:\n\t%s\n", GetErrorString() );
+					context.pc -= sizeof(uint32_t);
+
+					DumpContext();
+					return;
+				}
 			}
 		}
 	}

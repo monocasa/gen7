@@ -10,6 +10,7 @@
 #include "jit/InterInstr.h"
 
 #include <cstdio>
+#include <ucontext.h>
 
 class PpcCpu : public Cpu, 
                public jit::CpuInterpreter<ThirtyTwoBitMemoryPolicy>, 
@@ -17,6 +18,11 @@ class PpcCpu : public Cpu,
 {
 private:
 	jit::XenonCpuContext &context;
+
+	mcontext_t error_context;
+
+	volatile bool readingInstructions;
+	uint64_t faultingAddr;
 
 	class MmuContext
 	{
@@ -91,9 +97,26 @@ private:
 
 	} mmuContext;
 
+	class InterpreterPageFaultHandler : public PageFaultHandler
+	{
+	private:
+		PpcCpu &cpu;
+
+	public:
+		virtual void OnPageFault( PageFaultReason reason, uint64_t addr, InterruptRegs *regs ) {
+			cpu.OnInterpPageFault( reason, addr, regs );
+		}
+
+		InterpreterPageFaultHandler( PpcCpu &cpu )
+		  : cpu( cpu )
+		{ }
+	} interpPageFaultHandler;
+
 	void DumpContext();
 
 	void SetMsr( uint64_t newMsr );
+
+	void OnInterpPageFault( PageFaultReason reason, uint64_t addr, InterruptRegs *regs );
 
 public:
 	virtual void Init();
@@ -111,6 +134,7 @@ public:
 	  : CpuInterpreter( &context.gpr[0], context.isReserved, context.reservation )
 	  , context( context )
 	  , mmuContext( context )
+	  , interpPageFaultHandler( *this )
 	{ }
 };
 
