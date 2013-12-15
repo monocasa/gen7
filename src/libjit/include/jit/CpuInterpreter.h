@@ -428,6 +428,21 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 		}
 
 	//Shift/Rotate
+		case ROL32_IMM: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const int rotate = instr.args[2];
+
+			const uint32_t sourceValue = ReadGPR32( sourceReg );
+
+			uint32_t result = (sourceValue << rotate) |
+			                  (sourceValue >> (32 - rotate));
+
+			SetGPR32( destReg, result );
+
+			return true;
+		}
+
 		case ROL64_IMM: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];

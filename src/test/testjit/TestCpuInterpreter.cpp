@@ -662,6 +662,20 @@ TEST(CpuInterpreter, OrImm)
 	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[2] );
 }
 
+TEST(CpuInterpreter, Rol32Imm)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0xAAAAAAAAFFF00001UL;
+	testCpu.gprs[2] = 0xBBBBBBBB00000000UL;
+	instr.BuildRol32Imm( testCpu.Gpr32OffsetLow(1), testCpu.Gpr32OffsetLow(2),
+	                     16 );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xAAAAAAAAFFF00001UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0xBBBBBBBB0001FFF0UL, testCpu.gprs[2] );
+}
+
 TEST(CpuInterpreter, Rol64Imm)
 {
 	TestCpuInterpreter testCpu;
