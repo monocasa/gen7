@@ -61,11 +61,11 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
 				return 1;
 			}
-			const int rs = GPR64OFFSET( X_RS(nativeInstr) );
+			const int rt = GPR64OFFSET( X_RT(nativeInstr) );
 			const int ra = GPR64OFFSET( X_RA(nativeInstr) );
 			const int rb = GPR64OFFSET( X_RB(nativeInstr) );
 
-			intermediates[0].BuildAdd( rs, rb, ra );
+			intermediates[0].BuildAdd( ra, rb, rt );
 			return 1;
 		}
 
