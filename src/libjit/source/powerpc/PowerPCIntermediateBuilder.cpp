@@ -84,6 +84,22 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 			return 1;
 		}
 
+		case SPECIAL_XO_CMP: {
+			const int ra = X_RA( nativeInstr );
+			const int rb = X_RB( nativeInstr );
+
+			const int cr = X_BF( nativeInstr );
+
+			if( X_L(nativeInstr) ) {
+				intermediates[0].BuildPpcCmpd( GPR64OFFSET(ra), GPR64OFFSET(rb), cr );
+			}
+			else {
+				intermediates[0].BuildPpcCmpw( GPR32LOWOFFSET(ra), GPR32LOWOFFSET(rb), cr );
+			}
+
+			return 1;
+		}
+
 		case SPECIAL_XO_CMPL: {
 			const int ra = X_RA( nativeInstr );
 			const int rb = X_RB( nativeInstr );
@@ -472,22 +488,37 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			const int rs = GPR32LOWOFFSET( M_RS(nativeInstr) );
 			const int ra = GPR32LOWOFFSET( M_RA(nativeInstr) );
 
-			if( (nativeInstr & 0xFFFF) == 0x003a ) { //clrrwi rs, ra, 2
-				intermediates[0].BuildAndImm( rs, ra, 0x00000000FFFFFFFCUL );
-			}
-			else if( (nativeInstr & 0xFFFF) == 0x0038 ) { //clrrwi rs, ra, 3
-				intermediates[0].BuildAndImm( rs, ra, 0x00000000FFFFFFF8UL );
-			}
-			else if( (nativeInstr & 0xFFFF) == 0x482c ) { //slwi rs, ra, 9
-				intermediates[0].BuildSll32Imm( rs, ra, 9 );
-			}
-			else if( (nativeInstr & 0xFFFF) == 0x901A ) { //slwi rs, ra, 18
-				intermediates[0].BuildSll32Imm( rs, ra, 18 );
-			}
-			else {
-				intermediates[0].BuildUnknown( opcd, nativeInstr, pc );
-			}
+			switch( nativeInstr & 0xFFFF ) {
+				case 0x003a: { //clrrwi rs, ra, 2
+					intermediates[0].BuildAndImm( rs, ra, 0x00000000FFFFFFFCUL );
+					break;
+				}
 
+				case 0x0038: { //clrrwi rs, ra, 3
+					intermediates[0].BuildAndImm( rs, ra, 0x00000000FFFFFFF8UL );
+					break;
+				}
+
+				case 0x482c: { //slwi rs, ra, 9
+					intermediates[0].BuildSll32Imm( rs, ra, 9 );
+					break;
+				}
+
+				case 0x901A: { //slwi rs, ra, 18
+					intermediates[0].BuildSll32Imm( rs, ra, 18 );
+					break;
+				}
+
+				case 0xe8fe: { //srwi rs, ra, 3
+					intermediates[0].BuildSlr32Imm( rs, ra, 3 );
+					break;
+				}
+
+				default: {
+					intermediates[0].BuildUnknown( opcd, nativeInstr, pc );
+					break;
+				}
+			}
 			return 1;
 		}
 

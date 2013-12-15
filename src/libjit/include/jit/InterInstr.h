@@ -67,7 +67,9 @@ enum InstrOp
 	PPC_SLBMTE,
 	PPC_TLBIEL,
 	PPC_STWCX,
+	PPC_CMPD,
 	PPC_CMPDI,
+	PPC_CMPW,
 	PPC_CMPWI,
 	PPC_CMPLD,
 	PPC_CMPLDI,
@@ -377,11 +379,25 @@ struct InterInstr
 		args[2] = destReg;
 	}
 
+	void BuildPpcCmpd( int ra, int rb, int cr ) {
+		op = PPC_CMPD;
+		args[0] = ra;
+		args[1] = rb;
+		args[2] = cr;
+	}
+
 	void BuildPpcCmpdi( int reg, int cr, int32_t imm ) {
 		op = PPC_CMPDI;
 		args[0] = reg;
 		args[1] = cr;
 		args[2] = imm;
+	}
+
+	void BuildPpcCmpw( int ra, int rb, int cr ) {
+		op = PPC_CMPW;
+		args[0] = ra;
+		args[1] = rb;
+		args[2] = cr;
 	}
 
 	void BuildPpcCmpwi( int reg, int cr, int32_t imm ) {

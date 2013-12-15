@@ -155,6 +155,7 @@ public:
 	};
 
 	enum {
+		SPECIAL_XO_CMP    = 0,
 		SPECIAL_XO_MFCR   = 19,
 		SPECIAL_XO_LWARX  = 20,
 		SPECIAL_XO_SLW    = 24,
