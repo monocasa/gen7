@@ -107,7 +107,8 @@ bool PpcCpu::MmuContext::IsInstructionMapped( uint64_t addr )
 				if( !entry->IsValid() ) {
 					continue;
 				}
-				if( addr >= entry->GetVpn() && addr < entry->GetVpn() ) {
+				printf( "PpcCpu:  TLB Entry found vpn=%08lx rpn=%08lx addr=%08lx\n", entry->GetVpn(), entry->GetRpn(), addr );
+				if( (addr >= entry->GetVpn()) && (addr < (entry->GetVpn() + (16 * 1024 * 1024))) ) {
 					return true;
 				}
 			}
@@ -167,7 +168,7 @@ void PpcCpu::DumpContext()
 	printf( "  r24 %16lx |   r25 %16lx |   r26 %16lx |   r27 %16lx\n", context.gpr[24], context.gpr[25], context.gpr[26], context.gpr[27] );
 	printf( "  r28 %16lx |   r29 %16lx |   r30 %16lx |   r31 %16lx\n", context.gpr[28], context.gpr[29], context.gpr[30], context.gpr[31] );
 	printf( "   pc %16lx |   msr %16lx |   ctr %16lx |    lr %16lx\n", context.pc, context.msr, context.ctr, context.lr );
-	printf( "   cr         %08x |   xer         %8x\n", context.cr, context.xer );
+	printf( "   cr         %08x |   xer %16lx\n", context.cr, context.xer );
 	printf( " srr0 %16lx |  srr1 %16lx | hrmor %16lx |  hid6 %16lx\n", context.srr0, context.srr1, context.hrmor, context.hid6 );
 	printf( "lpidr %16lx |  lpcr %16lx\n", context.lpidr, context.lpcr );
 	printf( "sprg0 %16lx | sprg1 %16lx | sprg2 %16lx | sprg3 %16lx\n", context.sprg0, context.sprg1, context.sprg2, context.sprg3 );
@@ -216,6 +217,11 @@ void PpcCpu::SetPC( uint64_t pc )
 bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 {
 	switch( sysReg ) {
+		case jit::PowerPCHelpers::SPR_XER: {
+			context.xer = value;
+			return true;
+		}
+
 		case jit::PowerPCHelpers::SPR_SRR0: {
 			context.srr0 = value;
 			return true;

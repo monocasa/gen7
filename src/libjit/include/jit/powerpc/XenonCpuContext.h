@@ -33,7 +33,9 @@ struct XenonCpuContext : public CpuContext {
 	uint64_t sprg3;
 
 	uint32_t cr;
-	uint32_t xer;
+	uint32_t padding;
+
+	uint64_t xer;
 
 	uint64_t temp;  //used for intermediate ops
 

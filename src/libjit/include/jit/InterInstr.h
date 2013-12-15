@@ -9,6 +9,7 @@ enum InstrOp
 {
 	//Misc
 	UNKNOWN_OPCODE = 0,
+	INVALID_OPCODE,
 	NOP,
 	SET_SYS_IMM,
 	SET_SYS_REG,
@@ -32,6 +33,7 @@ enum InstrOp
 	LD_32_L,
 	LD_32_IDX_L,
 	ST_64,
+	ST_32_REG,
 	ST_64_REG_OFF,
 
 	//Arithmetic
@@ -81,6 +83,13 @@ struct InterInstr
 //Misc
 	void BuildUnknown( int opcode, uint64_t instruction, uint64_t pc ) {
 		op = UNKNOWN_OPCODE;
+		args[0] = opcode;
+		args[1] = instruction;
+		args[2] = pc;
+	}
+
+	void BuildInvalid( int opcode, uint64_t instruction, uint64_t pc ) {
+		op = INVALID_OPCODE;
 		args[0] = opcode;
 		args[1] = instruction;
 		args[2] = pc;
@@ -201,6 +210,12 @@ struct InterInstr
 		op = ST_64;
 		args[0] = sourceReg;
 		args[1] = addr;
+	}
+
+	void BuildStore32Reg( int sourceReg, int addrReg ) {
+		op = ST_32_REG;
+		args[0] = sourceReg;
+		args[1] = addrReg;
 	}
 
 	void BuildStore64RegOffset( int sourceReg, int addrReg, int64_t offset ) {

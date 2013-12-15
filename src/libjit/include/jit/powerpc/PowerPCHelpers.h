@@ -78,6 +78,9 @@ private:
 	static const uint32_t XFX_SPR_HI_MASK = 0x3E0;
 	static const int XFX_SPR_HI_SHIFT = 6;
 
+	static const uint32_t XFX_FXM_MASK = 0xFF;
+	static const int XFX_FXM_SHIFT = 12;
+
 	static const int XFX_RS_SHIFT = 21;
 	static const int XFX_RT_SHIFT = 21;
 
@@ -98,7 +101,8 @@ public:
 		GPR_SPRG2 = 36,
 		GPR_SPRG3 = 37,
 		GPR_CR    = 38,
-		GPR_TEMP  = 39,
+		GPR_XER   = 39,
+		GPR_TEMP  = 40,
 	};
 
 	enum {
@@ -139,6 +143,7 @@ public:
 		OPCD_ROTATE_30  = 30,
 		OPCD_SPECIAL    = 31,
 		OPCD_LWZ        = 32,
+		OPCD_STWU       = 37,
 		OPCD_LD         = 58,
 		OPCD_STD        = 62,
 	};
@@ -150,6 +155,7 @@ public:
 		SPECIAL_XO_SUBF   = 40,
 		SPECIAL_XO_ANDC   = 60,
 		SPECIAL_XO_MFMSR  = 83,
+		SPECIAL_XO_MTCRF  = 144,
 		SPECIAL_XO_STWCX  = 150,
 		SPECIAL_XO_ADD    = 266,
 		SPECIAL_XO_TLBIEL = 274,
@@ -287,6 +293,10 @@ public:
 	static int XFX_SPR( const uint32_t instruction ) {
 		return ((instruction >> XFX_SPR_LO_SHIFT) & XFX_SPR_LO_MASK) | 
 		       ((instruction >> XFX_SPR_HI_SHIFT) & XFX_SPR_HI_MASK);
+	}
+
+	static int XFX_FXM( const uint32_t instruction ) {
+		return (instruction >> XFX_FXM_SHIFT) & XFX_FXM_MASK;
 	}
 
 	static int XFX_RS( const uint32_t instruction ) {

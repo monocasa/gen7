@@ -17,7 +17,8 @@ public:
 		enum Type : int {
 			READ32,
 			READ64,
-			WRITE64
+			WRITE32,
+			WRITE64,
 		} type;
 
 		Access( Type type, uint64_t addr, uint64_t value )
@@ -58,6 +59,12 @@ protected:
 		data64[ addr ] = value;
 
 		accesses.push_back( Access(Access::Type::WRITE64, addr, value) );
+	}
+
+	void WriteMem32( uint64_t addr, uint32_t value ) {
+		data32[ addr ] = value;
+
+		accesses.push_back( Access(Access::Type::WRITE32, addr, value) );
 	}
 
 public:
@@ -487,6 +494,26 @@ TEST(CpuInterpreter, Store64)
 	EXPECT_EQ( TestCpuInterpreter::Access::Type::WRITE64, testCpu.accesses[0].type );
 	EXPECT_EQ( 0x0000000000001100UL, testCpu.accesses[0].addr );
 	EXPECT_EQ( 0x0123456789ABCDEFUL, testCpu.accesses[0].value );
+}
+
+TEST(CpuInterpreter, Store32RegOffset)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0x0123456789ABCDEFUL;
+	testCpu.gprs[2] = 0x0000000000001000UL;
+
+	instr.BuildStore32Reg( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2) );
+
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0x0123456789ABCDEFUL, testCpu.gprs[1] );
+	EXPECT_EQ( 0x0000000000001000UL, testCpu.gprs[2] );
+
+	ASSERT_EQ( 1, testCpu.accesses.size() );
+	EXPECT_EQ( TestCpuInterpreter::Access::Type::WRITE32, testCpu.accesses[0].type );
+	EXPECT_EQ( 0x0000000000001000UL, testCpu.accesses[0].addr );
+	EXPECT_EQ( 0x89ABCDEFUL, testCpu.accesses[0].value );
 }
 
 TEST(CpuInterpreter, Store64RegOffset)

@@ -16,6 +16,18 @@ TEST(InterInstr, Unknown)
 	EXPECT_EQ( 1, instr.args[2] );
 }
 
+TEST(InterInstr, Invalid)
+{
+	InterInstr instr;
+
+	instr.BuildInvalid( 5, 65, 1 );
+
+	EXPECT_EQ( InstrOp::INVALID_OPCODE, instr.op );
+	EXPECT_EQ( 5, instr.args[0] );
+	EXPECT_EQ( 65, instr.args[1] );
+	EXPECT_EQ( 1, instr.args[2] );
+}
+
 TEST(InterInstr, Nop)
 {
 	InterInstr instr;
@@ -222,6 +234,17 @@ TEST(InterInstr, Store64)
 	instr.BuildStore64( 1, 2 );
 
 	EXPECT_EQ( InstrOp::ST_64, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+}
+
+TEST(InterInstr, Store32Reg)
+{
+	InterInstr instr;
+
+	instr.BuildStore32Reg( 1, 2 );
+
+	EXPECT_EQ( InstrOp::ST_32_REG, instr.op );
 	EXPECT_EQ( 1, instr.args[0] );
 	EXPECT_EQ( 2, instr.args[1] );
 }

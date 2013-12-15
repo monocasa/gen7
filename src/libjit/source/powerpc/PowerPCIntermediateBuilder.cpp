@@ -153,6 +153,18 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 			return 1;
 		}
 
+		case SPECIAL_XO_MTCRF: {
+			if( XFX_FXM(nativeInstr) != 0xFF ) {
+				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+				return 1;
+			}
+
+			const int rs = XFX_RS(nativeInstr);
+
+			intermediates[0].BuildMoveReg32( GPR32LOWOFFSET(rs), GPR32LOWOFFSET(GPR_CR) );
+			return 1;
+		}
+
 		case SPECIAL_XO_MTSPR: {
 			const int spr = XFX_SPR(nativeInstr);
 			const int sourceReg = GPR64OFFSET( XFX_RS(nativeInstr) );
@@ -520,6 +532,23 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 
 		case OPCD_SPECIAL: {
 			return BuildIntermediateSpecial( intermediates, nativeInstr, pc );
+		}
+
+		case OPCD_STWU: {
+			const int ra = D_RA(nativeInstr);
+			const int rs = D_RS(nativeInstr);
+			
+			const int64_t d = D_D(nativeInstr);
+
+			if( 0 == ra ) {
+				intermediates[0].BuildInvalid( OPCD(nativeInstr), nativeInstr, pc );
+				return 1;
+			}
+
+			intermediates[0].BuildAddImm( GPR64OFFSET(ra), GPR64OFFSET(GPR_TEMP), d );
+			intermediates[1].BuildStore32Reg( GPR32LOWOFFSET(rs), GPR64OFFSET(GPR_TEMP) );
+			intermediates[2].BuildAddImm( GPR64OFFSET(ra), GPR64OFFSET(ra), d );
+			return 3;
 		}
 
 		case OPCD_LD: {

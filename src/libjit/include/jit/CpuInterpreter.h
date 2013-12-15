@@ -11,8 +11,10 @@ namespace jit {
 template<class MemoryPolicy>
 class CpuInterpreter : public MemoryPolicy
 {
+protected:
 	using MemoryPolicy::ReadMem32;
 	using MemoryPolicy::ReadMem64;
+	using MemoryPolicy::WriteMem32;
 	using MemoryPolicy::WriteMem64;
 
 protected:
@@ -265,6 +267,15 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			const uint64_t value = ReadGPR64( sourceReg );
 
 			WriteMem64( addr, value );
+
+			return true;
+		}
+
+		case ST_32_REG: {
+			int sourceReg = instr.args[0];
+			int addrReg = instr.args[1];
+
+			WriteMem32( ReadGPR64(addrReg), ReadGPR32(sourceReg) );
 
 			return true;
 		}
