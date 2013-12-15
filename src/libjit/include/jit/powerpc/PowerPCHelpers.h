@@ -70,6 +70,9 @@ private:
 	static const int X_L_SHIFT = 21;
 	static const uint32_t X_L_MASK = 0x00000001;
 
+	static const uint32_t X_BF_MASK = 0x07;
+	static const uint32_t X_BF_SHIFT = 23;
+
 	static const uint32_t X_XO_MASK = 0x3FF;
 	static const int X_XO_SHIFT = 1;
 
@@ -155,6 +158,7 @@ public:
 		SPECIAL_XO_MFCR   = 19,
 		SPECIAL_XO_LWARX  = 20,
 		SPECIAL_XO_SLW    = 24,
+		SPECIAL_XO_CMPL   = 32,
 		SPECIAL_XO_SUBF   = 40,
 		SPECIAL_XO_ANDC   = 60,
 		SPECIAL_XO_MFMSR  = 83,
@@ -291,6 +295,10 @@ public:
 
 	static bool X_L( const uint32_t instruction ) {
 		return (instruction >> X_L_SHIFT) & X_L_MASK;
+	}
+
+	static int X_BF( const uint32_t instruction ) {
+		return (instruction >> X_BF_SHIFT) & X_BF_MASK;
 	}
 
 	static int XFX_SPR( const uint32_t instruction ) {

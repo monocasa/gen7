@@ -455,6 +455,31 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
+		case jit::PPC_CMPLD: {
+			const int ra = instr.args[0];
+			const int rb = instr.args[1];
+			const int cr = instr.args[2];
+
+			const uint64_t value_a = ReadGPR64( ra );
+			const uint64_t value_b = ReadGPR64( rb );
+
+			context.ClearCr( cr );
+
+			if( value_a < value_b ) {
+				context.SetCrLt( cr );
+			}
+			else if( value_a > value_b ) {
+				context.SetCrGt( cr );
+			}
+			else {
+				context.SetCrEq( cr );
+			}
+
+			//TODO:  Here we need to set cr so
+
+			return true;
+		}
+
 		case jit::PPC_CMPLDI: {
 			const int ra = instr.args[0];
 			const int cr = instr.args[1];
@@ -468,6 +493,31 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 				context.SetCrLt( cr );
 			}
 			else if( value > imm ) {
+				context.SetCrGt( cr );
+			}
+			else {
+				context.SetCrEq( cr );
+			}
+
+			//TODO:  Here we need to set cr so
+
+			return true;
+		}
+
+		case jit::PPC_CMPLW: {
+			const int ra = instr.args[0];
+			const int rb = instr.args[1];
+			const int cr = instr.args[2];
+
+			const uint32_t value_a = ReadGPR32( ra );
+			const uint32_t value_b = ReadGPR32( rb );
+
+			context.ClearCr( cr );
+
+			if( value_a < value_b ) {
+				context.SetCrLt( cr );
+			}
+			else if( value_a > value_b ) {
 				context.SetCrGt( cr );
 			}
 			else {

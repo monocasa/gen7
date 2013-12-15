@@ -83,6 +83,22 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 			return 1;
 		}
 
+		case SPECIAL_XO_CMPL: {
+			const int ra = X_RA( nativeInstr );
+			const int rb = X_RB( nativeInstr );
+
+			const int cr = X_BF( nativeInstr );
+
+			if( X_L(nativeInstr) ) {
+				intermediates[0].BuildPpcCmpld( GPR64OFFSET(ra), GPR64OFFSET(rb), cr );
+			}
+			else {
+				intermediates[0].BuildPpcCmplw( GPR32LOWOFFSET(ra), GPR32LOWOFFSET(rb), cr );
+			}
+
+			return 1;
+		}
+
 		case SPECIAL_XO_EIEIO: {
 			intermediates[0].BuildNop();
 			return 1;

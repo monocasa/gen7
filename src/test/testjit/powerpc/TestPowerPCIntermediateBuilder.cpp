@@ -255,6 +255,19 @@ TEST(PowerPCIntermediateBuilder, Cmpwi)
 	EXPECT_EQ( 0, instr[0].args[2] );
 }
 
+TEST(PowerPCIntermediateBuilder, Cmpld)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 7fa4f840 : cmpld    cr7, r4, r31
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7fa4f840, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::PPC_CMPLD, instr[0].op );
+	EXPECT_EQ( 4  * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 31 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 7, instr[0].args[2] );
+}
+
 TEST(PowerPCIntermediateBuilder, Cmpldi)
 {
 	PowerPCIntermediateBuilder builder;
@@ -266,6 +279,19 @@ TEST(PowerPCIntermediateBuilder, Cmpldi)
 	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 0, instr[0].args[1] );
 	EXPECT_EQ( 0xFFFF, instr[0].args[2] );
+}
+
+TEST(PowerPCIntermediateBuilder, Cmplw)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 7f84f840 : cmplw    cr7, r4, r31
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7f84f840, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::PPC_CMPLW, instr[0].op );
+	EXPECT_EQ( 4  * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 31 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 7, instr[0].args[2] );
 }
 
 TEST(PowerPCIntermediateBuilder, Cmplwi)

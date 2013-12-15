@@ -68,7 +68,9 @@ enum InstrOp
 	PPC_STWCX,
 	PPC_CMPDI,
 	PPC_CMPWI,
+	PPC_CMPLD,
 	PPC_CMPLDI,
+	PPC_CMPLW,
 	PPC_CMPLWI,
 	PPC_RFID,
 };
@@ -381,11 +383,25 @@ struct InterInstr
 		args[2] = imm;
 	}
 
+	void BuildPpcCmpld( int ra, int rb, int cr ) {
+		op = PPC_CMPLD;
+		args[0] = ra;
+		args[1] = rb;
+		args[2] = cr;
+	}
+
 	void BuildPpcCmpldi( int reg, int cr, uint32_t imm ) {
 		op = PPC_CMPLDI;
 		args[0] = reg;
 		args[1] = cr;
 		args[2] = imm;
+	}
+
+	void BuildPpcCmplw( int ra, int rb, int cr ) {
+		op = PPC_CMPLW;
+		args[0] = ra;
+		args[1] = rb;
+		args[2] = cr;
 	}
 
 	void BuildPpcCmplwi( int reg, int cr, uint32_t imm ) {
