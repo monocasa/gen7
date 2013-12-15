@@ -119,6 +119,20 @@ TEST(PowerPCIntermediateBuilder, Bcl)
 	EXPECT_EQ( 0x2004, instr[1].args[1] );
 }
 
+TEST(PowerPCIntermediateBuilder, Bctr)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00002000 : 4e800421 : bctrl
+	EXPECT_EQ( 2, builder.BuildIntermediate( instr, 0x4e800421, 0x00002000 ) );
+	EXPECT_EQ( InstrOp::BRANCH_GPR64, instr[0].op );
+	EXPECT_EQ( 33 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( InstrOp::LD_64_IMM, instr[1].op );
+	EXPECT_EQ( 32 * sizeof(uint64_t), instr[1].args[0] );
+	EXPECT_EQ( 0x2004, instr[1].args[1] );
+}
+
 TEST(PowerPCIntermediateBuilder, Bdnz)
 {
 	PowerPCIntermediateBuilder builder;

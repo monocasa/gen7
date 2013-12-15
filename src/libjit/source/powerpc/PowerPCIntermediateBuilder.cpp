@@ -334,6 +334,18 @@ int PowerPCIntermediateBuilder::BuildIntermediateTable19( InterInstr *intermedia
 			return 1;
 		}
 
+		case TABLE_19_XO_BCCTR: {
+			if( nativeInstr == 0x4e800421 ) { //bctrl
+				intermediates[0].BuildBranchGpr64( GPR64OFFSET(GPR_CTR) );
+				intermediates[1].BuildLoad64Imm( GPR64OFFSET(GPR_LR), pc + sizeof(uint32_t) );
+				return 2;
+			}
+			else {
+				intermediates[0].BuildUnknown( xo + 1900000, nativeInstr, pc );
+				return 1;
+			}
+		}
+
 		case TABLE_19_XO_ISYNC: {
 			intermediates[0].BuildNop();
 			return 1;

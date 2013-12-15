@@ -179,6 +179,7 @@ public:
 		TABLE_19_XO_BCLR  = 16,
 		TABLE_19_XO_RFID  = 18,
 		TABLE_19_XO_ISYNC = 150,
+		TABLE_19_XO_BCCTR = 528,
 	};
 
 	static int OPCD( const uint32_t instruction ) {
