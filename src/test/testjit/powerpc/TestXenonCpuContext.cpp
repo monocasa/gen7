@@ -25,6 +25,30 @@ TEST(XenonCpuContext, ConditionRegister)
 	EXPECT_EQ( 0x10080000, context.cr );
 }
 
+TEST(XenonCpuContext, Xer)
+{
+	jit::XenonCpuContext context( 0 );
+	context.xer = 0;
+
+	context.SetXerSo();
+	EXPECT_EQ( 0x0000000080000000UL, context.xer );
+
+	context.ClearXerSo();
+	EXPECT_EQ( 0, context.xer );
+
+	context.SetXerOv();
+	EXPECT_EQ( 0x0000000040000000UL, context.xer );
+
+	context.ClearXerOv();
+	EXPECT_EQ( 0, context.xer );
+
+	context.SetXerCa();
+	EXPECT_EQ( 0x0000000020000000UL, context.xer );
+
+	context.ClearXerCa();
+	EXPECT_EQ( 0, context.xer );
+}
+
 TEST(XenonCpuContext, Msr)
 {
 	jit::XenonCpuContext context( 0 );

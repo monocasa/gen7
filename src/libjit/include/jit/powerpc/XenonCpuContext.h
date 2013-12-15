@@ -97,6 +97,30 @@ struct XenonCpuContext : public CpuContext {
 		cr &= ~(0x80000000 >> (num * 4));
 	}
 
+	void SetXerSo() {
+		xer |= 0x80000000UL;
+	}
+
+	void SetXerOv() {
+		xer |= 0x40000000UL;
+	}
+
+	void SetXerCa() {
+		xer |= 0x20000000UL;
+	}
+
+	void ClearXerSo() {
+		xer &= ~0x80000000UL;
+	}
+
+	void ClearXerOv() {
+		xer &= ~0x40000000UL;
+	}
+
+	void ClearXerCa() {
+		xer &= ~0x20000000UL;
+	}
+
 	bool Is64Bit() {
 		return msr & 0x8000000000000000UL;
 	}
