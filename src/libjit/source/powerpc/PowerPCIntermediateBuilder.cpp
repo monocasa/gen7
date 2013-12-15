@@ -24,7 +24,8 @@ int PowerPCIntermediateBuilder::BuildIntermediateBcc( InterInstr *intermediates,
 			break;
 		}
 
-		case 12: { //bcc cr set
+		case 12:   //bcc cr set
+		case 15: { //bcc cr set +
 			intermediates[instrCount++].BuildBranchGpr32MaskNotZero( GPR32LOWOFFSET(GPR_CR), 0x80000000 >> B_BI(nativeInstr), target );
 			break;
 		}
