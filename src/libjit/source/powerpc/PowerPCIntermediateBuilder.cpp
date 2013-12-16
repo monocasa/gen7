@@ -292,6 +292,17 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 			return 1;
 		}
 
+		case SPECIAL_XO_SRAWI: {
+			const int rs = GPR64OFFSET( X_RS(nativeInstr) );
+			const int ra = GPR64OFFSET( X_RA(nativeInstr) );
+			const int sh = X_SH(nativeInstr);
+			const bool rc = X_RC(nativeInstr);
+
+			intermediates[0].BuildPpcSrawi( rs, ra, sh, rc );
+
+			return 1;
+		}
+
 		case SPECIAL_XO_STWCX: {
 			const int rt = GPR32LOWOFFSET( X_RT(nativeInstr) );
 			const int ra = GPR64OFFSET( X_RA(nativeInstr) );

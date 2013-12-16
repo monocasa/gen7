@@ -612,3 +612,16 @@ TEST(InterInstr, PpcRfid)
 	EXPECT_EQ( InstrOp::PPC_RFID, instr.op );
 }
 
+TEST(InterInstr, PpcSrawi)
+{
+	InterInstr instr;
+
+	instr.BuildPpcSrawi( 1, 2, 3, true );
+
+	EXPECT_EQ( InstrOp::PPC_SRAWI, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+	EXPECT_EQ( 3, instr.args[2] );
+	EXPECT_EQ( true, instr.args[3] );
+}
+

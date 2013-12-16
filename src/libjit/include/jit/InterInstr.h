@@ -76,6 +76,7 @@ enum InstrOp
 	PPC_CMPLW,
 	PPC_CMPLWI,
 	PPC_RFID,
+	PPC_SRAWI,
 };
 
 struct InterInstr
@@ -437,6 +438,14 @@ struct InterInstr
 
 	void BuildPpcRfid() {
 		op = PPC_RFID;
+	}
+
+	void BuildPpcSrawi( int rs, int ra, int sh, bool rc ) {
+		op = PPC_SRAWI;
+		args[0] = rs;
+		args[1] = ra;
+		args[2] = sh;
+		args[3] = rc;
 	}
 };
 

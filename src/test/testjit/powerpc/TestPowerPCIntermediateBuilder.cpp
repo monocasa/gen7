@@ -749,6 +749,28 @@ TEST(PowerPCIntermediateBuilder, Slwi)
 	EXPECT_EQ( 18, instr[0].args[2] );
 }
 
+TEST(PowerPCIntermediateBuilder, Srawi)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 7cc91670 : srawi    r9, r6, 2
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7cc91670, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::PPC_SRAWI, instr[0].op );
+	EXPECT_EQ( 6 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 9 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 2, instr[0].args[2] );
+	EXPECT_FALSE( instr[0].args[3] );
+
+	// 00000000 : 7cc91671 : srawi.   r9, r6, 2
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7cc91671, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::PPC_SRAWI, instr[0].op );
+	EXPECT_EQ( 6 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 9 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 2, instr[0].args[2] );
+	EXPECT_TRUE( instr[0].args[3] );
+}
+
 TEST(PowerPCIntermediateBuilder, Srwi)
 {
 	PowerPCIntermediateBuilder builder;

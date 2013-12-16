@@ -610,6 +610,39 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
+		case jit::PPC_SRAWI: {
+			const int rs = instr.args[0];
+			const int ra = instr.args[1];
+			const int sh = instr.args[2];
+			const bool rc = instr.args[3];
+
+			if( rc ) {
+ 				printf( "Actually implement srawi.\n" );
+				return false;
+			}
+
+			int32_t value = (int32_t)ReadGPR32(rs);
+
+			int64_t shifted = (value >> sh);
+
+			if( sh == 0 ) {
+				context.ClearXerCa();
+			}
+			else {
+				uint32_t mask = 0xFFFFFFFFUL >> (32 - sh);
+				if( (mask & value) != 0 ) {
+					context.SetXerCa();
+				}
+				else {
+					context.ClearXerCa();
+				}
+			}
+
+			SetGPR64( ra, shifted );
+
+			return true;
+		}
+
 		default: {
 			printf( "Unimplemented PowerPC specific op %d\n", instr.op );
 			return false;

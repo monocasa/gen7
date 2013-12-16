@@ -62,6 +62,7 @@ private:
 
 	static const uint32_t X_RC_MASK = 0x000000001;
 
+	static const int X_SH_SHIFT = 11;
 	static const int X_RB_SHIFT = 11;
 	static const int X_RA_SHIFT = 16;
 	static const int X_RS_SHIFT = 21;
@@ -173,6 +174,7 @@ public:
 		SPECIAL_XO_MTSPR  = 467,
 		SPECIAL_XO_SLBIA  = 498,
 		SPECIAL_XO_SYNC   = 598,
+		SPECIAL_XO_SRAWI  = 824,
 		SPECIAL_XO_EIEIO  = 854,
 	};
 
@@ -277,6 +279,10 @@ public:
 
 	static int X_XO( const uint32_t instruction ) {
 		return (instruction >> X_XO_SHIFT) & X_XO_MASK;
+	}
+
+	static int X_SH( const uint32_t instruction ) {
+		return (instruction >> X_SH_SHIFT) & REG_MASK;
 	}
 
 	static int X_RB( const uint32_t instruction ) {
