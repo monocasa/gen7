@@ -36,8 +36,6 @@ protected:
 			value = data32[ addr ];
 		}
 
-		printf( "readMem32\n" );
-
 		accesses.push_back( Access(Access::Type::READ32, addr, value) );
 
 		return value;
