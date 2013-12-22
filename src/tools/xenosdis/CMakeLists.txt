@@ -1,5 +1,5 @@
 ADD_DEFINITIONS( -std=c++0x )
 
-ADD_EXECUTABLE( xenonsdis Main.cpp
-                          XenosShader.cpp )
+ADD_EXECUTABLE( xenosdis Main.cpp
+                         XenosShader.cpp )
 
