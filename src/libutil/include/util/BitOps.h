@@ -3,7 +3,9 @@
 
 namespace util {
 
-template <typename T, unsigned B>
+template<typename T> T ByteSwap( T value );
+
+template<typename T, unsigned B>
 static inline T SignExtend( const T x )
 {
 	struct {
