@@ -2,7 +2,6 @@
 #define GEN7_HOST_MACHINECONTEXT_H
 
 #include "crossvmm/CrossVmm.h"
-#include "InterpCpu.h"
 #include "PhysicalMemory.h"
 
 #include <vector>
