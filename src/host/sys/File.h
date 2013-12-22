@@ -3,6 +3,8 @@
 
 #include "sys/Exception.h"
 
+#include "util/BitOps.h"
+
 #include <cstdio>
 
 namespace sys {
@@ -53,9 +55,7 @@ public:
 		}
 
 		if( endian != SYS_ENDIAN ) {
-			uint16_t swap = value << 8;
-			swap |= (value >> 8) & 0xFF;
-			value = swap;
+			value = util::ByteSwap<uint16_t>( value );
 		}
 
 		return value;
@@ -70,11 +70,7 @@ public:
 		}
 
 		if( endian != SYS_ENDIAN ) {
-			uint32_t swap = value << 24;
-			swap |= (value << 8) & 0xFF0000;
-			swap |= (value >> 8) & 0xFF00;
-			swap |= (value >> 24) & 0xFF;
-			value = swap;
+			value = util::ByteSwap<uint32_t>( value );
 		}
 
 		return value;
@@ -89,15 +85,7 @@ public:
 		}
 
 		if( endian != SYS_ENDIAN ) {
-			uint64_t swap = value << 56;
-			swap |= (value << 40) & 0x00FF000000000000UL;
-			swap |= (value << 24) & 0x0000FF0000000000UL;
-			swap |= (value <<  8) & 0x000000FF00000000UL;
-			swap |= (value >>  8) & 0x00000000FF000000UL;
-			swap |= (value >> 24) & 0x0000000000FF0000UL;
-			swap |= (value >> 40) & 0x000000000000FF00UL;
-			swap |= (value >> 56) & 0x00000000000000FFUL;
-			value = swap;
+			value = util::ByteSwap<uint64_t>( value );
 		}
 
 		return value;
