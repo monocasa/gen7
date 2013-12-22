@@ -24,7 +24,7 @@ void DcPhysicalMemory::LoadBios()
 	}
 
 	for( size_t i = 0; i < (BIOS_SIZE / sizeof(uint32_t)); i++ ) {
-		bios32[ i ] = biosFile.Read32();
+		bios32[ i ] = biosFile.Read<uint32_t>();
 	}
 }
 

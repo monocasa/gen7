@@ -15,58 +15,58 @@ void ElfLoader::Hdr::Load( sys::File& file )
 	file.SetEndian( IsLittleEndian() ? sys::File::LITTLE : sys::File::BIG );
 
 	if( Is32Bit() ) {
-		type      = file.Read16();
-		machine   = file.Read16();
-		version   = file.Read32();
-		entry     = file.Read32();
-		phoff     = file.Read32();
-		shoff     = file.Read32();
-		flags     = file.Read32();
-		ehsize    = file.Read16();
-		phentsize = file.Read16();
-		phnum     = file.Read16();
-		shentsize = file.Read16();
-		shnum     = file.Read16();
-		shstrndx  = file.Read16();
+		type      = file.Read<uint16_t>();
+		machine   = file.Read<uint16_t>();
+		version   = file.Read<uint32_t>();
+		entry     = file.Read<uint32_t>();
+		phoff     = file.Read<uint32_t>();
+		shoff     = file.Read<uint32_t>();
+		flags     = file.Read<uint32_t>();
+		ehsize    = file.Read<uint16_t>();
+		phentsize = file.Read<uint16_t>();
+		phnum     = file.Read<uint16_t>();
+		shentsize = file.Read<uint16_t>();
+		shnum     = file.Read<uint16_t>();
+		shstrndx  = file.Read<uint16_t>();
 	}
 	else {
-		type      = file.Read16();
-		machine   = file.Read16();
-		version   = file.Read32();
-		entry     = file.Read64();
-		phoff     = file.Read64();
-		shoff     = file.Read64();
-		flags     = file.Read32();
-		ehsize    = file.Read16();
-		phentsize = file.Read16();
-		phnum     = file.Read16();
-		shentsize = file.Read16();
-		shnum     = file.Read16();
-		shstrndx  = file.Read16();
+		type      = file.Read<uint16_t>();
+		machine   = file.Read<uint16_t>();
+		version   = file.Read<uint32_t>();
+		entry     = file.Read<uint64_t>();
+		phoff     = file.Read<uint64_t>();
+		shoff     = file.Read<uint64_t>();
+		flags     = file.Read<uint32_t>();
+		ehsize    = file.Read<uint16_t>();
+		phentsize = file.Read<uint16_t>();
+		phnum     = file.Read<uint16_t>();
+		shentsize = file.Read<uint16_t>();
+		shnum     = file.Read<uint16_t>();
+		shstrndx  = file.Read<uint16_t>();
 	}
 }
 
 void ElfLoader::PHdr::Load( sys::File& file, bool is32Bit )
 {
 	if( is32Bit ) {
-		type   = file.Read32();
-		offset = file.Read32();
-		vaddr  = file.Read32();
-		paddr  = file.Read32();
-		filesz = file.Read32();
-		memsz  = file.Read32();
-		flags  = file.Read32();
-		align  = file.Read32();
+		type   = file.Read<uint32_t>();
+		offset = file.Read<uint32_t>();
+		vaddr  = file.Read<uint32_t>();
+		paddr  = file.Read<uint32_t>();
+		filesz = file.Read<uint32_t>();
+		memsz  = file.Read<uint32_t>();
+		flags  = file.Read<uint32_t>();
+		align  = file.Read<uint32_t>();
 	}
 	else {
-		type   = file.Read32();
-		flags  = file.Read32();
-		offset = file.Read64();
-		vaddr  = file.Read64();
-		paddr  = file.Read64();
-		filesz = file.Read64();
-		memsz  = file.Read64();
-		align  = file.Read64();
+		type   = file.Read<uint32_t>();
+		flags  = file.Read<uint32_t>();
+		offset = file.Read<uint64_t>();
+		vaddr  = file.Read<uint64_t>();
+		paddr  = file.Read<uint64_t>();
+		filesz = file.Read<uint64_t>();
+		memsz  = file.Read<uint64_t>();
+		align  = file.Read<uint64_t>();
 	}
 }
 
@@ -95,7 +95,7 @@ void ElfLoader::Load( PhysicalMemory& physMem )
 			file.Seek( phdr.offset );
 
 			for( uint64_t i = 0; i < phdr.filesz; i += sizeof(uint32_t) ) {
-				physMem.WritePhys32( phdr.paddr + i, file.Read32() );
+				physMem.WritePhys32( phdr.paddr + i, file.Read<uint32_t>() );
 			}
 		}
 	}

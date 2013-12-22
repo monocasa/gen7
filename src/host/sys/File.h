@@ -46,46 +46,17 @@ public:
 		}
 	}
 
-	uint16_t Read16()
+	template<typename T>
+	T Read()
 	{
-		uint16_t value;
+		T value;
 
-		if( 1 != fread( &value, sizeof(uint16_t), 1, file ) ) {
+		if( 1 != fread(&value, sizeof(T), 1, file) ) {
 			throw Exception( "Attempting to read beyond end of file:  %s", path );
 		}
 
 		if( endian != SYS_ENDIAN ) {
-			value = util::ByteSwap<uint16_t>( value );
-		}
-
-		return value;
-	}
-
-	uint32_t Read32()
-	{
-		uint32_t value;
-
-		if( 1 != fread( &value, sizeof(uint32_t), 1, file ) ) {
-			throw Exception( "Attempting to read beyond end of file:  %s", path );
-		}
-
-		if( endian != SYS_ENDIAN ) {
-			value = util::ByteSwap<uint32_t>( value );
-		}
-
-		return value;
-	}
-
-	uint64_t Read64()
-	{
-		uint64_t value;
-
-		if( 1 != fread( &value, sizeof(uint64_t), 1, file ) ) {
-			throw Exception( "Attempting to read beyond of file:  %s", path );
-		}
-
-		if( endian != SYS_ENDIAN ) {
-			value = util::ByteSwap<uint64_t>( value );
+			value = util::ByteSwap<T>( value );
 		}
 
 		return value;

@@ -37,7 +37,7 @@ void XenonPhysicalMemory::LoadBrom()
 	bromFile.SetEndian( sys::File::BIG );
 
 	for( size_t i = 0; i < (BROM_SIZE / sizeof(uint32_t)); i++ ) {
-		brom32[ i ] = bromFile.Read32();
+		brom32[ i ] = bromFile.Read<uint32_t>();
 	}
 }
 
