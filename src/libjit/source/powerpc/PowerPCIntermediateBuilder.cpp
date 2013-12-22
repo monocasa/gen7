@@ -501,6 +501,11 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			const int ra = GPR32LOWOFFSET( M_RA(nativeInstr) );
 
 			switch( nativeInstr & 0xFFFF ) {
+				case 0x077e: { //clrlwi rs, ra, 29
+					intermediates[0].BuildAndImm( rs, ra, 0x0000000000000007UL );
+					break;
+				}
+
 				case 0x003a: { //clrrwi rs, ra, 2
 					intermediates[0].BuildAndImm( rs, ra, 0x00000000FFFFFFFCUL );
 					break;

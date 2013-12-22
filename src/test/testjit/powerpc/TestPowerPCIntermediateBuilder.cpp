@@ -510,6 +510,13 @@ TEST(PowerPCIntermediateBuilder, Rlwinm)
 	PowerPCIntermediateBuilder builder;
 	InterInstr instr[10];
 
+	// 00000000 : 5749077e : clrlwi   r9, r26, 29
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x5749077e, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( 26 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 9  * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 0x0000000000000007UL, instr[0].args[2] );
+
 	// 00000000 : 57180026 : clrrwi   r24, r24, 12
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x57180026, 0x00000000 ) );
 	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
