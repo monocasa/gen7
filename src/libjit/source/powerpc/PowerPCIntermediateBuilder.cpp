@@ -511,6 +511,11 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 					break;
 				}
 
+				case 0x0026: { //clrrwi rs, ra, 12
+					intermediates[0].BuildAndImm( rs, ra, 0x00000000FFFFF000UL );
+					break;
+				}
+
 				case 0x482c: { //slwi rs, ra, 9
 					intermediates[0].BuildSll32Imm( rs, ra, 9 );
 					break;

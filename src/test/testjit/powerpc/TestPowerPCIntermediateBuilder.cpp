@@ -505,6 +505,19 @@ TEST(PowerPCIntermediateBuilder, Mtcr)
 	EXPECT_EQ( 38 * sizeof(uint64_t), instr[0].args[1] );
 }
 
+TEST(PowerPCIntermediateBuilder, Rlwinm)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 57180026 : clrrwi   r24, r24, 12
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x57180026, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( 24 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 24 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 0x00000000FFFFF000UL, instr[0].args[2] );
+}
+
 TEST(PowerPCIntermediateBuilder, Rotate)
 {
 	PowerPCIntermediateBuilder builder;
