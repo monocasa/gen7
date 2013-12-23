@@ -77,6 +77,7 @@ enum InstrOp
 	PPC_CMPLWI,
 	PPC_RFID,
 	PPC_SRAWI,
+	PPC_SUBFIC,
 };
 
 struct InterInstr
@@ -446,6 +447,13 @@ struct InterInstr
 		args[1] = ra;
 		args[2] = sh;
 		args[3] = rc;
+	}
+
+	void BuildPpcSubfic( int rs, int ra, int64_t imm ) {
+		op = PPC_SUBFIC;
+		args[0] = rs;
+		args[1] = ra;
+		args[2] = imm;
 	}
 };
 

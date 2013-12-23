@@ -715,6 +715,16 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			return 1;
 		}
 
+		case OPCD_SUBFIC: {
+			const int rt = GPR64OFFSET( D_RT(nativeInstr) );
+			const int ra = GPR64OFFSET( D_RA(nativeInstr) );
+			const int64_t imm = D_SI(nativeInstr);
+
+			intermediates[0].BuildPpcSubfic( rt, ra, imm );
+
+			return 1;
+		}
+
 		case OPCD_TABLE_19: {
 			return BuildIntermediateTable19( intermediates, nativeInstr, pc );
 		}

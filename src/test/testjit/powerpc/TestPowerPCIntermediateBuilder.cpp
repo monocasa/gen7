@@ -917,6 +917,26 @@ TEST(PowerPCIntermediateBuilder, Subf)
 	EXPECT_EQ( 1 * sizeof(uint64_t), instr[0].args[2] );
 }
 
+TEST(PowerPCIntermediateBuilder, Subfic)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 21690008 : subfic   r11, r9, 8
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x21690008, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::PPC_SUBFIC, instr[0].op );
+	EXPECT_EQ( 11 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 9  * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 0x0000000000000008, instr[0].args[2] );
+
+	// 00000000 : 2009ffff : subfic   r0, r9, -1
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x2009ffff, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::PPC_SUBFIC, instr[0].op );
+	EXPECT_EQ( 0 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 9 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( -1, instr[0].args[2] );
+}
+
 TEST(PowerPCIntermediateBuilder, Sync)
 {
 	PowerPCIntermediateBuilder builder;

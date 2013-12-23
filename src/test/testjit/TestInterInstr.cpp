@@ -625,3 +625,15 @@ TEST(InterInstr, PpcSrawi)
 	EXPECT_EQ( true, instr.args[3] );
 }
 
+TEST(InterInstr, PpcSubfic)
+{
+	InterInstr instr;
+
+	instr.BuildPpcSubfic( 1, 2, -1 );
+
+	EXPECT_EQ( InstrOp::PPC_SUBFIC, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, instr.args[2] );
+}
+

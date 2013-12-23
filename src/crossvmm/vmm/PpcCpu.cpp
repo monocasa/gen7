@@ -643,6 +643,28 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
+		case jit::PPC_SUBFIC: {
+			const int rt = instr.args[0];
+			const int ra = instr.args[1];
+			const int64_t imm = instr.args[2];
+
+			const int64_t source = ~ReadGPR64(ra);
+
+			SetGPR64( rt, (source) + imm + 1 );
+
+			if( (source + imm) < source ) {
+				context.SetXerCa();
+			}
+			else if( (source + imm + 1) < 1 ) {
+				context.SetXerCa();
+			}
+			else {
+				context.ClearXerCa();
+			}
+
+			return true;
+		}
+
 		default: {
 			printf( "Unimplemented PowerPC specific op %d\n", instr.op );
 			return false;
