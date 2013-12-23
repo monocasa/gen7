@@ -133,6 +133,22 @@ TEST(PowerPCIntermediateBuilder, Bctr)
 	EXPECT_EQ( 0x2004, instr[1].args[1] );
 }
 
+TEST(PowerPCIntermediateBuilder, Bclr)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 4d9e0020 : beqlr    cr7
+	EXPECT_EQ( 2, builder.BuildIntermediate( instr, 0x4d9e0020, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( 38 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 40 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 2, instr[0].args[2] );
+	EXPECT_EQ( InstrOp::BRANCH_GPR64_NOT_ZERO_GPR64, instr[1].op );
+	EXPECT_EQ( 40 * sizeof(uint64_t), instr[1].args[0] );
+	EXPECT_EQ( 32 * sizeof(uint64_t), instr[1].args[1] );
+}
+
 TEST(PowerPCIntermediateBuilder, Bdnz)
 {
 	PowerPCIntermediateBuilder builder;
@@ -516,6 +532,13 @@ TEST(PowerPCIntermediateBuilder, Rlwinm)
 	EXPECT_EQ( 26 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 9  * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 0x0000000000000007UL, instr[0].args[2] );
+
+	// 00000000 : 5718053e : clrlwi   r24, r24, 20
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x5718053e, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( 24 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 24 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 0x0000000000000FFFUL, instr[0].args[2] );
 
 	// 00000000 : 57180026 : clrrwi   r24, r24, 12
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x57180026, 0x00000000 ) );
@@ -963,5 +986,18 @@ TEST(PowerPCIntermediateBuilder, Tlbiel)
 	EXPECT_EQ( InstrOp::PPC_TLBIEL, instr[0].op );
 	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 1, instr[0].args[1] );
+}
+
+TEST(PowerPCIntermediateBuilder, Xoris)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 6d605f61 : xoris    r0, r11, 0x5F61
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x6d605f61, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::XOR_IMM, instr[0].op );
+	EXPECT_EQ( 11 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 0  * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 0x000000005f610000UL, instr[0].args[2] );
 }
 

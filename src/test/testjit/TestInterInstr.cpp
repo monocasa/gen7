@@ -147,6 +147,17 @@ TEST(InterInstr, BranchGpr64NotZero)
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
 }
 
+TEST(InterInstr, BranchGpr64NotZeroGpr64)
+{
+	InterInstr instr;
+
+	instr.BuildBranchGpr64NotZeroGpr64( 31, 32 );
+
+	EXPECT_EQ( InstrOp::BRANCH_GPR64_NOT_ZERO_GPR64, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 32, instr.args[1] );
+}
+
 TEST(InterInstr, Load32Imm)
 {
 	InterInstr instr;
@@ -375,6 +386,18 @@ TEST(InterInstr, OrImm)
 	instr.BuildOrImm( 31, 1, 0xFFFFFFFF00000000UL );
 
 	EXPECT_EQ( InstrOp::OR_IMM, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
+}
+
+TEST(InterInstr, XorImm)
+{
+	InterInstr instr;
+
+	instr.BuildXorImm( 31, 1, 0xFFFFFFFF00000000UL );
+
+	EXPECT_EQ( InstrOp::XOR_IMM, instr.op );
 	EXPECT_EQ( 31, instr.args[0] );
 	EXPECT_EQ( 1, instr.args[1] );
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );

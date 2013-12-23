@@ -23,6 +23,7 @@ enum InstrOp
 	BRANCH_GPR32_MASK_ZERO,
 	BRANCH_GPR32_MASK_NOT_ZERO,
 	BRANCH_GPR64_NOT_ZERO,
+	BRANCH_GPR64_NOT_ZERO_GPR64,
 
 	//Load/Store
 	LD_32_IMM = 200,
@@ -49,6 +50,7 @@ enum InstrOp
 	ANDC_IMM,
 	OR,
 	OR_IMM,
+	XOR_IMM,
 
 	//Shift
 	ROL32_IMM = 500,
@@ -169,6 +171,12 @@ struct InterInstr
 		op = BRANCH_GPR64_NOT_ZERO;
 		args[0] = gpr;
 		args[1] = target;
+	}
+
+	void BuildBranchGpr64NotZeroGpr64( int gpr, uint64_t targetReg ) {
+		op = BRANCH_GPR64_NOT_ZERO_GPR64;
+		args[0] = gpr;
+		args[1] = targetReg;
 	}
 
 //Load/Store
@@ -302,6 +310,13 @@ struct InterInstr
 
 	void BuildOrImm( int sourceReg, int destReg, uint64_t imm ) {
 		op = OR_IMM;
+		args[0] = sourceReg;
+		args[1] = destReg;
+		args[2] = imm;
+	}
+
+	void BuildXorImm( int sourceReg, int destReg, uint64_t imm ) {
+		op = XOR_IMM;
 		args[0] = sourceReg;
 		args[1] = destReg;
 		args[2] = imm;

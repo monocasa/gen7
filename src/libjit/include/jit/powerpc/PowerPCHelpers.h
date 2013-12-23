@@ -147,6 +147,7 @@ public:
 		OPCD_ROTATE_21  = 21,
 		OPCD_ORI        = 24,
 		OPCD_ORIS       = 25,
+		OPCD_XORIS      = 27,
 		OPCD_ROTATE_30  = 30,
 		OPCD_SPECIAL    = 31,
 		OPCD_LWZ        = 32,

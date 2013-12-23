@@ -345,6 +345,26 @@ TEST(CpuInterpreter, BranchGpr64NotZero)
 	EXPECT_EQ( 0, testCpu.pc );
 }
 
+TEST(CpuInterpreter, BranchGpr64NotZeroGpr64)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 1;
+	testCpu.gprs[2] = 0xFFFFFFFF00000000UL;
+	instr.BuildBranchGpr64NotZeroGpr64( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2) );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.pc );
+
+	testCpu.Reset();
+
+	testCpu.gprs[1] = 0;
+	testCpu.gprs[2] = 0xFFFFFFFF00000000UL;
+	instr.BuildBranchGpr64NotZeroGpr64( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2) );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0, testCpu.pc );
+}
+
 TEST(CpuInterpreter, Load32Imm)
 {
 	TestCpuInterpreter testCpu;
@@ -658,6 +678,19 @@ TEST(CpuInterpreter, OrImm)
 	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
 	EXPECT_EQ( 0xFFFFFFFFFFFFFFF0UL, testCpu.gprs[1] );
 	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[2] );
+}
+
+TEST(CpuInterpreter, XorImm)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0xFFFFFFFFFFFFFFF0UL;
+	instr.BuildXorImm( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2),
+	                   0x00000000000000FFUL );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFF0UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFF0FUL, testCpu.gprs[2] );
 }
 
 TEST(CpuInterpreter, Rol32Imm)

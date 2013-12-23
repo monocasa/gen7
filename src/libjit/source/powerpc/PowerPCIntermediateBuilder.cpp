@@ -356,11 +356,17 @@ int PowerPCIntermediateBuilder::BuildIntermediateTable19( InterInstr *intermedia
 		case TABLE_19_XO_BCLR: {
 			if( nativeInstr == 0x4e800020 ) { //blr
 				intermediates[0].BuildBranchGpr64( GPR64OFFSET(GPR_LR) );
+				return 1;
+			}
+			else if( nativeInstr == 0x4d9e0020 ) { //beqlr    cr7
+				intermediates[0].BuildAndImm( GPR64OFFSET(GPR_CR), GPR64OFFSET(GPR_TEMP), 0x00000002 );
+				intermediates[1].BuildBranchGpr64NotZeroGpr64( GPR64OFFSET(GPR_TEMP), GPR64OFFSET(GPR_LR) );
+				return 2;
 			}
 			else {
 				intermediates[0].BuildUnknown( xo + 1900000, nativeInstr, pc );
+				return 1;
 			}
-			return 1;
 		}
 
 		case TABLE_19_XO_BCCTR: {
@@ -501,6 +507,11 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			const int ra = GPR32LOWOFFSET( M_RA(nativeInstr) );
 
 			switch( nativeInstr & 0xFFFF ) {
+				case 0x053e: { //clrlwi rs, ra, 20
+					intermediates[0].BuildAndImm( rs, ra, 0x0000000000000FFFUL );
+					break;
+				}
+
 				case 0x077e: { //clrlwi rs, ra, 29
 					intermediates[0].BuildAndImm( rs, ra, 0x0000000000000007UL );
 					break;
@@ -727,6 +738,16 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 
 		case OPCD_TABLE_19: {
 			return BuildIntermediateTable19( intermediates, nativeInstr, pc );
+		}
+
+		case OPCD_XORIS: {
+			const int rs = GPR64OFFSET( D_RS(nativeInstr) );
+			const int ra = GPR64OFFSET( D_RA(nativeInstr) );
+			const uint64_t imm = D_UI(nativeInstr) << 16;
+
+			intermediates[0].BuildXorImm( rs, ra, imm );
+
+			return 1;
 		}
 
 		default: {

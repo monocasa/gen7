@@ -177,6 +177,19 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
+		case BRANCH_GPR64_NOT_ZERO_GPR64: {
+			const int gpr = instr.args[0];
+			const int targetReg = instr.args[1];
+
+			uint64_t value = ReadGPR64( gpr );
+
+			if( value != 0 ) {
+				SetPC( ReadGPR64(targetReg) );
+			}
+
+			return true;
+		}
+
 	//Load/Store
 		case LD_32_IMM: {
 			const int gpr = instr.args[0];
@@ -424,6 +437,19 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			SetGPR64( destReg, result );
 
 			return true;
+		}
+
+		case XOR_IMM: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const uint64_t imm = instr.args[2];
+
+			uint64_t sourceValue = ReadGPR64( sourceReg );
+
+			uint64_t result = sourceValue ^ imm;
+
+			SetGPR64( destReg, result );
+
 			return true;
 		}
 
