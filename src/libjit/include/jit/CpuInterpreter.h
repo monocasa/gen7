@@ -367,7 +367,21 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 		}
 
 	//Logic
-		case AND_IMM: {
+		case AND_IMM_32: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+			const uint32_t imm = instr.args[2];
+
+			uint32_t sourceValue = ReadGPR32( sourceReg );
+
+			uint32_t result = sourceValue & imm;
+
+			SetGPR32( destReg, result );
+
+			return true;
+		}
+
+		case AND_IMM_64: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];
 			const uint64_t imm = instr.args[2];

@@ -611,14 +611,27 @@ TEST(CpuInterpreter, SubuImm)
 	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[3] );
 }
 
-TEST(CpuInterpreter, AndImm)
+TEST(CpuInterpreter, AndImm32)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0xFFFF0000UL;
+	instr.BuildAndImm32( testCpu.Gpr32OffsetLow(1), testCpu.Gpr32OffsetLow(2), 
+	                     0x00FFFF00UL );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFF0000UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0x00FF0000UL, testCpu.gprs[2] );
+}
+
+TEST(CpuInterpreter, AndImm64)
 {
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
 
 	testCpu.gprs[1] = 0xFFFFFFFF00000000UL;
-	instr.BuildAndImm( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2), 
-	                   0x0000FFFFFFFF0000UL );
+	instr.BuildAndImm64( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2), 
+	                     0x0000FFFFFFFF0000UL );
 	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
 	EXPECT_EQ( 0x0000FFFF00000000UL, testCpu.gprs[2] );

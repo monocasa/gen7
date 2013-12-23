@@ -331,13 +331,25 @@ TEST(InterInstr, SubuImm)
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );
 }
 
-TEST(InterInstr, AndImm)
+TEST(InterInstr, AndImm32)
 {
 	InterInstr instr;
 
-	instr.BuildAndImm( 31, 1, 0xFFFFFFFF00000000UL );
+	instr.BuildAndImm32( 31, 1, 0xFFFF0000UL );
 
-	EXPECT_EQ( InstrOp::AND_IMM, instr.op );
+	EXPECT_EQ( InstrOp::AND_IMM_32, instr.op );
+	EXPECT_EQ( 31, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+	EXPECT_EQ( 0xFFFF0000UL, instr.args[2] );
+}
+
+TEST(InterInstr, AndImm64)
+{
+	InterInstr instr;
+
+	instr.BuildAndImm64( 31, 1, 0xFFFFFFFF00000000UL );
+
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr.op );
 	EXPECT_EQ( 31, instr.args[0] );
 	EXPECT_EQ( 1, instr.args[1] );
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[2] );

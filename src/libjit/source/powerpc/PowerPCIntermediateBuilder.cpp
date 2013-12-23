@@ -359,7 +359,7 @@ int PowerPCIntermediateBuilder::BuildIntermediateTable19( InterInstr *intermedia
 				return 1;
 			}
 			else if( nativeInstr == 0x4d9e0020 ) { //beqlr    cr7
-				intermediates[0].BuildAndImm( GPR64OFFSET(GPR_CR), GPR64OFFSET(GPR_TEMP), 0x00000002 );
+				intermediates[0].BuildAndImm64( GPR64OFFSET(GPR_CR), GPR64OFFSET(GPR_TEMP), 0x00000002 );
 				intermediates[1].BuildBranchGpr64NotZeroGpr64( GPR64OFFSET(GPR_TEMP), GPR64OFFSET(GPR_LR) );
 				return 2;
 			}
@@ -508,27 +508,27 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 
 			switch( nativeInstr & 0xFFFF ) {
 				case 0x053e: { //clrlwi rs, ra, 20
-					intermediates[0].BuildAndImm( rs, ra, 0x0000000000000FFFUL );
+					intermediates[0].BuildAndImm64( rs, ra, 0x0000000000000FFFUL );
 					break;
 				}
 
 				case 0x077e: { //clrlwi rs, ra, 29
-					intermediates[0].BuildAndImm( rs, ra, 0x0000000000000007UL );
+					intermediates[0].BuildAndImm64( rs, ra, 0x0000000000000007UL );
 					break;
 				}
 
 				case 0x003a: { //clrrwi rs, ra, 2
-					intermediates[0].BuildAndImm( rs, ra, 0x00000000FFFFFFFCUL );
+					intermediates[0].BuildAndImm64( rs, ra, 0x00000000FFFFFFFCUL );
 					break;
 				}
 
 				case 0x0038: { //clrrwi rs, ra, 3
-					intermediates[0].BuildAndImm( rs, ra, 0x00000000FFFFFFF8UL );
+					intermediates[0].BuildAndImm64( rs, ra, 0x00000000FFFFFFF8UL );
 					break;
 				}
 
 				case 0x0026: { //clrrwi rs, ra, 12
-					intermediates[0].BuildAndImm( rs, ra, 0x00000000FFFFF000UL );
+					intermediates[0].BuildAndImm64( rs, ra, 0x00000000FFFFF000UL );
 					break;
 				}
 
@@ -575,7 +575,7 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 				case 1: {
 					uint64_t mask = 0xFFFFFFFFFFFFFFFFUL >> mb;
 					if( sh == 0 ) {
-						intermediates[0].BuildAndImm( rs, ra, mask );
+						intermediates[0].BuildAndImm64( rs, ra, mask );
 						return 1;
 					}
 					else if( (64 - sh) == mb ) {
@@ -584,7 +584,7 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 					}
 					else {
 						intermediates[0].BuildRol64Imm( rs, ra, sh );
-						intermediates[1].BuildAndImm( ra, ra, mask );
+						intermediates[1].BuildAndImm64( ra, ra, mask );
 						return 2;
 					}
 					break;
@@ -594,7 +594,7 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 				case 3: {
 					uint64_t mask = 0xFFFFFFFFFFFFFFFFUL << (63 - mb);
 					if( sh == 0 ) { //clrrdi
-						intermediates[0].BuildAndImm( rs, ra, mask );
+						intermediates[0].BuildAndImm64( rs, ra, mask );
 						return 1;
 					}
 					else if( (63 - mb) == sh ) { //sldi
@@ -603,7 +603,7 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 					}
 					else {
 						intermediates[0].BuildRol64Imm( rs, ra, sh );
-						intermediates[1].BuildAndImm( ra, ra, mask );
+						intermediates[1].BuildAndImm64( ra, ra, mask );
 						return 2;
 					}
 					break;
@@ -617,7 +617,7 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 
 					intermediates[0].BuildAndcImm( ra, ra, mask );
 					intermediates[1].BuildRol64Imm( rs, GPR64OFFSET(GPR_TEMP), sh );
-					intermediates[2].BuildAndImm( GPR64OFFSET(GPR_TEMP), GPR64OFFSET(GPR_TEMP), mask );
+					intermediates[2].BuildAndImm64( GPR64OFFSET(GPR_TEMP), GPR64OFFSET(GPR_TEMP), mask );
 					intermediates[3].BuildOr( GPR64OFFSET(GPR_TEMP), ra, ra );
 					return 4;
 				}

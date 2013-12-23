@@ -140,7 +140,7 @@ TEST(PowerPCIntermediateBuilder, Bclr)
 
 	// 00000000 : 4d9e0020 : beqlr    cr7
 	EXPECT_EQ( 2, builder.BuildIntermediate( instr, 0x4d9e0020, 0x00000000 ) );
-	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[0].op );
 	EXPECT_EQ( 38 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 40 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 2, instr[0].args[2] );
@@ -246,14 +246,14 @@ TEST(PowerPCIntermediateBuilder, Clrrwi)
 
 	// 00000000 : 541f0038 : clrrwi   r31, r0, 3
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x541f0038, 0x00000000 ) );
-	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[0].op );
 	EXPECT_EQ( 0  * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 31 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 0x00000000FFFFFFF8, instr[0].args[2] );
 
 	// 00000000 : 5529003a : clrrwi   r9, r9, 2
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x5529003a, 0x00000000 ) );
-	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[0].op );
 	EXPECT_EQ( 9 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 9 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 0x00000000FFFFFFFC, instr[0].args[2] );
@@ -528,21 +528,21 @@ TEST(PowerPCIntermediateBuilder, Rlwinm)
 
 	// 00000000 : 5749077e : clrlwi   r9, r26, 29
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x5749077e, 0x00000000 ) );
-	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[0].op );
 	EXPECT_EQ( 26 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 9  * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 0x0000000000000007UL, instr[0].args[2] );
 
 	// 00000000 : 5718053e : clrlwi   r24, r24, 20
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x5718053e, 0x00000000 ) );
-	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[0].op );
 	EXPECT_EQ( 24 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 24 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 0x0000000000000FFFUL, instr[0].args[2] );
 
 	// 00000000 : 57180026 : clrrwi   r24, r24, 12
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x57180026, 0x00000000 ) );
-	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[0].op );
 	EXPECT_EQ( 24 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 24 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 0x00000000FFFFF000UL, instr[0].args[2] );
@@ -583,28 +583,28 @@ TEST(PowerPCIntermediateBuilder, Rotate)
 
 	// 00000000 : 78A50040 : clrldi   r5, r5, 1
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x78A50040, 0x00000000 ) );
-	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[0].op );
 	EXPECT_EQ( 5 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 5 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 0x7FFFFFFFFFFFFFFFUL, instr[0].args[2] );
 
 	// 00000000 : 78630120 : clrldi   r3, r3, 36
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x78630120, 0x00000000 ) );
-	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[0].op );
 	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 0x000000000FFFFFFFUL, instr[0].args[2] );
 
 	// 00000000 : 788604a0 : clrldi   r6, r4, 50
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x788604a0, 0x00000000 ) );
-	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[0].op );
 	EXPECT_EQ( 4 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 6 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 0x0000000000003FFFUL, instr[0].args[2] );
 
 	// 00000000 : 786203e4 : clrrdi   r2, r3, 16
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x786203e4, 0x00000000 ) );
-	EXPECT_EQ( InstrOp::AND_IMM, instr[0].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[0].op );
 	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 2 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 0xFFFFFFFFFFFF0000UL, instr[0].args[2] );
@@ -617,7 +617,7 @@ TEST(PowerPCIntermediateBuilder, Rotate)
 	EXPECT_EQ( 5 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 10, instr[0].args[2] );
 
-	EXPECT_EQ( InstrOp::AND_IMM, instr[1].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[1].op );
 	EXPECT_EQ( 5 * sizeof(uint64_t), instr[1].args[0] );
 	EXPECT_EQ( 5 * sizeof(uint64_t), instr[1].args[1] );
 	EXPECT_EQ( 0xFFFFFFFFFF800000UL, instr[1].args[2] );
@@ -630,7 +630,7 @@ TEST(PowerPCIntermediateBuilder, Rotate)
 	EXPECT_EQ( 4 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 36, instr[0].args[2] );
 
-	EXPECT_EQ( InstrOp::AND_IMM, instr[1].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[1].op );
 	EXPECT_EQ( 4 * sizeof(uint64_t), instr[1].args[0] );
 	EXPECT_EQ( 4 * sizeof(uint64_t), instr[1].args[1] );
 	EXPECT_EQ( 0xF, instr[1].args[2] );
@@ -643,7 +643,7 @@ TEST(PowerPCIntermediateBuilder, Rotate)
 	EXPECT_EQ( 2 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 52, instr[0].args[2] );
 
-	EXPECT_EQ( InstrOp::AND_IMM, instr[1].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[1].op );
 	EXPECT_EQ( 2 * sizeof(uint64_t), instr[1].args[0] );
 	EXPECT_EQ( 2 * sizeof(uint64_t), instr[1].args[1] );
 	EXPECT_EQ( 0x01FFF, instr[1].args[2] );
@@ -661,7 +661,7 @@ TEST(PowerPCIntermediateBuilder, Rotate)
 	EXPECT_EQ( 40 * sizeof(uint64_t), instr[1].args[1] );
 	EXPECT_EQ( 37, instr[1].args[2] );
 
-	EXPECT_EQ( InstrOp::AND_IMM, instr[2].op );
+	EXPECT_EQ( InstrOp::AND_IMM_64, instr[2].op );
 	EXPECT_EQ( 40 * sizeof(uint64_t), instr[2].args[0] );
 	EXPECT_EQ( 40 * sizeof(uint64_t), instr[2].args[1] );
 	EXPECT_EQ( 0x0000FFE000000000UL, instr[2].args[2] );
