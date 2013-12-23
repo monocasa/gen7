@@ -363,6 +363,19 @@ TEST(PowerPCIntermediateBuilder, Cmplwi)
 	EXPECT_EQ( 0xFFFF, instr[0].args[2] );
 }
 
+TEST(PowerPCIntermediateBuilder, Crxor)
+{
+	PowerPCIntermediateBuilder builder;
+	InterInstr instr[10];
+
+	// 00000000 : 4cc63182 : crclr    4*cr1+eq
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x4cc63182, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::AND_IMM_32, instr[0].op );
+	EXPECT_EQ( 38 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 38 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 0xFDFFFFFF, instr[0].args[2] );
+}
+
 TEST(PowerPCIntermediateBuilder, Eieio)
 {
 	PowerPCIntermediateBuilder builder;
