@@ -61,6 +61,7 @@ enum InstrOp
 	SLL64_IMM,
 	SLR32_IMM,
 	SLR64_IMM,
+	BYTE_SWAP_32,
 
 	//Processor Specific Region
 	PROC_LOW = 10000,
@@ -378,6 +379,12 @@ struct InterInstr
 		args[0] = sourceReg;
 		args[1] = destReg;
 		args[2] = shift;
+	}
+
+	void BuildByteSwap32( int sourceReg, int destReg ) {
+		op = BYTE_SWAP_32;
+		args[0] = sourceReg;
+		args[1] = destReg;
 	}
 
 //PowerPC Specific

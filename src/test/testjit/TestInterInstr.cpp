@@ -499,6 +499,17 @@ TEST(InterInstr, Slr64Imm)
 	EXPECT_EQ( 2, instr.args[2] );
 }
 
+TEST(InterInstr, ByteSwap32)
+{
+	InterInstr instr;
+
+	instr.BuildByteSwap32( 32, 1 );
+
+	EXPECT_EQ( InstrOp::BYTE_SWAP_32, instr.op );
+	EXPECT_EQ( 32, instr.args[0] );
+	EXPECT_EQ( 1, instr.args[1] );
+}
+
 TEST(InterInstr, PpcSlbia)
 {
 	InterInstr instr;

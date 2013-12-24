@@ -787,3 +787,15 @@ TEST(CpuInterpreter, Slr64Imm)
 	EXPECT_EQ( 0x0000FFFFFFFF0000UL, testCpu.gprs[2] );
 }
 
+TEST(CpuInterpreter, ByteSwap32)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0x0123456789abcdefUL;
+	instr.BuildByteSwap32( testCpu.Gpr32OffsetLow(1), testCpu.Gpr32OffsetLow(2) );
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0x0123456789abcdefUL, testCpu.gprs[1] );
+	EXPECT_EQ( 0x00000000efcdab89UL, testCpu.gprs[2] );
+}
+

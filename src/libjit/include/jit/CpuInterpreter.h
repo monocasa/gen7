@@ -3,6 +3,8 @@
 
 #include "jit/InterInstr.h"
 
+#include "util/BitOps.h"
+
 #include <cstdint>
 #include <cstdio>
 
@@ -553,6 +555,16 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			uint64_t result = ReadGPR64( sourceReg ) >> shift;
 
 			SetGPR64( destReg, result );
+			return true;
+		}
+
+		case BYTE_SWAP_32: {
+			const int sourceReg = instr.args[0];
+			const int destReg = instr.args[1];
+
+			uint32_t result = util::ByteSwap<uint32_t>( ReadGPR32(sourceReg) );
+
+			SetGPR32( destReg, result );
 			return true;
 		}
 
