@@ -178,7 +178,7 @@ TEST(PowerPCIntermediateBuilder, Beq)
 	EXPECT_EQ( 0x2de4, instr[0].args[2] );
 }
 
-TEST(PowerPcIntermediateBuilder, Bne)
+TEST(PowerPCIntermediateBuilder, Bne)
 {
 	PowerPCIntermediateBuilder builder;
 	InterInstr instr[10];
