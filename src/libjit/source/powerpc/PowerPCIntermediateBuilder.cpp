@@ -575,6 +575,11 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 					break;
 				}
 
+				case 0x843e: { //srwi rs, ra, 16
+					intermediates[0].BuildSlr32Imm( rs, ra, 16 );
+					break;
+				}
+
 				default: {
 					intermediates[0].BuildUnknown( opcd, nativeInstr, pc );
 					break;

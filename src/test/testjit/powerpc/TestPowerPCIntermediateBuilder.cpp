@@ -860,6 +860,13 @@ TEST(PowerPCIntermediateBuilder, Srwi)
 	EXPECT_EQ( 31 * sizeof(uint64_t), instr[0].args[0] );
 	EXPECT_EQ( 6  * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( 3, instr[0].args[2] );
+
+	// 00000000 : 5463843e : srwi     r3, r3, 16
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x5463843e, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::SLR32_IMM, instr[0].op );
+	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 16, instr[0].args[2] );
 }
 
 TEST(PowerPCIntermediateBuilder, Std)
