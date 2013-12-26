@@ -17,6 +17,7 @@ public:
 		enum Type : int {
 			READ32,
 			READ64,
+			WRITE8,
 			WRITE32,
 			WRITE64,
 		} type;
@@ -53,10 +54,10 @@ protected:
 		return value;
 	}
 
-	void WriteMem64( uint64_t addr, uint64_t value ) {
-		data64[ addr ] = value;
+	void WriteMem8( uint64_t addr, uint8_t value ) {
+		data8[ addr ] = value;
 
-		accesses.push_back( Access(Access::Type::WRITE64, addr, value) );
+		accesses.push_back( Access(Access::Type::WRITE8, addr, value ) );
 	}
 
 	void WriteMem32( uint64_t addr, uint32_t value ) {
@@ -65,12 +66,20 @@ protected:
 		accesses.push_back( Access(Access::Type::WRITE32, addr, value) );
 	}
 
+	void WriteMem64( uint64_t addr, uint64_t value ) {
+		data64[ addr ] = value;
+
+		accesses.push_back( Access(Access::Type::WRITE64, addr, value) );
+	}
+
 public:
+	std::map<uint64_t, uint8_t>  data8;
 	std::map<uint64_t, uint32_t> data32;
 	std::map<uint64_t, uint64_t> data64;
 	std::vector<Access> accesses;
 
 	void ResetMemoryPolicy() {
+		data8.clear();
 		data32.clear();
 		data64.clear();
 		accesses.clear();
@@ -512,6 +521,26 @@ TEST(CpuInterpreter, Store64)
 	EXPECT_EQ( TestCpuInterpreter::Access::Type::WRITE64, testCpu.accesses[0].type );
 	EXPECT_EQ( 0x0000000000001100UL, testCpu.accesses[0].addr );
 	EXPECT_EQ( 0x0123456789ABCDEFUL, testCpu.accesses[0].value );
+}
+
+TEST(CpuInterpreter, Store8RegOffset)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0x0123456789ABCDEFUL;
+	testCpu.gprs[2] = 0x0000000000001000UL;
+
+	instr.BuildStore8Reg( testCpu.Gpr32OffsetLow(1), testCpu.Gpr64Offset(2) );
+
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0x0123456789ABCDEFUL, testCpu.gprs[1] );
+	EXPECT_EQ( 0x0000000000001000UL, testCpu.gprs[2] );
+
+	ASSERT_EQ( 1, testCpu.accesses.size() );
+	EXPECT_EQ( TestCpuInterpreter::Access::Type::WRITE8, testCpu.accesses[0].type );
+	EXPECT_EQ( 0x0000000000001000UL, testCpu.accesses[0].addr );
+	EXPECT_EQ( 0x000000EFUL, testCpu.accesses[0].value );
 }
 
 TEST(CpuInterpreter, Store32RegOffset)

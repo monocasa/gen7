@@ -1,6 +1,7 @@
 #ifndef GEN7_CROSSVMM_VMM_THIRTYTWOBITMEMORYPOLICY_H
 #define GEN7_CROSSVMM_VMM_THIRTYTWOBITMEMORYPOLICY_H
 
+template<bool SwapEndian>
 class ThirtyTwoBitMemoryPolicy
 {
 private:
@@ -20,6 +21,13 @@ public:
 		ret |= ptr[1];
 
 		return ret;
+	}
+
+	void WriteMem8( uint64_t addr, uint8_t value ) {
+		if( SwapEndian ) {
+			addr ^= 3;
+		}
+		*MakePtr<uint8_t>( addr ) = value;
 	}
 
 	void WriteMem32( uint64_t addr, uint32_t value ) {

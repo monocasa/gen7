@@ -25,7 +25,7 @@ public:
 	virtual uint32_t Read32( uint64_t addr ) = 0;
 };
 
-class Sh4aCpu : public Cpu, public jit::CpuInterpreter<ThirtyTwoBitMemoryPolicy>
+class Sh4aCpu : public Cpu, public jit::CpuInterpreter<ThirtyTwoBitMemoryPolicy<false>>
 {
 private:
 	static const uint32_t SR_T_BIT  = 0x00000001;

@@ -260,6 +260,17 @@ TEST(InterInstr, Store64)
 	EXPECT_EQ( 2, instr.args[1] );
 }
 
+TEST(InterInstr, Store8Reg)
+{
+	InterInstr instr;
+
+	instr.BuildStore8Reg( 1, 2 );
+
+	EXPECT_EQ( InstrOp::ST_8_REG, instr.op );
+	EXPECT_EQ( 1, instr.args[0] );
+	EXPECT_EQ( 2, instr.args[1] );
+}
+
 TEST(InterInstr, Store32Reg)
 {
 	InterInstr instr;

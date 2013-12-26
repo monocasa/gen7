@@ -35,6 +35,7 @@ enum InstrOp
 	LD_32_IDX_L,
 	ST_32,
 	ST_64,
+	ST_8_REG,
 	ST_32_REG,
 	ST_64_REG_OFF,
 
@@ -237,6 +238,12 @@ struct InterInstr
 		op = ST_64;
 		args[0] = sourceReg;
 		args[1] = addr;
+	}
+
+	void BuildStore8Reg( int sourceReg, int addrReg ) {
+		op = ST_8_REG;
+		args[0] = sourceReg;
+		args[1] = addrReg;
 	}
 
 	void BuildStore32Reg( int sourceReg, int addrReg ) {

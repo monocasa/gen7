@@ -13,7 +13,7 @@
 #include <ucontext.h>
 
 class PpcCpu : public Cpu, 
-               public jit::CpuInterpreter<ThirtyTwoBitMemoryPolicy>, 
+               public jit::CpuInterpreter<ThirtyTwoBitMemoryPolicy<true>>, 
                private jit::PowerPCIntermediateBuilder
 {
 private:
