@@ -93,6 +93,9 @@ uint32_t XenonPhysicalMemory::ReadRam32( uint32_t addr )
 	if( addr < DRAM_SIZE ) {
 		return ((uint32_t*)dram)[ addr / sizeof(uint32_t) ];
 	}
+	else if( addr == 0xd0010000 ) {
+		return xenos.ReadConfig32( 0x000 );
+	}
 	else {
 		throw sys::Exception( "Read from unknown RAM address %08x", addr );
 	}

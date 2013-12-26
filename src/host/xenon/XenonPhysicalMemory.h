@@ -2,6 +2,7 @@
 #define GEN7_HOST_XENON_XENONPHYSICALMEMORY_H
 
 #include "Subsystem.h"
+#include "PciDevice.h"
 #include "PhysicalMemory.h"
 
 namespace gen7 {
@@ -27,6 +28,8 @@ private:
 	void * sram;
 	void * nand;
 	void * brom;
+
+	PciDevice<true> &xenos;
 
 	void LoadNand();
 	void LoadBrom();
@@ -72,12 +75,13 @@ public:
 	virtual void WriteRegion32( int region, uint32_t addr, uint32_t data );
 	virtual uint32_t ReadRegion32( int region, uint32_t addr );
 
-	XenonPhysicalMemory( MachineContext &context )
+	XenonPhysicalMemory( MachineContext &context, PciDevice<true> &xenos )
 	  : Subsystem( context )
 	  , dram( nullptr )
 	  , sram( nullptr )
 	  , nand( nullptr )
 	  , brom( nullptr )
+	  , xenos( xenos )
 	{ }
 
 	virtual ~XenonPhysicalMemory()
