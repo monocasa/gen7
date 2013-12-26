@@ -153,6 +153,7 @@ public:
 		OPCD_LWZ        = 32,
 		OPCD_STW        = 36,
 		OPCD_STWU       = 37,
+		OPCD_STB        = 38,
 		OPCD_LD         = 58,
 		OPCD_STD        = 62,
 	};
