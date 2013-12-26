@@ -142,6 +142,23 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 			return 2;
 		}
 
+		case SPECIAL_XO_LWBRX: {
+			const int rt = X_RT(nativeInstr);
+			const int ra = X_RA(nativeInstr);
+			const int rb = X_RB(nativeInstr);
+
+			if( ra == 0 ) {
+				intermediates[0].BuildLoad32RegOffset( GPR32LOWOFFSET(rt), GPR64OFFSET(rb), 0 );
+				intermediates[1].BuildByteSwap32( GPR32LOWOFFSET(rt), GPR32LOWOFFSET(rt) );
+				intermediates[2].BuildLoad32Imm( GPR32HIGHOFFSET(rt), 0 );
+				return 3;
+			}
+			else {
+				intermediates[0].BuildUnknown( xo + 3100000, nativeInstr, pc );
+				return 1;
+			}
+		}
+
 		case SPECIAL_XO_MFCR: {
 			const int rt = XFX_RT(nativeInstr);
 
