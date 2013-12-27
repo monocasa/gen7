@@ -85,30 +85,66 @@ enum InstrOp
 	PPC_SUBFIC,
 };
 
+enum class OpType {
+	UNDEFINED,
+	IMM,
+	GPR32,
+	GPR64,
+	GPRADDR,
+};
+
+template<typename T>
+struct Operand
+{
+	OpType type;
+
+	T value;
+
+	template<OpType opType>
+	void Set( T newValue ) {
+		type = opType;
+		value = newValue;
+	}
+
+	Operand()
+	  : type( OpType::UNDEFINED )
+	  , value( 0 )
+	{ }
+};
+
+struct UnknownArgs {
+	Operand<int>      opcodeCookie;
+	Operand<uint64_t> instruction;
+	Operand<uint64_t> pc;
+};
+
 struct InterInstr
 {
 	uint32_t op;
-	uint32_t rsvd;
-	uint64_t args[4];
+
+	union {
+		uint64_t args[4];
+	};
+
+	UnknownArgs unknownArgs;
 
 	InterInstr()
 	  : op( UNKNOWN_OPCODE )
-	  , rsvd( 0 )
 	{ }
 
 //Misc
 	void BuildUnknown( int opcode, uint64_t instruction, uint64_t pc ) {
 		op = UNKNOWN_OPCODE;
-		args[0] = opcode;
-		args[1] = instruction;
-		args[2] = pc;
+		unknownArgs.opcodeCookie.Set<OpType::IMM>( opcode );
+		unknownArgs.instruction.Set<OpType::IMM>( instruction );
+		unknownArgs.pc.Set<OpType::IMM>( pc );
 	}
 
 	void BuildInvalid( int opcode, uint64_t instruction, uint64_t pc ) {
 		op = INVALID_OPCODE;
-		args[0] = opcode;
-		args[1] = instruction;
-		args[2] = pc;
+		unknownArgs.opcodeCookie.Set<OpType::IMM>( opcode );
+		unknownArgs.instruction.Set<OpType::IMM>( instruction );
+		unknownArgs.pc.Set<OpType::IMM>( pc );
 	}
 
 	void BuildNop() {

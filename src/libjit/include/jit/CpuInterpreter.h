@@ -73,8 +73,10 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 	switch( instr.op ) {
 	//Misc
 		case UNKNOWN_OPCODE: {
-			sprintf( errorString, "Unknown opcode %ld (%08lx) @ %016lx", 
-			         instr.args[0], instr.args[1], instr.args[2] );
+			sprintf( errorString, "Unknown opcode %d (%08lx) @ %016lx", 
+			         instr.unknownArgs.opcodeCookie.value,
+			         instr.unknownArgs.instruction.value,
+			         instr.unknownArgs.pc.value );
 			return false;
 		}
 
@@ -582,8 +584,7 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			if( instr.op >= PROC_LOW ) {
 				return InterpretProcessorSpecific( instr );
 			}
-			sprintf( errorString, "Unknown instr.op %d (0x%lx, 0x%lx, 0x%lx, 0x%lx)\n",
-			         instr.op, instr.args[0], instr.args[1], instr.args[2], instr.args[3] );
+			sprintf( errorString, "Unknown instr.op %d\n", instr.op );
 			return false;
 		}
 	}

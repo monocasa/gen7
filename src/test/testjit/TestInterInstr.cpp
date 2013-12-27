@@ -11,9 +11,9 @@ TEST(InterInstr, Unknown)
 	instr.BuildUnknown( 5, 65, 1 );
 
 	EXPECT_EQ( InstrOp::UNKNOWN_OPCODE, instr.op );
-	EXPECT_EQ( 5, instr.args[0] );
-	EXPECT_EQ( 65, instr.args[1] );
-	EXPECT_EQ( 1, instr.args[2] );
+	EXPECT_EQ( 5,  instr.unknownArgs.opcodeCookie.value );
+	EXPECT_EQ( 65, instr.unknownArgs.instruction.value );
+	EXPECT_EQ( 1,  instr.unknownArgs.pc.value );
 }
 
 TEST(InterInstr, Invalid)
@@ -23,9 +23,9 @@ TEST(InterInstr, Invalid)
 	instr.BuildInvalid( 5, 65, 1 );
 
 	EXPECT_EQ( InstrOp::INVALID_OPCODE, instr.op );
-	EXPECT_EQ( 5, instr.args[0] );
-	EXPECT_EQ( 65, instr.args[1] );
-	EXPECT_EQ( 1, instr.args[2] );
+	EXPECT_EQ( 5,  instr.unknownArgs.opcodeCookie.value );
+	EXPECT_EQ( 65, instr.unknownArgs.instruction.value );
+	EXPECT_EQ( 1,  instr.unknownArgs.pc.value );
 }
 
 TEST(InterInstr, Nop)

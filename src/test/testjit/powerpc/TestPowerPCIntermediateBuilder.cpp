@@ -12,9 +12,9 @@ TEST(PowerPCIntermediateBuilder, Unknown)
 
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x03FFFFFF, 0x100 ) );
 	EXPECT_EQ( InstrOp::UNKNOWN_OPCODE, instr[0].op );
-	EXPECT_EQ( 0,          instr[0].args[0] );
-	EXPECT_EQ( 0x03FFFFFF, instr[0].args[1] );
-	EXPECT_EQ( 0x100,      instr[0].args[2] );
+	EXPECT_EQ( 0,          instr[0].unknownArgs.opcodeCookie.value );
+	EXPECT_EQ( 0x03FFFFFF, instr[0].unknownArgs.instruction.value );
+	EXPECT_EQ( 0x100,      instr[0].unknownArgs.pc.value );
 }
 
 TEST(PowerPCIntermediateBuilder, Add)
@@ -976,9 +976,9 @@ TEST(PowerPCIntermediateBuilder, Stwu)
 	// FFFFFFFF : 94000000 : stwu     r0,0(0) -- ra is not allowed to be 0
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x94000000, 0x00000000FFFFFFFFUL ) );
 	EXPECT_EQ( InstrOp::INVALID_OPCODE, instr[0].op );
-	EXPECT_EQ( 37, instr[0].args[0] );
-	EXPECT_EQ( 0x94000000, instr[0].args[1] );
-	EXPECT_EQ( 0x00000000FFFFFFFFUL, instr[0].args[2] );
+	EXPECT_EQ( 37,         instr[0].unknownArgs.opcodeCookie.value );
+	EXPECT_EQ( 0x94000000, instr[0].unknownArgs.instruction.value );
+	EXPECT_EQ( 0xFFFFFFFF, instr[0].unknownArgs.pc.value );
 
 	// 00000000 : 943ffff0 : stwu     r1,-0x10(r31)
 	EXPECT_EQ( 3, builder.BuildIntermediate( instr, 0x943ffff0, 0x00000000 ) );
