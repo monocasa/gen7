@@ -260,7 +260,7 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 					break;
 				}
 				default: {
-					intermediates[0].BuildSetSystemReg( sourceReg, spr );
+					intermediates[0].BuildSetSystemReg( spr, sourceReg );
 					break;
 				}
 			}

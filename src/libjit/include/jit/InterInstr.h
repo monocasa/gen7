@@ -90,6 +90,8 @@ enum class OpType {
 	IMM,
 	GPR32,
 	GPR64,
+	SYS32,
+	SYS64,
 	GPRADDR,
 };
 
@@ -126,14 +128,22 @@ struct UnknownArgs {
 };
 
 template<typename T>
-struct SetImmArgs {
+struct ImmArgs {
 	Operand<int> reg;
 	Operand<T>   imm;
 };
 
-struct MoveRegArgs {
-	Operand<int> source;
+template<typename T>
+struct TwoOpArgs {
 	Operand<int> dest;
+	Operand<T>   source;
+};
+
+template<typename T, typename U>
+struct ThreeOpArgs {
+	Operand<int> dest;
+	Operand<T>   source1;
+	Operand<U>   source2;
 };
 
 struct InterInstr
@@ -145,9 +155,10 @@ struct InterInstr
 	};
 
 	union {
-		UnknownArgs          unknownArgs;
-		SetImmArgs<uint64_t> setImm64Args;
-		MoveRegArgs          moveRegArgs;
+		UnknownArgs          unknown;
+		TwoOpArgs<uint64_t>  imm64;
+		TwoOpArgs<int>       twoReg;
+		ThreeOpArgs<int,int> threeReg;
 	};
 
 	InterInstr()
@@ -157,16 +168,16 @@ struct InterInstr
 //Misc
 	void BuildUnknown( int opcode, uint64_t instruction, uint64_t pc ) {
 		op = UNKNOWN_OPCODE;
-		unknownArgs.opcodeCookie.Set<OpType::IMM>( opcode );
-		unknownArgs.instruction.Set<OpType::IMM>( instruction );
-		unknownArgs.pc.Set<OpType::IMM>( pc );
+		unknown.opcodeCookie.Set<OpType::IMM>( opcode );
+		unknown.instruction.Set<OpType::IMM>( instruction );
+		unknown.pc.Set<OpType::IMM>( pc );
 	}
 
 	void BuildInvalid( int opcode, uint64_t instruction, uint64_t pc ) {
 		op = INVALID_OPCODE;
-		unknownArgs.opcodeCookie.Set<OpType::IMM>( opcode );
-		unknownArgs.instruction.Set<OpType::IMM>( instruction );
-		unknownArgs.pc.Set<OpType::IMM>( pc );
+		unknown.opcodeCookie.Set<OpType::IMM>( opcode );
+		unknown.instruction.Set<OpType::IMM>( instruction );
+		unknown.pc.Set<OpType::IMM>( pc );
 	}
 
 	void BuildNop() {
@@ -175,14 +186,14 @@ struct InterInstr
 
 	void BuildSetSystemImm( uint64_t value, int sysReg ) {
 		op = SET_SYS_IMM;
-		setImm64Args.reg.Set<OpType::IMM>( sysReg );
-		setImm64Args.imm.Set<OpType::IMM>( value );
+		imm64.dest.Set<OpType::SYS64>( sysReg );
+		imm64.source.Set<OpType::IMM>( value );
 	}
 
-	void BuildSetSystemReg( int sourceReg, int sysReg ) {
+	void BuildSetSystemReg( int destSys, int sourceGpr ) {
 		op = SET_SYS_REG;
-		args[0] = sourceReg;
-		args[1] = sysReg;
+		twoReg.dest.Set<OpType::SYS64>( destSys );
+		twoReg.source.Set<OpType::GPR64>( sourceGpr );
 	}
 
 	void BuildReadSystem( int destReg, int sysReg ) {

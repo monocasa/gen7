@@ -12,9 +12,9 @@ TEST(PowerPCIntermediateBuilder, Unknown)
 
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x03FFFFFF, 0x100 ) );
 	EXPECT_EQ( InstrOp::UNKNOWN_OPCODE, instr[0].op );
-	EXPECT_EQ( 0,          *instr[0].unknownArgs.opcodeCookie );
-	EXPECT_EQ( 0x03FFFFFF, *instr[0].unknownArgs.instruction );
-	EXPECT_EQ( 0x100,      *instr[0].unknownArgs.pc );
+	EXPECT_EQ( 0,          *instr[0].unknown.opcodeCookie );
+	EXPECT_EQ( 0x03FFFFFF, *instr[0].unknown.instruction );
+	EXPECT_EQ( 0x100,      *instr[0].unknown.pc );
 }
 
 TEST(PowerPCIntermediateBuilder, Add)
@@ -480,8 +480,10 @@ TEST(PowerPCIntermediateBuilder, Mtspr)
 	// 00000000 : 7C79FBA6 : mtspr    hid6, r3
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7C79FBA6, 0x00000000 ) );
 	EXPECT_EQ( InstrOp::SET_SYS_REG, instr[0].op );
-	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
-	EXPECT_EQ( 1017, instr[0].args[1] );
+	EXPECT_EQ( 1017, *instr[0].twoReg.dest );
+	EXPECT_EQ( OpType::SYS64, instr[0].twoReg.dest.type );
+	EXPECT_EQ( 3 * sizeof(uint64_t), *instr[0].twoReg.source );
+	EXPECT_EQ( OpType::GPR64, instr[0].twoReg.source.type );
 
 	// 00000000 : 7C6803A6 : mtlr     r3
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7C6803A6, 0x00000000 ) );
@@ -976,9 +978,9 @@ TEST(PowerPCIntermediateBuilder, Stwu)
 	// FFFFFFFF : 94000000 : stwu     r0,0(0) -- ra is not allowed to be 0
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x94000000, 0x00000000FFFFFFFFUL ) );
 	EXPECT_EQ( InstrOp::INVALID_OPCODE, instr[0].op );
-	EXPECT_EQ( 37,         *instr[0].unknownArgs.opcodeCookie );
-	EXPECT_EQ( 0x94000000, *instr[0].unknownArgs.instruction );
-	EXPECT_EQ( 0xFFFFFFFF, *instr[0].unknownArgs.pc );
+	EXPECT_EQ( 37,         *instr[0].unknown.opcodeCookie );
+	EXPECT_EQ( 0x94000000, *instr[0].unknown.instruction );
+	EXPECT_EQ( 0xFFFFFFFF, *instr[0].unknown.pc );
 
 	// 00000000 : 943ffff0 : stwu     r1,-0x10(r31)
 	EXPECT_EQ( 3, builder.BuildIntermediate( instr, 0x943ffff0, 0x00000000 ) );

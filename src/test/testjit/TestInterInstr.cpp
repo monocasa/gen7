@@ -11,9 +11,13 @@ TEST(InterInstr, Unknown)
 	instr.BuildUnknown( 5, 65, 1 );
 
 	EXPECT_EQ( InstrOp::UNKNOWN_OPCODE, instr.op );
-	EXPECT_EQ( 5,  *instr.unknownArgs.opcodeCookie );
-	EXPECT_EQ( 65, *instr.unknownArgs.instruction );
-	EXPECT_EQ( 1,  *instr.unknownArgs.pc );
+	EXPECT_EQ( 5,  *instr.unknown.opcodeCookie );
+	EXPECT_EQ( 65, *instr.unknown.instruction );
+	EXPECT_EQ( 1,  *instr.unknown.pc );
+
+	EXPECT_EQ( OpType::IMM, instr.unknown.opcodeCookie.type );
+	EXPECT_EQ( OpType::IMM, instr.unknown.instruction.type );
+	EXPECT_EQ( OpType::IMM, instr.unknown.pc.type );
 }
 
 TEST(InterInstr, Invalid)
@@ -23,9 +27,13 @@ TEST(InterInstr, Invalid)
 	instr.BuildInvalid( 5, 65, 1 );
 
 	EXPECT_EQ( InstrOp::INVALID_OPCODE, instr.op );
-	EXPECT_EQ( 5,  *instr.unknownArgs.opcodeCookie );
-	EXPECT_EQ( 65, *instr.unknownArgs.instruction );
-	EXPECT_EQ( 1,  *instr.unknownArgs.pc );
+	EXPECT_EQ( 5,  *instr.unknown.opcodeCookie );
+	EXPECT_EQ( 65, *instr.unknown.instruction );
+	EXPECT_EQ( 1,  *instr.unknown.pc );
+
+	EXPECT_EQ( OpType::IMM, instr.unknown.opcodeCookie.type );
+	EXPECT_EQ( OpType::IMM, instr.unknown.instruction.type );
+	EXPECT_EQ( OpType::IMM, instr.unknown.pc.type );
 }
 
 TEST(InterInstr, Nop)
@@ -44,8 +52,10 @@ TEST(InterInstr, SetSystemImm)
 	instr.BuildSetSystemImm( 0xFFFFFFFF00000000UL, 512 );
 
 	EXPECT_EQ( InstrOp::SET_SYS_IMM, instr.op );
-	EXPECT_EQ( 0xFFFFFFFF00000000UL, *instr.setImm64Args.imm );
-	EXPECT_EQ( 512,                  *instr.setImm64Args.reg );
+	EXPECT_EQ( 512,                  *instr.imm64.dest );
+	EXPECT_EQ( OpType::SYS64,        instr.imm64.dest.type );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, *instr.imm64.source );
+	EXPECT_EQ( OpType::IMM,          instr.imm64.source.type );
 }
 
 TEST(InterInstr, SetSystemReg)
@@ -55,8 +65,8 @@ TEST(InterInstr, SetSystemReg)
 	instr.BuildSetSystemReg( 31, 512 );
 
 	EXPECT_EQ( InstrOp::SET_SYS_REG, instr.op );
-	EXPECT_EQ( 31, instr.args[0] );
-	EXPECT_EQ( 512, instr.args[1] );
+	EXPECT_EQ( 31, *instr.twoReg.dest );
+	EXPECT_EQ( 512, *instr.twoReg.source );
 }
 
 TEST(InterInstr, ReadSystem)

@@ -74,9 +74,9 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 	//Misc
 		case UNKNOWN_OPCODE: {
 			sprintf( errorString, "Unknown opcode %d (%08lx) @ %016lx", 
-			         *instr.unknownArgs.opcodeCookie,
-			         *instr.unknownArgs.instruction,
-			         *instr.unknownArgs.pc );
+			         *instr.unknown.opcodeCookie,
+			         *instr.unknown.instruction,
+			         *instr.unknown.pc );
 			return false;
 		}
 
@@ -85,15 +85,11 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 		}
 
 		case SET_SYS_IMM: {
-			return SetSystemReg( *instr.setImm64Args.reg, *instr.setImm64Args.imm );
+			return SetSystemReg( *instr.imm64.dest, *instr.imm64.source );
 		}
 
 		case SET_SYS_REG: {
-			const int sourceReg = instr.args[0];
-			const int sysReg = instr.args[1];
-
-			uint64_t result = ReadGPR64( sourceReg );
-			return SetSystemReg( sysReg, result );
+			return SetSystemReg( *instr.twoReg.dest, ReadGPR64(*instr.twoReg.source) );
 		}
 
 		case READ_SYS: {

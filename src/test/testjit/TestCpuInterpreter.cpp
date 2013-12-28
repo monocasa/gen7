@@ -220,7 +220,7 @@ TEST(CpuInterpreter, SetSystemReg)
 	InterInstr instr;
 
 	testCpu.gprs[1] = 0xFFFFFFFF00000000UL;
-	instr.BuildSetSystemReg( testCpu.Gpr64Offset(1), 512 );
+	instr.BuildSetSystemReg( 512, testCpu.Gpr64Offset(1) );
 
 	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
@@ -228,7 +228,7 @@ TEST(CpuInterpreter, SetSystemReg)
 
 	//Test invalid system reg
 	testCpu.Reset();
-	instr.BuildSetSystemReg( 21, TestCpuInterpreter::NUM_SYS_REGS );
+	instr.BuildSetSystemReg( TestCpuInterpreter::NUM_SYS_REGS, 21 );
 
 	EXPECT_FALSE( testCpu.InterpretIntermediate( instr ) );
 }
