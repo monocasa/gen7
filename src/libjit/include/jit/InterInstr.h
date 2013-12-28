@@ -96,14 +96,21 @@ enum class OpType {
 template<typename T>
 struct Operand
 {
+public:
 	OpType type;
 
+private:
 	T value;
 
+public:
 	template<OpType opType>
 	void Set( T newValue ) {
 		type = opType;
 		value = newValue;
+	}
+
+	T& operator*() {
+		return value;
 	}
 
 	Operand()
@@ -118,6 +125,17 @@ struct UnknownArgs {
 	Operand<uint64_t> pc;
 };
 
+template<typename T>
+struct SetImmArgs {
+	Operand<int> reg;
+	Operand<T>   imm;
+};
+
+struct MoveRegArgs {
+	Operand<int> source;
+	Operand<int> dest;
+};
+
 struct InterInstr
 {
 	uint32_t op;
@@ -126,7 +144,11 @@ struct InterInstr
 		uint64_t args[4];
 	};
 
-	UnknownArgs unknownArgs;
+	union {
+		UnknownArgs          unknownArgs;
+		SetImmArgs<uint64_t> setImm64Args;
+		MoveRegArgs          moveRegArgs;
+	};
 
 	InterInstr()
 	  : op( UNKNOWN_OPCODE )
@@ -153,8 +175,8 @@ struct InterInstr
 
 	void BuildSetSystemImm( uint64_t value, int sysReg ) {
 		op = SET_SYS_IMM;
-		args[0] = value;
-		args[1] = sysReg;
+		setImm64Args.reg.Set<OpType::IMM>( sysReg );
+		setImm64Args.imm.Set<OpType::IMM>( value );
 	}
 
 	void BuildSetSystemReg( int sourceReg, int sysReg ) {
