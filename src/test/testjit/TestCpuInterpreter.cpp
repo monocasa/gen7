@@ -487,6 +487,17 @@ TEST(CpuInterpreter, Load32Imm)
 	EXPECT_EQ( 0xFFFF000000000000, testCpu.gprs[1] );
 }
 
+TEST(CpuInterpreter, Load64Imm)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	instr.BuildLoad64Imm( testCpu.Gpr64Offset(1), 0xFFFFFFFF00000000UL );
+
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
+}
+
 TEST(CpuInterpreter, Load32)
 {
 	TestCpuInterpreter testCpu;
@@ -563,17 +574,6 @@ TEST(CpuInterpreter, Load32Linked)
 	EXPECT_EQ( TestCpuInterpreter::Access::Type::READ32, testCpu.accesses[0].type );
 	EXPECT_EQ( 0x0000000000000100UL, testCpu.accesses[0].addr );
 	EXPECT_EQ( 0x0000000055555555UL, testCpu.accesses[0].value );
-}
-
-TEST(CpuInterpreter, Load64Imm)
-{
-	TestCpuInterpreter testCpu;
-	InterInstr instr;
-
-	instr.BuildLoad64Imm( testCpu.Gpr64Offset(1), 0xFFFFFFFF00000000UL );
-
-	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );
 }
 
 TEST(CpuInterpreter, Store64)
