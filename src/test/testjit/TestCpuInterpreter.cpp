@@ -166,6 +166,19 @@ public:
 	}
 };
 
+TEST(CpuInterpreter, ReadRegGPR8)
+{
+ 	TestCpuInterpreter testCpu;
+	Operand<int> sourceReg;
+	uint64_t value;
+
+	testCpu.gprs[1] = 0xFFFFFFFFFFFFFFFFUL;
+	sourceReg.Set<OpType::GPR8>( testCpu.Gpr64Offset(1) );
+	EXPECT_TRUE( testCpu.ReadReg(sourceReg, value) );
+	EXPECT_EQ( 0x00000000000000FFUL, value );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[1] );
+}
+
 TEST(CpuInterpreter, ReadRegGPR32)
 {
  	TestCpuInterpreter testCpu;

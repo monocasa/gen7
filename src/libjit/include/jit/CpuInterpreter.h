@@ -53,6 +53,11 @@ public:
 				return ReadSystemReg( reg, value );
 			}
 
+			case OpType::GPR8: {
+				value = (uint8_t)ReadGPR32( reg );
+				return true;
+			}
+
 			case OpType::GPR32: {
 				value = ReadGPR32( reg );
 				return true;

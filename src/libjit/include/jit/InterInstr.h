@@ -81,6 +81,7 @@ enum InstrOp
 enum class OpType {
 	UNDEFINED,
 	IMM,
+	GPR8,
 	GPR32,
 	GPR64,
 	SYS32,
