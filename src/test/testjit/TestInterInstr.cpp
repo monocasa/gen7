@@ -226,7 +226,7 @@ TEST(InterInstr, Load32RegOffset)
 	EXPECT_EQ( OpType::GPR32,          instr.ldStIdx.valueReg.type );
 	EXPECT_EQ( 2,                      *instr.ldStIdx.addrReg );
 	EXPECT_EQ( OpType::GPR64,          instr.ldStIdx.addrReg.type );
-	EXPECT_EQ( -1,                      *instr.ldStIdx.offset );
+	EXPECT_EQ( -1,                     *instr.ldStIdx.offset );
 	EXPECT_EQ( OpType::IMM,            instr.ldStIdx.offset.type );
 }
 
@@ -241,7 +241,7 @@ TEST(InterInstr, Load64RegOffset)
 	EXPECT_EQ( OpType::GPR64,          instr.ldStIdx.valueReg.type );
 	EXPECT_EQ( 2,                      *instr.ldStIdx.addrReg );
 	EXPECT_EQ( OpType::GPR64,          instr.ldStIdx.addrReg.type );
-	EXPECT_EQ( -1,                      *instr.ldStIdx.offset );
+	EXPECT_EQ( -1,                     *instr.ldStIdx.offset );
 	EXPECT_EQ( OpType::IMM,            instr.ldStIdx.offset.type );
 }
 
@@ -252,8 +252,10 @@ TEST(InterInstr, Load32Linked)
 	instr.BuildLoad32Linked( 1, 2 );
 
 	EXPECT_EQ( InstrOp::LD_32_L, instr.op );
-	EXPECT_EQ( 1, instr.args[0] );
-	EXPECT_EQ( 2, instr.args[1] );
+	EXPECT_EQ( 1,                *instr.twoReg.dest );
+	EXPECT_EQ( OpType::GPR32,    instr.twoReg.dest.type );
+	EXPECT_EQ( 2,                *instr.twoReg.source );
+	EXPECT_EQ( OpType::GPR64,    instr.twoReg.source.type );
 }
 
 TEST(InterInstr, Load32IndexedLinked)

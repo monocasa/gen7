@@ -282,10 +282,10 @@ struct InterInstr
 		ldStIdx.offset.Set<OpType::IMM>( offset );
 	}
 
-	void BuildLoad32Linked( int sourceReg, int destReg ) {
+	void BuildLoad32Linked( int destReg, int sourceReg ) {
 		op = LD_32_L;
-		args[0] = sourceReg;
-		args[1] = destReg;
+		twoReg.dest.Set<OpType::GPR32>( destReg );
+		twoReg.source.Set<OpType::GPR64>( sourceReg );
 	}
 
 	void BuildLoad32IndexedLinked( int sourceReg, int offsetReg, int destReg ) {

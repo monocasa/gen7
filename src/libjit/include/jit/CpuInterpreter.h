@@ -235,7 +235,7 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 		case LD_32_REG_OFF: {
 			uint64_t base;
 
-			if( !ReadReg( instr.ldStIdx.addrReg, base ) ) {
+			if( !ReadReg(instr.ldStIdx.addrReg, base) ) {
 				return false;
 			}
 
@@ -247,7 +247,7 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 		case LD_64_REG_OFF: {
 			uint64_t base;
 
-			if( !ReadReg( instr.ldStIdx.addrReg, base ) ) {
+			if( !ReadReg(instr.ldStIdx.addrReg, base) ) {
 				return false;
 			}
 
@@ -257,18 +257,18 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 		}
 
 		case LD_32_L: {
-			const int sourceReg = instr.args[0];
-			const int destReg = instr.args[1];
+			uint64_t addr;
 
-			const uint64_t addr = ReadGPR64( sourceReg );
+			if( !ReadReg(instr.twoReg.source, addr) ) {
+				return false;
+			}
 
 			reservation = addr;
 			isReserved = true;
 
 			const uint32_t value = ReadMem32( addr );
 
-			SetGPR32( destReg, value );
-			return true;
+			return SetReg( instr.twoReg.dest, value );
 		}
 
 		case LD_32_IDX_L: {

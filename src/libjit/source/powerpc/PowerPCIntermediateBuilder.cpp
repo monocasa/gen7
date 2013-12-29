@@ -128,8 +128,8 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 			const int rb = X_RB(nativeInstr);
 
 			if( 0 == ra ) {
-				intermediates[0].BuildLoad32Linked( GPR64OFFSET(rb),
-				                                    GPR32LOWOFFSET(rt) );
+				intermediates[0].BuildLoad32Linked( GPR32LOWOFFSET(rt),
+				                                    GPR64OFFSET(rb) );
 			}
 			else {
 				intermediates[0].BuildLoad32IndexedLinked( GPR64OFFSET(rb),
