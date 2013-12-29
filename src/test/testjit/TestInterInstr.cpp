@@ -77,9 +77,11 @@ TEST(InterInstr, ReadSystem)
 
 	instr.BuildReadSystem( 31, 512 );
 
-	EXPECT_EQ( InstrOp::READ_SYS, instr.op );
-	EXPECT_EQ( 31, instr.args[0] );
-	EXPECT_EQ( 512, instr.args[1] );
+	EXPECT_EQ( InstrOp::MOVE_REG, instr.op );
+	EXPECT_EQ( 31,                *instr.twoReg.dest );
+	EXPECT_EQ( OpType::GPR64,     instr.twoReg.dest.type );
+	EXPECT_EQ( 512,               *instr.twoReg.source );
+	EXPECT_EQ( OpType::SYS64,     instr.twoReg.source.type );
 }
 
 TEST(InterInstr, MoveReg32)

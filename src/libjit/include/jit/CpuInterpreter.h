@@ -155,18 +155,6 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return SetSystemReg( *instr.imm64.dest, *instr.imm64.source );
 		}
 
-		case READ_SYS: {
-			const int destReg = instr.args[0];
-			const int sysReg = instr.args[1];
-
-			uint64_t result = 0;
-			if( !ReadSystemReg( sysReg, result ) ) {
-				return false;
-			}
-			SetGPR64( destReg, result );
-			return true;
-		}
-
 		case MOVE_REG32: {
 			const int sourceReg = instr.args[0];
 			const int destReg = instr.args[1];
