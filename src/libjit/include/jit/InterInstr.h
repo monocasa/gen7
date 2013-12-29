@@ -13,7 +13,6 @@ enum InstrOp
 	NOP,
 	MOVE_REG,
 	SET_SYS_IMM,
-	MOVE_REG32,
 	MOVE_REG64,
 
 	//Branch
@@ -201,10 +200,10 @@ struct InterInstr
 		twoReg.source.Set<OpType::SYS64>( sourceSys );
 	}
 
-	void BuildMoveReg32( int sourceReg, int destReg ) {
-		op = MOVE_REG32;
-		args[0] = sourceReg;
-		args[1] = destReg;
+	void BuildMoveReg32( int destGpr, int sourceGpr ) {
+		op = MOVE_REG;
+		twoReg.dest.Set<OpType::GPR32>( destGpr );
+		twoReg.source.Set<OpType::GPR32>( sourceGpr );
 	}
 
 	void BuildMoveReg64( int sourceReg, int destReg ) {

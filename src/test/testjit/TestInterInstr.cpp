@@ -90,9 +90,11 @@ TEST(InterInstr, MoveReg32)
 
 	instr.BuildMoveReg32( 20, 30 );
 
-	EXPECT_EQ( InstrOp::MOVE_REG32, instr.op );
-	EXPECT_EQ( 20, instr.args[0] );
-	EXPECT_EQ( 30, instr.args[1] );
+	EXPECT_EQ( InstrOp::MOVE_REG, instr.op );
+	EXPECT_EQ( 20,                *instr.twoReg.dest );
+	EXPECT_EQ( OpType::GPR32,     instr.twoReg.dest.type );
+	EXPECT_EQ( 30,                *instr.twoReg.source );
+	EXPECT_EQ( OpType::GPR32,     instr.twoReg.source.type );
 }
 
 TEST(InterInstr, MoveReg64)

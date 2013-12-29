@@ -167,7 +167,7 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 				return 1;
 			}
 
-			intermediates[0].BuildMoveReg32( GPR32LOWOFFSET(GPR_CR), GPR32LOWOFFSET(rt) );
+			intermediates[0].BuildMoveReg32( GPR32LOWOFFSET(rt), GPR32LOWOFFSET(GPR_CR) );
 			intermediates[1].BuildLoad32Imm( GPR32HIGHOFFSET(rt), 0 );
 
 			return 2;
@@ -226,7 +226,7 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 
 			const int rs = XFX_RS(nativeInstr);
 
-			intermediates[0].BuildMoveReg32( GPR32LOWOFFSET(rs), GPR32LOWOFFSET(GPR_CR) );
+			intermediates[0].BuildMoveReg32( GPR32LOWOFFSET(GPR_CR), GPR32LOWOFFSET(rs) );
 			return 1;
 		}
 

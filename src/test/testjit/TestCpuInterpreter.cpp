@@ -353,12 +353,13 @@ TEST(CpuInterpreter, MoveReg32)
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
 
-	testCpu.gprs[1] = 0xFFFFFFFF55555555UL;
-	instr.BuildMoveReg32( testCpu.Gpr32OffsetLow(1), testCpu.Gpr64Offset(2) );
+	testCpu.gprs[1] = 0xBBBBBBBB55555555UL;
+	testCpu.gprs[2] = 0xAAAAAAAA00000000UL;
+	instr.BuildMoveReg32( testCpu.Gpr32OffsetLow(2), testCpu.Gpr32OffsetLow(1) );
 
 	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
-	EXPECT_EQ( 0xFFFFFFFF55555555UL, testCpu.gprs[1] );
-	EXPECT_EQ( 0x0000000055555555UL, testCpu.gprs[2] );
+	EXPECT_EQ( 0xBBBBBBBB55555555UL, testCpu.gprs[1] );
+	EXPECT_EQ( 0xAAAAAAAA55555555UL, testCpu.gprs[2] );
 }
 
 TEST(CpuInterpreter, MoveReg64)
