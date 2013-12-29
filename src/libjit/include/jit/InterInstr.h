@@ -28,7 +28,6 @@ enum InstrOp
 	LD_32_REG_OFF,
 	LD_64_REG_OFF,
 	LD_32_L,
-	LD_32_IDX_L,
 	ST_32,
 	ST_64,
 	ST_8_REG,
@@ -286,13 +285,6 @@ struct InterInstr
 		op = LD_32_L;
 		twoReg.dest.Set<OpType::GPR32>( destReg );
 		twoReg.source.Set<OpType::GPR64>( sourceReg );
-	}
-
-	void BuildLoad32IndexedLinked( int sourceReg, int offsetReg, int destReg ) {
-		op = LD_32_IDX_L;
-		args[0] = sourceReg;
-		args[1] = offsetReg;
-		args[2] = destReg;
 	}
 
 	void BuildStore32( int sourceReg, uint64_t addr ) {

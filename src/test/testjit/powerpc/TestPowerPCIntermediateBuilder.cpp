@@ -461,18 +461,24 @@ TEST(PowerPCIntermediateBuilder, Lwarx)
 	EXPECT_EQ( OpType::IMM,                               instr[1].imm32.source.type );
 
 	// 00000000 : 7cc51828 : lwarx    r6, r5, r3
-	EXPECT_EQ( 2, builder.BuildIntermediate( instr, 0x7cc51828, 0x00000000 ) );
+	EXPECT_EQ( 3, builder.BuildIntermediate( instr, 0x7cc51828, 0x00000000 ) );
 
-	EXPECT_EQ( InstrOp::LD_32_IDX_L, instr[0].op );
-	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[0] );
-	EXPECT_EQ( 5 * sizeof(uint64_t), instr[0].args[1] );
-	EXPECT_EQ( 6 * sizeof(uint64_t), instr[0].args[2] );
+	EXPECT_EQ( InstrOp::ADD,          instr[0].op );
+	EXPECT_EQ( 5  * sizeof(uint64_t), instr[0].args[0] );
+	EXPECT_EQ( 3  * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( 40 * sizeof(uint64_t), instr[0].args[2] );
 
-	EXPECT_EQ( InstrOp::LD_32_IMM,                        instr[1].op );
-	EXPECT_EQ( (6 * sizeof(uint64_t)) + sizeof(uint32_t), *instr[1].imm32.dest );
-	EXPECT_EQ( OpType::GPR32,                             instr[1].imm32.dest.type );
-	EXPECT_EQ( 0,                                         *instr[1].imm32.source );
-	EXPECT_EQ( OpType::IMM,                               instr[1].imm32.source.type );
+	EXPECT_EQ( InstrOp::LD_32_L,      instr[1].op );
+	EXPECT_EQ( 6  * sizeof(uint64_t), *instr[1].twoReg.dest );
+	EXPECT_EQ( OpType::GPR32,         instr[1].twoReg.dest.type );
+	EXPECT_EQ( 40 * sizeof(uint64_t), *instr[1].twoReg.source );
+	EXPECT_EQ( OpType::GPR64,         instr[1].twoReg.source.type );
+
+	EXPECT_EQ( InstrOp::LD_32_IMM,                        instr[2].op );
+	EXPECT_EQ( (6 * sizeof(uint64_t)) + sizeof(uint32_t), *instr[2].imm32.dest );
+	EXPECT_EQ( OpType::GPR32,                             instr[2].imm32.dest.type );
+	EXPECT_EQ( 0,                                         *instr[2].imm32.source );
+	EXPECT_EQ( OpType::IMM,                               instr[2].imm32.source.type );
 }
 
 TEST(PowerPCIntermedaiteBuilder, Lwbrx)

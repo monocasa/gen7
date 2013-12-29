@@ -258,18 +258,6 @@ TEST(InterInstr, Load32Linked)
 	EXPECT_EQ( OpType::GPR64,    instr.twoReg.source.type );
 }
 
-TEST(InterInstr, Load32IndexedLinked)
-{
-	InterInstr instr;
-
-	instr.BuildLoad32IndexedLinked( 1, 2, 3 );
-
-	EXPECT_EQ( InstrOp::LD_32_IDX_L, instr.op );
-	EXPECT_EQ( 1, instr.args[0] );
-	EXPECT_EQ( 2, instr.args[1] );
-	EXPECT_EQ( 3, instr.args[2] );
-}
-
 TEST(InterInstr, Store32)
 {
 	InterInstr instr;

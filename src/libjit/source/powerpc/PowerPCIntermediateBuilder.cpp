@@ -127,19 +127,23 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 			const int ra = X_RA(nativeInstr);
 			const int rb = X_RB(nativeInstr);
 
+			int instrCount = 0;
+
 			if( 0 == ra ) {
-				intermediates[0].BuildLoad32Linked( GPR32LOWOFFSET(rt),
-				                                    GPR64OFFSET(rb) );
+				intermediates[instrCount++].BuildLoad32Linked( GPR32LOWOFFSET(rt),
+				                                               GPR64OFFSET(rb) );
 			}
 			else {
-				intermediates[0].BuildLoad32IndexedLinked( GPR64OFFSET(rb),
-				                                           GPR64OFFSET(ra),
-				                                           GPR32LOWOFFSET(rt) );
+				intermediates[instrCount++].BuildAdd( GPR64OFFSET(ra),
+				                                      GPR64OFFSET(rb),
+				                                      GPR64OFFSET(GPR_TEMP) );
+				intermediates[instrCount++].BuildLoad32Linked( GPR32LOWOFFSET(rt),
+				                                               GPR64OFFSET(GPR_TEMP) );
 			}
 
-			intermediates[1].BuildLoad32Imm( GPR32HIGHOFFSET(rt), 0 );
+			intermediates[instrCount++].BuildLoad32Imm( GPR32HIGHOFFSET(rt), 0 );
 
-			return 2;
+			return instrCount;
 		}
 
 		case SPECIAL_XO_LWBRX: {

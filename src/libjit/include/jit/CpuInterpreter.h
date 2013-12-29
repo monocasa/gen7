@@ -271,22 +271,6 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return SetReg( instr.twoReg.dest, value );
 		}
 
-		case LD_32_IDX_L: {
-			const int sourceReg = instr.args[0];
-			const int offsetReg = instr.args[1];
-			const int destReg = instr.args[2];
-
-			const uint64_t addr = ReadGPR64( sourceReg ) + ReadGPR64( offsetReg );
-
-			reservation = addr;
-			isReserved = true;
-
-			const uint32_t value = ReadMem32( addr );
-
-			SetGPR32( destReg, value );
-			return true;
-		}
-
 		case ST_64: {
 			int sourceReg = instr.args[0];
 			uint64_t addr = instr.args[1];
