@@ -24,7 +24,7 @@ enum InstrOp
 	//Load/Store
 	LD_32_IMM = 200,
 	LD_64_IMM,
-	LD_32,
+	LD_32_ABS,
 	LD_32_REG_OFF,
 	LD_64_REG_OFF,
 	LD_32_L,
@@ -255,10 +255,10 @@ struct InterInstr
 		imm64.source.Set<OpType::IMM>( value );
 	}
 
-	void BuildLoad32( int destReg, uint64_t addr ) {
-		op = LD_32;
-		args[0] = destReg;
-		args[1] = addr;
+	void BuildLoad32Abs( int destReg, uint64_t addr ) {
+		op = LD_32_ABS;
+		imm64.dest.Set<OpType::GPR32>( destReg );
+		imm64.source.Set<OpType::IMM>( addr );
 	}
 
 	void BuildLoad32RegOffset( int destReg, int addrReg, int64_t offset ) {

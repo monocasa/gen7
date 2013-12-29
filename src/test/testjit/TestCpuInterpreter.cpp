@@ -495,7 +495,7 @@ TEST(CpuInterpreter, Load32)
 	testCpu.gprs[1] = 0xFFFFFFFF00000000UL;
 	testCpu.data32[ 0x100 ] = 0x55555555;
 
-	instr.BuildLoad32( testCpu.Gpr32OffsetLow(1), 0x0000000000000100UL );
+	instr.BuildLoad32Abs( testCpu.Gpr32OffsetLow(1), 0x0000000000000100UL );
 	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
 	EXPECT_EQ( 0xFFFFFFFF55555555UL, testCpu.gprs[1] );
 

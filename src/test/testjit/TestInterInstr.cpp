@@ -202,15 +202,17 @@ TEST(InterInstr, Load64Imm)
 	EXPECT_EQ( OpType::IMM,          instr.imm64.source.type );
 }
 
-TEST(InterInstr, Load32)
+TEST(InterInstr, Load32Abs)
 {
 	InterInstr instr;
 
-	instr.BuildLoad32( 1, 0xFFFFFFFF00000000UL );
+	instr.BuildLoad32Abs( 1, 0xFFFFFFFF00000000UL );
 
-	EXPECT_EQ( InstrOp::LD_32, instr.op );
-	EXPECT_EQ( 1, instr.args[0] );
-	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
+	EXPECT_EQ( InstrOp::LD_32_ABS,   instr.op );
+	EXPECT_EQ( 1,                    *instr.imm64.dest );
+	EXPECT_EQ( OpType::GPR32,        instr.imm64.dest.type );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, *instr.imm64.source );
+	EXPECT_EQ( OpType::IMM,          instr.imm64.source.type );
 }
 
 TEST(InterInstr, Load32RegOffset)

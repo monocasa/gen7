@@ -519,7 +519,7 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 			int64_t offset = D_D(nativeInstr);
 
 			if( 0 == ra ) {
-				intermediates[0].BuildLoad32( GPR32LOWOFFSET(rt), offset );
+				intermediates[0].BuildLoad32Abs( GPR32LOWOFFSET(rt), offset );
 			}
 			else {
 				intermediates[0].BuildLoad32RegOffset( GPR32LOWOFFSET(rt), GPR64OFFSET(ra), offset );
