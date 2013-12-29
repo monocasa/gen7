@@ -295,8 +295,8 @@ struct InterInstr
 
 	void BuildStore64( int sourceReg, uint64_t addr ) {
 		op = ST_64;
-		args[0] = sourceReg;
-		args[1] = addr;
+		imm64.dest.Set<OpType::GPR64>( sourceReg );
+		imm64.source.Set<OpType::IMM>( addr );
 	}
 
 	void BuildStore8Reg( int sourceReg, int addrReg ) {

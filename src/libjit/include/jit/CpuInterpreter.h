@@ -272,12 +272,13 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 		}
 
 		case ST_64: {
-			int sourceReg = instr.args[0];
-			uint64_t addr = instr.args[1];
+			uint64_t value;
 
-			const uint64_t value = ReadGPR64( sourceReg );
+			if( !ReadReg(instr.imm64.dest, value) ) {
+				return false;
+			}
 
-			WriteMem64( addr, value );
+			WriteMem64( *instr.imm64.source, value );
 
 			return true;
 		}
