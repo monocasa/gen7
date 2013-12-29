@@ -151,10 +151,6 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return SetReg( instr.twoReg.dest, value );
 		}
 
-		case SET_SYS_IMM: {
-			return SetSystemReg( *instr.imm64.dest, *instr.imm64.source );
-		}
-
 	//Branch
 		case BRANCH_ALWAYS: {
 			const uint64_t target = instr.args[0];

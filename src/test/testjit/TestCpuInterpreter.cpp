@@ -298,14 +298,14 @@ TEST(CpuInterpreter, SetSystemImm)
 	TestCpuInterpreter testCpu;
 	InterInstr instr;
 
-	instr.BuildSetSystemImm( 0xFFFFFFFF00000000UL, 512 );
+	instr.BuildSetSystemImm( 512, 0xFFFFFFFF00000000UL );
 
 	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.sysRegs[512] );
 
 	//Test invalid system reg
 	testCpu.Reset();
-	instr.BuildSetSystemImm( 0xFFFFFFFF00000000UL, TestCpuInterpreter::NUM_SYS_REGS );
+	instr.BuildSetSystemImm( TestCpuInterpreter::NUM_SYS_REGS, 0xFFFFFFFF00000000UL );
 
 	EXPECT_FALSE( testCpu.InterpretIntermediate( instr ) );
 }

@@ -49,9 +49,9 @@ TEST(InterInstr, SetSystemImm)
 {
 	InterInstr instr;
 
-	instr.BuildSetSystemImm( 0xFFFFFFFF00000000UL, 512 );
+	instr.BuildSetSystemImm( 512, 0xFFFFFFFF00000000UL );
 
-	EXPECT_EQ( InstrOp::SET_SYS_IMM, instr.op );
+	EXPECT_EQ( InstrOp::LD_64_IMM,   instr.op );
 	EXPECT_EQ( 512,                  *instr.imm64.dest );
 	EXPECT_EQ( OpType::SYS64,        instr.imm64.dest.type );
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, *instr.imm64.source );

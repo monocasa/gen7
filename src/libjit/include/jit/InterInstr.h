@@ -12,7 +12,6 @@ enum InstrOp
 	INVALID_OPCODE,
 	NOP,
 	MOVE_REG,
-	SET_SYS_IMM,
 
 	//Branch
 	BRANCH_ALWAYS = 100,
@@ -176,8 +175,8 @@ struct InterInstr
 		op = NOP;
 	}
 
-	void BuildSetSystemImm( uint64_t value, int sysReg ) {
-		op = SET_SYS_IMM;
+	void BuildSetSystemImm( int sysReg, uint64_t value ) {
+		op = LD_64_IMM;
 		imm64.dest.Set<OpType::SYS64>( sysReg );
 		imm64.source.Set<OpType::IMM>( value );
 	}
