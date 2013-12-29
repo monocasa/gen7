@@ -31,7 +31,6 @@ enum InstrOp
 	ST_ABS,
 	ST_REG_OFF,
 	ST_8_REG,
-	ST_64_REG_OFF,
 
 	//Arithmetic
 	ADD = 300,
@@ -318,11 +317,11 @@ struct InterInstr
 		ldStIdx.offset.Set<OpType::IMM>( offset );
 	}
 
-	void BuildStore64RegOffset( int sourceReg, int addrReg, int64_t offset ) {
-		op = ST_64_REG_OFF;
-		args[0] = sourceReg;
-		args[1] = addrReg;
-		args[2] = offset;
+	void BuildStore64RegOffset( int valueReg, int addrReg, int64_t offset ) {
+		op = ST_REG_OFF;
+		ldStIdx.valueReg.Set<OpType::GPR64>( valueReg );
+		ldStIdx.addrReg.Set<OpType::GPR64>( addrReg );
+		ldStIdx.offset.Set<OpType::IMM>( offset );
 	}
 
 //Arithmetic

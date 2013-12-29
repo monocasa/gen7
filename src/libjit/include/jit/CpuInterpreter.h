@@ -339,20 +339,6 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
-		case ST_64_REG_OFF: {
-			int sourceReg = instr.args[0];
-			int addrReg = instr.args[1];
-			int64_t offset = instr.args[2];
-
-			const uint64_t addr = ReadGPR64( addrReg ) + offset;
-
-			const uint64_t value = ReadGPR64( sourceReg );
-
-			WriteMem64( addr, value );
-
-			return true;
-		}
-
 	//Arithmetic
 		case ADD: {
 			const int sourceReg0 = instr.args[0];
