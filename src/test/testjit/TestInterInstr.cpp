@@ -264,9 +264,11 @@ TEST(InterInstr, Store32)
 
 	instr.BuildStore32( 1, 2 );
 
-	EXPECT_EQ( InstrOp::ST_32, instr.op );
-	EXPECT_EQ( 1, instr.args[0] );
-	EXPECT_EQ( 2, instr.args[1] );
+	EXPECT_EQ( InstrOp::ST_ABS, instr.op );
+	EXPECT_EQ( 1,               *instr.imm64.dest );
+	EXPECT_EQ( OpType::GPR32,   instr.imm64.dest.type );
+	EXPECT_EQ( 2,               *instr.imm64.source );
+	EXPECT_EQ( OpType::IMM,     instr.imm64.source.type );
 }
 
 TEST(InterInstr, Store64)

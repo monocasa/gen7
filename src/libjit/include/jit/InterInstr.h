@@ -28,7 +28,6 @@ enum InstrOp
 	LD_32_REG_OFF,
 	LD_64_REG_OFF,
 	LD_32_L,
-	ST_32,
 	ST_ABS,
 	ST_8_REG,
 	ST_32_REG,
@@ -288,9 +287,9 @@ struct InterInstr
 	}
 
 	void BuildStore32( int sourceReg, uint64_t addr ) {
-		op = ST_32;
-		args[0] = sourceReg;
-		args[1] = addr;
+		op = ST_ABS;
+		imm64.dest.Set<OpType::GPR32>( sourceReg );
+		imm64.source.Set<OpType::IMM>( addr );
 	}
 
 	void BuildStore64( int sourceReg, uint64_t addr ) {

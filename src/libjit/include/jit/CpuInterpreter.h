@@ -278,9 +278,23 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 				return false;
 			}
 
-			WriteMem64( *instr.imm64.source, value );
+			switch( instr.imm64.dest.type ) {
+				case OpType::GPR32: {
+					WriteMem32( *instr.imm64.source, value );
+					return true;
+				}
 
-			return true;
+				case OpType::GPR64: {
+					WriteMem64( *instr.imm64.source, value );
+					return true;
+				}
+
+				default: {
+					sprintf( errorString, "Unknown imm64.dest.type(%d) in instr ST_ABS",
+					         instr.imm64.dest.type );
+					return false;
+				}
+			}
 		}
 
 		case ST_8_REG: {

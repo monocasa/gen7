@@ -576,6 +576,24 @@ TEST(CpuInterpreter, Load32Linked)
 	EXPECT_EQ( 0x0000000055555555UL, testCpu.accesses[0].value );
 }
 
+TEST(CpuInterpreter, Store32)
+{
+	TestCpuInterpreter testCpu;
+	InterInstr instr;
+
+	testCpu.gprs[1] = 0x0123456789ABCDEFUL;
+
+	instr.BuildStore32( testCpu.Gpr32OffsetLow(1), 0x0000000000001100UL );
+
+	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
+	EXPECT_EQ( 0x0123456789ABCDEFUL, testCpu.gprs[1] );
+
+	ASSERT_EQ( 1, testCpu.accesses.size() );
+	EXPECT_EQ( TestCpuInterpreter::Access::Type::WRITE32, testCpu.accesses[0].type );
+	EXPECT_EQ( 0x0000000000001100UL, testCpu.accesses[0].addr );
+	EXPECT_EQ( 0x0000000089ABCDEFUL, testCpu.accesses[0].value );
+}
+
 TEST(CpuInterpreter, Store64)
 {
 	TestCpuInterpreter testCpu;
