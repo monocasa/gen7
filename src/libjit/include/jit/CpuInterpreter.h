@@ -271,7 +271,7 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return SetReg( instr.twoReg.dest, value );
 		}
 
-		case ST_64: {
+		case ST_ABS: {
 			uint64_t value;
 
 			if( !ReadReg(instr.imm64.dest, value) ) {

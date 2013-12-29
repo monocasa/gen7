@@ -275,11 +275,11 @@ TEST(InterInstr, Store64)
 
 	instr.BuildStore64( 1, 2 );
 
-	EXPECT_EQ( InstrOp::ST_64, instr.op );
-	EXPECT_EQ( 1,              *instr.imm64.dest );
-	EXPECT_EQ( OpType::GPR64,  instr.imm64.dest.type );
-	EXPECT_EQ( 2,              *instr.imm64.source );
-	EXPECT_EQ( OpType::IMM,    instr.imm64.source.type );
+	EXPECT_EQ( InstrOp::ST_ABS, instr.op );
+	EXPECT_EQ( 1,               *instr.imm64.dest );
+	EXPECT_EQ( OpType::GPR64,   instr.imm64.dest.type );
+	EXPECT_EQ( 2,               *instr.imm64.source );
+	EXPECT_EQ( OpType::IMM,     instr.imm64.source.type );
 }
 
 TEST(InterInstr, Store8Reg)
