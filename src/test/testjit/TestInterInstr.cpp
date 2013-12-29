@@ -183,10 +183,10 @@ TEST(InterInstr, Load32Imm)
 	instr.BuildLoad32Imm( 31, 0x0 );
 
 	EXPECT_EQ( InstrOp::LD_32_IMM, instr.op );
-	EXPECT_EQ( 31,                *instr.imm32.dest );
-	EXPECT_EQ( OpType::GPR32,     instr.imm32.dest.type );
-	EXPECT_EQ( 0,                 *instr.imm32.source );
-	EXPECT_EQ( OpType::IMM,       instr.imm32.source.type );
+	EXPECT_EQ( 31,                 *instr.imm32.dest );
+	EXPECT_EQ( OpType::GPR32,      instr.imm32.dest.type );
+	EXPECT_EQ( 0,                  *instr.imm32.source );
+	EXPECT_EQ( OpType::IMM,        instr.imm32.source.type );
 }
 
 TEST(InterInstr, Load64Imm)
@@ -195,9 +195,11 @@ TEST(InterInstr, Load64Imm)
 
 	instr.BuildLoad64Imm( 31, 0xFFFFFFFF00000000UL );
 
-	EXPECT_EQ( InstrOp::LD_64_IMM, instr.op );
-	EXPECT_EQ( 31, instr.args[0] );
-	EXPECT_EQ( 0xFFFFFFFF00000000UL, instr.args[1] );
+	EXPECT_EQ( InstrOp::LD_64_IMM,   instr.op );
+	EXPECT_EQ( 31,                   *instr.imm64.dest );
+	EXPECT_EQ( OpType::GPR64,        instr.imm64.dest.type );
+	EXPECT_EQ( 0xFFFFFFFF00000000UL, *instr.imm64.source );
+	EXPECT_EQ( OpType::IMM,          instr.imm64.source.type );
 }
 
 TEST(InterInstr, Load32)

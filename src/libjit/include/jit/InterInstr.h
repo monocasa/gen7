@@ -252,8 +252,8 @@ struct InterInstr
 
 	void BuildLoad64Imm( int destReg, uint64_t value ) {
 		op = LD_64_IMM;
-		args[0] = destReg;
-		args[1] = value;
+		imm64.dest.Set<OpType::GPR64>( destReg );
+		imm64.source.Set<OpType::IMM>( value );
 	}
 
 	void BuildLoad32( int destReg, uint64_t addr ) {

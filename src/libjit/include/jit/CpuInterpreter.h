@@ -227,11 +227,7 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 		}
 
 		case LD_64_IMM: {
-			const int gpr = instr.args[0];
-			const uint64_t imm = instr.args[1];
-
-			SetGPR64( gpr, imm );
-			return true;
+			return SetReg( instr.imm64.dest, *instr.imm64.source );
 		}
 
 		case LD_32: {
