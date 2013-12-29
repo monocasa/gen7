@@ -64,9 +64,11 @@ TEST(InterInstr, SetSystemReg)
 
 	instr.BuildSetSystemReg( 31, 512 );
 
-	EXPECT_EQ( InstrOp::SET_SYS_REG, instr.op );
-	EXPECT_EQ( 31, *instr.twoReg.dest );
-	EXPECT_EQ( 512, *instr.twoReg.source );
+	EXPECT_EQ( InstrOp::MOVE_REG, instr.op );
+	EXPECT_EQ( 31,                *instr.twoReg.dest );
+	EXPECT_EQ( OpType::SYS64,     instr.twoReg.dest.type );
+	EXPECT_EQ( 512,               *instr.twoReg.source );
+	EXPECT_EQ( OpType::GPR64,     instr.twoReg.source.type );
 }
 
 TEST(InterInstr, ReadSystem)

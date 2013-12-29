@@ -11,8 +11,8 @@ enum InstrOp
 	UNKNOWN_OPCODE = 0,
 	INVALID_OPCODE,
 	NOP,
+	MOVE_REG,
 	SET_SYS_IMM,
-	SET_SYS_REG,
 	READ_SYS,
 	MOVE_REG32,
 	MOVE_REG64,
@@ -191,7 +191,7 @@ struct InterInstr
 	}
 
 	void BuildSetSystemReg( int destSys, int sourceGpr ) {
-		op = SET_SYS_REG;
+		op = MOVE_REG;
 		twoReg.dest.Set<OpType::SYS64>( destSys );
 		twoReg.source.Set<OpType::GPR64>( sourceGpr );
 	}

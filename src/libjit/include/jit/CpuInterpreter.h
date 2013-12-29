@@ -141,12 +141,18 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return true;
 		}
 
-		case SET_SYS_IMM: {
-			return SetSystemReg( *instr.imm64.dest, *instr.imm64.source );
+		case MOVE_REG: {
+			uint64_t value;
+
+			if( !ReadReg(instr.twoReg.source, value) ) {
+				return false;
+			}
+
+			return SetReg( instr.twoReg.dest, value );
 		}
 
-		case SET_SYS_REG: {
-			return SetSystemReg( *instr.twoReg.dest, ReadGPR64(*instr.twoReg.source) );
+		case SET_SYS_IMM: {
+			return SetSystemReg( *instr.imm64.dest, *instr.imm64.source );
 		}
 
 		case READ_SYS: {
