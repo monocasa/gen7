@@ -297,20 +297,44 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			}
 		}
 
+		case ST_REG_OFF: {
+			uint64_t base;
+			uint64_t value;
+
+			if( !ReadReg(instr.ldStIdx.addrReg, base) ) {
+				return false;
+			}
+
+			if( !ReadReg(instr.ldStIdx.valueReg, value) ) {
+				return false;
+			}
+
+			const uint64_t addr = base + *instr.ldStIdx.offset;
+
+			switch( instr.ldStIdx.valueReg.type ) {
+				case OpType::GPR32: {
+					WriteMem32( addr, value );
+					return true;
+				}
+
+				case OpType::GPR64: {
+					WriteMem64( addr, value );
+					return true;
+				}
+
+				default: {
+					sprintf( errorString, "Unknown instr.ldStIdx.valueReg.type(%d) in instr ST_ABS",
+					         instr.ldStIdx.valueReg.type );
+					return false;
+				}
+			}
+		}
+
 		case ST_8_REG: {
 			int sourceReg = instr.args[0];
 			int addrReg = instr.args[1];
 
 			WriteMem8( ReadGPR64(addrReg), (uint8_t)ReadGPR32(sourceReg) );
-
-			return true;
-		}
-
-		case ST_32_REG: {
-			int sourceReg = instr.args[0];
-			int addrReg = instr.args[1];
-
-			WriteMem32( ReadGPR64(addrReg), ReadGPR32(sourceReg) );
 
 			return true;
 		}

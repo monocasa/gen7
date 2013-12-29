@@ -1025,16 +1025,14 @@ TEST(PowerPCIntermediateBuilder, Stw)
 	EXPECT_EQ( OpType::IMM,          instr[0].imm64.source.type );
 
 	// 00000000 : 90010014 : stw      r0,0x14(r1)
-	EXPECT_EQ( 2, builder.BuildIntermediate( instr, 0x90010014, 0x00000000 ) );
-
-	EXPECT_EQ( InstrOp::ADD_IMM, instr[0].op );
-	EXPECT_EQ( 1  * sizeof(uint64_t), instr[0].args[0] );
-	EXPECT_EQ( 40 * sizeof(uint64_t), instr[0].args[1] );
-	EXPECT_EQ( 0x14, instr[0].args[2] );
-
-	EXPECT_EQ( InstrOp::ST_32_REG, instr[1].op );
-	EXPECT_EQ( 0  * sizeof(uint64_t), instr[1].args[0] );
-	EXPECT_EQ( 40 * sizeof(uint64_t), instr[1].args[1] );
+	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x90010014, 0x00000000 ) );
+	EXPECT_EQ( InstrOp::ST_REG_OFF,  instr[0].op );
+	EXPECT_EQ( 0 * sizeof(uint64_t), *instr[0].ldStIdx.valueReg );
+	EXPECT_EQ( OpType::GPR32,        instr[0].ldStIdx.valueReg.type );
+	EXPECT_EQ( 1 * sizeof(uint64_t), *instr[0].ldStIdx.addrReg );
+	EXPECT_EQ( OpType::GPR64,        instr[0].ldStIdx.addrReg.type );
+	EXPECT_EQ( 0x14,                 *instr[0].ldStIdx.offset );
+	EXPECT_EQ( OpType::IMM,          instr[0].ldStIdx.offset.type );
 }
 
 TEST(PowerPCIntermediateBuilder, Stwcx)
@@ -1070,9 +1068,13 @@ TEST(PowerPCIntermediateBuilder, Stwu)
 	EXPECT_EQ( 40 * sizeof(uint64_t), instr[0].args[1] );
 	EXPECT_EQ( -0x10, instr[0].args[2] );
 
-	EXPECT_EQ( InstrOp::ST_32_REG, instr[1].op );
-	EXPECT_EQ( 1  * sizeof(uint64_t), instr[1].args[0] );
-	EXPECT_EQ( 40 * sizeof(uint64_t), instr[1].args[1] );
+	EXPECT_EQ( InstrOp::ST_REG_OFF,   instr[1].op );
+	EXPECT_EQ( 1  * sizeof(uint64_t), *instr[1].ldStIdx.valueReg );
+	EXPECT_EQ( OpType::GPR32,         instr[1].ldStIdx.valueReg.type );
+	EXPECT_EQ( 40 * sizeof(uint64_t), *instr[1].ldStIdx.addrReg );
+	EXPECT_EQ( OpType::GPR64,         instr[1].ldStIdx.addrReg.type );
+	EXPECT_EQ( 0,                     *instr[1].ldStIdx.offset );
+	EXPECT_EQ( OpType::IMM,           instr[1].ldStIdx.offset.type );
 
 	EXPECT_EQ( InstrOp::ADD_IMM, instr[2].op );
 	EXPECT_EQ( 31 * sizeof(uint64_t), instr[2].args[0] );
