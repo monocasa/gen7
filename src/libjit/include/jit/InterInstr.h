@@ -30,7 +30,6 @@ enum InstrOp
 	LD_32_L,
 	ST_ABS,
 	ST_REG_OFF,
-	ST_8_REG,
 
 	//Arithmetic
 	ADD = 300,
@@ -298,10 +297,11 @@ struct InterInstr
 		imm64.source.Set<OpType::IMM>( addr );
 	}
 
-	void BuildStore8Reg( int sourceReg, int addrReg ) {
-		op = ST_8_REG;
-		args[0] = sourceReg;
-		args[1] = addrReg;
+	void BuildStore8Reg( int valueReg, int addrReg ) {
+		op = ST_REG_OFF;
+		ldStIdx.valueReg.Set<OpType::GPR8>( valueReg );
+		ldStIdx.addrReg.Set<OpType::GPR64>( addrReg );
+		ldStIdx.offset.Set<OpType::IMM>( 0 );
 	}
 
 	void BuildStore32Reg( int valueReg, int addrReg ) {
@@ -309,6 +309,13 @@ struct InterInstr
 		ldStIdx.valueReg.Set<OpType::GPR32>( valueReg );
 		ldStIdx.addrReg.Set<OpType::GPR64>( addrReg );
 		ldStIdx.offset.Set<OpType::IMM>( 0 );
+	}
+
+	void BuildStore8RegOffset( int valueReg, int addrReg, int64_t offset ) {
+		op = ST_REG_OFF;
+		ldStIdx.valueReg.Set<OpType::GPR8>( valueReg );
+		ldStIdx.addrReg.Set<OpType::GPR64>( addrReg );
+		ldStIdx.offset.Set<OpType::IMM>( offset );
 	}
 
 	void BuildStore32RegOffset( int valueReg, int addrReg, int64_t offset ) {

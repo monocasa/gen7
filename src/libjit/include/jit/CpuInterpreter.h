@@ -317,6 +317,11 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			const uint64_t addr = base + *instr.ldStIdx.offset;
 
 			switch( instr.ldStIdx.valueReg.type ) {
+				case OpType::GPR8: {
+					WriteMem8( addr, value );
+					return true;
+				}
+
 				case OpType::GPR32: {
 					WriteMem32( addr, value );
 					return true;
@@ -333,15 +338,6 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 					return false;
 				}
 			}
-		}
-
-		case ST_8_REG: {
-			int sourceReg = instr.args[0];
-			int addrReg = instr.args[1];
-
-			WriteMem8( ReadGPR64(addrReg), (uint8_t)ReadGPR32(sourceReg) );
-
-			return true;
 		}
 
 	//Arithmetic
