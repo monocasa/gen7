@@ -166,6 +166,102 @@ public:
 	}
 };
 
+TEST(CpuInterpreter, ReadRegGPR32)
+{
+ 	TestCpuInterpreter testCpu;
+	Operand<int> sourceReg;
+	uint64_t value;
+
+	testCpu.gprs[1] = 0xFFFFFFFFFFFFFFFFUL;
+	sourceReg.Set<OpType::GPR32>( testCpu.Gpr64Offset(1) );
+	EXPECT_TRUE( testCpu.ReadReg(sourceReg, value) );
+	EXPECT_EQ( 0x00000000FFFFFFFFUL, value );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[1] );
+}
+
+TEST(CpuInterpreter, ReadRegGPR64)
+{
+	TestCpuInterpreter testCpu;
+	Operand<int> sourceReg;
+	uint64_t value;
+
+	testCpu.gprs[1] = 0xFFFFFFFFFFFFFFFFUL;
+	sourceReg.Set<OpType::GPR64>( testCpu.Gpr64Offset(1) );
+	EXPECT_TRUE( testCpu.ReadReg(sourceReg, value) );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, value );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[1] );
+}
+
+TEST(CpuInterpreter, ReadRegSYS32)
+{
+ 	TestCpuInterpreter testCpu;
+	Operand<int> sourceReg;
+	uint64_t value;
+
+	testCpu.sysRegs[1] = 0xFFFFFFFFFFFFFFFFUL;
+	sourceReg.Set<OpType::SYS32>( 1 );
+	EXPECT_FALSE( testCpu.ReadReg(sourceReg, value) );
+}
+
+TEST(CpuInterpreter, ReadRegSYS64)
+{
+ 	TestCpuInterpreter testCpu;
+	Operand<int> sourceReg;
+	uint64_t value;
+
+	testCpu.sysRegs[1] = 0xFFFFFFFFFFFFFFFFUL;
+	sourceReg.Set<OpType::SYS64>( 1 );
+	EXPECT_TRUE( testCpu.ReadReg(sourceReg, value) );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, value );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.sysRegs[1] );
+
+	sourceReg.Set<OpType::SYS64>( TestCpuInterpreter::NUM_SYS_REGS );
+	EXPECT_FALSE( testCpu.ReadReg(sourceReg, value) );
+}
+
+TEST(CpuInterpreter, SetRegGPR32)
+{
+	TestCpuInterpreter testCpu;
+	Operand<int> destReg;
+	const uint64_t value = 0xFFFFFFFFFFFFFFFFUL;
+
+	destReg.Set<OpType::GPR32>( testCpu.Gpr64Offset(1) );
+	EXPECT_TRUE( testCpu.SetReg(destReg, value) );
+	EXPECT_EQ( 0x00000000FFFFFFFFUL, testCpu.gprs[1] );
+}
+
+TEST(CpuInterpreter, SetRegGPR64)
+{
+	TestCpuInterpreter testCpu;
+	Operand<int> destReg;
+	const uint64_t value = 0xFFFFFFFFFFFFFFFFUL;
+
+	destReg.Set<OpType::GPR64>( testCpu.Gpr64Offset(1) );
+	EXPECT_TRUE( testCpu.SetReg(destReg, value) );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.gprs[1] );
+}
+
+TEST(CpuInterpreter, SetRegSYS32)
+{
+	TestCpuInterpreter testCpu;
+	Operand<int> destReg;
+	const uint64_t value = 0xFFFFFFFFFFFFFFFFUL;
+
+	destReg.Set<OpType::SYS32>( 1 );
+	EXPECT_FALSE( testCpu.SetReg(destReg, value) );
+}
+
+TEST(CpuInterpreter, SetRegSYS64)
+{
+	TestCpuInterpreter testCpu;
+	Operand<int> destReg;
+	const uint64_t value = 0xFFFFFFFFFFFFFFFFUL;
+
+	destReg.Set<OpType::SYS64>( 1 );
+	EXPECT_TRUE( testCpu.SetReg(destReg, value) );
+	EXPECT_EQ( 0xFFFFFFFFFFFFFFFFUL, testCpu.sysRegs[1] );
+}
+
 TEST(CpuInterpreter, Unknown)
 {
 	TestCpuInterpreter testCpu;

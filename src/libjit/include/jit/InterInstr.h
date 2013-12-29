@@ -111,7 +111,7 @@ public:
 		value = newValue;
 	}
 
-	T& operator*() {
+	const T& operator*() const {
 		return value;
 	}
 

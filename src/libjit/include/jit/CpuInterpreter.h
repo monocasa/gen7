@@ -45,6 +45,63 @@ protected:
 	uint64_t &reservation;
 
 public:
+	bool ReadReg( const Operand<int> &source, uint64_t &value ) {
+		int reg = *source;
+
+		switch( source.type ) {
+			case OpType::SYS64: {
+				return ReadSystemReg( reg, value );
+			}
+
+			case OpType::GPR32: {
+				value = ReadGPR32( reg );
+				return true;
+			}
+
+			case OpType::GPR64: {
+				value = ReadGPR64( reg );
+				return true;
+			}
+
+			default: {
+				sprintf( errorString, "Unknown opType %d in ReadReg( %d:%d, value )\n",
+				         source.type,
+				         source.type,
+				         *source );
+				return false;
+			}
+		}
+	}
+
+	bool SetReg( const Operand<int> &dest, uint64_t value ) {
+		int reg = *dest;
+
+		switch( dest.type ) {
+			case OpType::SYS64: {
+				return SetSystemReg( reg, value );
+			}
+
+			case OpType::GPR32: {
+				SetGPR32( reg, value );
+				return true;
+			}
+
+			case OpType::GPR64: {
+				SetGPR64( reg, value );
+				return true;
+			}
+
+			default: {
+				sprintf( errorString, "Unknown opType %d in SetSource( %d:%d, 0x%lx )\n",
+				         dest.type,
+				         dest.type,
+				         *dest,
+				         value );
+				return false;
+			}
+		}
+	}
+
 	virtual void SetPC( uint64_t newPc ) = 0;
 
 	virtual bool SetSystemReg( int sysReg, uint64_t value ) = 0;
