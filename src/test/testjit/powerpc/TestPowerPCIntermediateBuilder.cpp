@@ -432,9 +432,12 @@ TEST(PowerPCIntermediateBuilder, Ld)
 	// 00000000 : e8bf0028 : ld       r5, 0x28(r31)
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0xe8bf0028, 0x00000000 ) );
 	EXPECT_EQ( InstrOp::LD_64_REG_OFF, instr[0].op );
-	EXPECT_EQ( 5 * sizeof(uint64_t), instr[0].args[0] );
-	EXPECT_EQ( 31 * sizeof(uint64_t), instr[0].args[1] );
-	EXPECT_EQ( 0x28, instr[0].args[2] );
+	EXPECT_EQ( 5 * sizeof(uint64_t),   *instr[0].ldStIdx.valueReg );
+	EXPECT_EQ( OpType::GPR64,          instr[0].ldStIdx.valueReg.type );
+	EXPECT_EQ( 31 * sizeof(uint64_t),  *instr[0].ldStIdx.addrReg );
+	EXPECT_EQ( OpType::GPR64,          instr[0].ldStIdx.addrReg.type );
+	EXPECT_EQ( 0x28,                   *instr[0].ldStIdx.offset );
+	EXPECT_EQ( OpType::IMM,            instr[0].ldStIdx.offset.type );
 }
 
 TEST(PowerPCIntermediateBuilder, Lwarx)

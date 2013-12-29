@@ -277,9 +277,9 @@ struct InterInstr
 
 	void BuildLoad64RegOffset( int destReg, int addrReg, int64_t offset ) {
 		op = LD_64_REG_OFF;
-		args[0] = destReg;
-		args[1] = addrReg;
-		args[2] = offset;
+		ldStIdx.valueReg.Set<OpType::GPR64>( destReg );
+		ldStIdx.addrReg.Set<OpType::GPR64>( addrReg );
+		ldStIdx.offset.Set<OpType::IMM>( offset );
 	}
 
 	void BuildLoad32Linked( int sourceReg, int destReg ) {
