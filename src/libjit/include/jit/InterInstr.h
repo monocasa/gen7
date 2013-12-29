@@ -206,10 +206,10 @@ struct InterInstr
 		twoReg.source.Set<OpType::GPR32>( sourceGpr );
 	}
 
-	void BuildMoveReg64( int sourceReg, int destReg ) {
+	void BuildMoveReg64( int destReg, int sourceReg ) {
 		op = MOVE_REG64;
-		args[0] = sourceReg;
-		args[1] = destReg;
+		args[0] = destReg;
+		args[1] = sourceReg;
 	}
 
 //Branch

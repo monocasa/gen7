@@ -368,7 +368,7 @@ TEST(CpuInterpreter, MoveReg64)
 	InterInstr instr;
 
 	testCpu.gprs[1] = 0xFFFFFFFF00000000UL;
-	instr.BuildMoveReg64( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2) );
+	instr.BuildMoveReg64( testCpu.Gpr64Offset(2), testCpu.Gpr64Offset(1) );
 
 	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
 	EXPECT_EQ( 0xFFFFFFFF00000000UL, testCpu.gprs[1] );

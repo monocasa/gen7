@@ -186,27 +186,27 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 
 			switch( spr ) {
 				case SPR_LR: {
-					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_LR), destReg );
+					intermediates[0].BuildMoveReg64( destReg, GPR64OFFSET(GPR_LR) );
 					break;
 				}
 				case SPR_CTR: {
-					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_CTR), destReg );
+					intermediates[0].BuildMoveReg64( destReg, GPR64OFFSET(GPR_CTR) );
 					break;
 				}
 				case SPR_SPRG0: {
-					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_SPRG0), destReg );
+					intermediates[0].BuildMoveReg64( destReg, GPR64OFFSET(GPR_CTR) );
 					break;
 				}
 				case SPR_SPRG1: {
-					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_SPRG1), destReg );
+					intermediates[0].BuildMoveReg64( destReg, GPR64OFFSET(GPR_SPRG1) );
 					break;
 				}
 				case SPR_SPRG2: {
-					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_SPRG2), destReg );
+					intermediates[0].BuildMoveReg64( destReg, GPR64OFFSET(GPR_SPRG2) );
 					break;
 				}
 				case SPR_SPRG3: {
-					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_SPRG3), destReg );
+					intermediates[0].BuildMoveReg64( destReg, GPR64OFFSET(GPR_SPRG2) );
 					break;
 				}
 				default: {
@@ -236,27 +236,27 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 
 			switch( spr ) {
 				case SPR_LR: {
-					intermediates[0].BuildMoveReg64( sourceReg, GPR64OFFSET(GPR_LR) );
+					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_LR), sourceReg );
 					break;
 				}
 				case SPR_CTR: {
-					intermediates[0].BuildMoveReg64( sourceReg, GPR64OFFSET(GPR_CTR) );
+					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_CTR), sourceReg );
 					break;
 				}
 				case SPR_SPRG0: {
-					intermediates[0].BuildMoveReg64( sourceReg, GPR64OFFSET(GPR_SPRG0) );
+					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_SPRG0), sourceReg );
 					break;
 				}
 				case SPR_SPRG1: {
-					intermediates[0].BuildMoveReg64( sourceReg, GPR64OFFSET(GPR_SPRG1) );
+					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_SPRG1), sourceReg );
 					break;
 				}
 				case SPR_SPRG2: {
-					intermediates[0].BuildMoveReg64( sourceReg, GPR64OFFSET(GPR_SPRG2) );
+					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_SPRG2), sourceReg );
 					break;
 				}
 				case SPR_SPRG3: {
-					intermediates[0].BuildMoveReg64( sourceReg, GPR64OFFSET(GPR_SPRG3) );
+					intermediates[0].BuildMoveReg64( GPR64OFFSET(GPR_SPRG3), sourceReg );
 					break;
 				}
 				default: {
