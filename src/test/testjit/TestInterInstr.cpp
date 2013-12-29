@@ -222,9 +222,12 @@ TEST(InterInstr, Load32RegOffset)
 	instr.BuildLoad32RegOffset( 1, 2, -1 );
 
 	EXPECT_EQ( InstrOp::LD_32_REG_OFF, instr.op );
-	EXPECT_EQ( 1, instr.args[0] );
-	EXPECT_EQ( 2, instr.args[1] );
-	EXPECT_EQ( -1, instr.args[2] );
+	EXPECT_EQ( 1,                      *instr.ldStIdx.valueReg );
+	EXPECT_EQ( OpType::GPR32,          instr.ldStIdx.valueReg.type );
+	EXPECT_EQ( 2,                      *instr.ldStIdx.addrReg );
+	EXPECT_EQ( OpType::GPR64,          instr.ldStIdx.addrReg.type );
+	EXPECT_EQ( -1,                      *instr.ldStIdx.offset );
+	EXPECT_EQ( OpType::IMM,            instr.ldStIdx.offset.type );
 }
 
 TEST(InterInstr, Load64RegOffset)

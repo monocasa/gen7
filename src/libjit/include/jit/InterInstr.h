@@ -136,6 +136,12 @@ struct ThreeOpArgs {
 	Operand<U>   source2;
 };
 
+struct LoadStoreIndexedArgs {
+	Operand<int>     valueReg;
+	Operand<int>     addrReg;
+	Operand<int64_t> offset;
+};
+
 struct InterInstr
 {
 	uint32_t op;
@@ -150,6 +156,7 @@ struct InterInstr
 		TwoOpArgs<uint64_t>  imm64;
 		TwoOpArgs<int>       twoReg;
 		ThreeOpArgs<int,int> threeReg;
+		LoadStoreIndexedArgs ldStIdx;
 	};
 
 	InterInstr()
@@ -263,9 +270,9 @@ struct InterInstr
 
 	void BuildLoad32RegOffset( int destReg, int addrReg, int64_t offset ) {
 		op = LD_32_REG_OFF;
-		args[0] = destReg;
-		args[1] = addrReg;
-		args[2] = offset;
+		ldStIdx.valueReg.Set<OpType::GPR32>( destReg );
+		ldStIdx.addrReg.Set<OpType::GPR64>( addrReg );
+		ldStIdx.offset.Set<OpType::IMM>( offset );
 	}
 
 	void BuildLoad64RegOffset( int destReg, int addrReg, int64_t offset ) {
