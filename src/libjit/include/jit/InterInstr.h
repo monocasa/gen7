@@ -125,12 +125,6 @@ struct UnknownArgs {
 };
 
 template<typename T>
-struct ImmArgs {
-	Operand<int> reg;
-	Operand<T>   imm;
-};
-
-template<typename T>
 struct TwoOpArgs {
 	Operand<int> dest;
 	Operand<T>   source;
@@ -153,6 +147,7 @@ struct InterInstr
 
 	union {
 		UnknownArgs          unknown;
+		TwoOpArgs<uint32_t>  imm32;
 		TwoOpArgs<uint64_t>  imm64;
 		TwoOpArgs<int>       twoReg;
 		ThreeOpArgs<int,int> threeReg;
@@ -249,10 +244,10 @@ struct InterInstr
 	}
 
 //Load/Store
-	void BuildLoad32Imm( int destReg, uint64_t value ) {
+	void BuildLoad32Imm( int destReg, uint32_t value ) {
 		op = LD_32_IMM;
-		args[0] = destReg;
-		args[1] = value;
+		imm32.dest.Set<OpType::GPR32>( destReg );
+		imm32.source.Set<OpType::IMM>( value );
 	}
 
 	void BuildLoad64Imm( int destReg, uint64_t value ) {
