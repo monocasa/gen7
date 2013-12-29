@@ -365,10 +365,13 @@ TEST(InterInstr, Add)
 
 	instr.BuildAdd( 31, 1, 2 );
 
-	EXPECT_EQ( InstrOp::ADD, instr.op );
-	EXPECT_EQ( 31, instr.args[0] );
-	EXPECT_EQ( 1, instr.args[1] );
-	EXPECT_EQ( 2, instr.args[2] );
+	EXPECT_EQ( InstrOp::ADD,  instr.op );
+	EXPECT_EQ( 31,            *instr.threeReg.dest );
+	EXPECT_EQ( OpType::GPR64, instr.threeReg.dest.type );
+	EXPECT_EQ( 1,             *instr.threeReg.source1 );
+	EXPECT_EQ( OpType::GPR64, instr.threeReg.source1.type );
+	EXPECT_EQ( 2,             *instr.threeReg.source2 );
+	EXPECT_EQ( OpType::GPR64, instr.threeReg.source2.type );
 }
 
 TEST(InterInstr, AddImm)

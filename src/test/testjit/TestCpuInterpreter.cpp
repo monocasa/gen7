@@ -712,8 +712,9 @@ TEST(CpuInterpreter, Add)
 
 	testCpu.gprs[1] = 1;
 	testCpu.gprs[2] = 2;
-	instr.BuildAdd( testCpu.Gpr64Offset(1), testCpu.Gpr64Offset(2),
-	                testCpu.Gpr64Offset(3) );
+	instr.BuildAdd( testCpu.Gpr64Offset(3), 
+	                testCpu.Gpr64Offset(1),
+	                testCpu.Gpr64Offset(2) );
 	EXPECT_TRUE( testCpu.InterpretIntermediate( instr ) );
 	EXPECT_EQ( 1, testCpu.gprs[1] );
 	EXPECT_EQ( 2, testCpu.gprs[2] );

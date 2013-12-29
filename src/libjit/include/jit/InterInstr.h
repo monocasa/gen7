@@ -333,11 +333,11 @@ struct InterInstr
 	}
 
 //Arithmetic
-	void BuildAdd( int sourceReg0, int sourceReg1, int destReg ) {
+	void BuildAdd( int dest, int source1, int source2 ) {
 		op = ADD;
-		args[0] = sourceReg0;
-		args[1] = sourceReg1;
-		args[2] = destReg;
+		threeReg.dest.Set<OpType::GPR64>( dest );
+		threeReg.source1.Set<OpType::GPR64>( source1 );
+		threeReg.source2.Set<OpType::GPR64>( source2 );
 	}
 
 	void BuildAddImm( int sourceReg, int destReg, uint64_t imm ) {

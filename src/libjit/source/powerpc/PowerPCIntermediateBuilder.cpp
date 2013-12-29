@@ -68,7 +68,7 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 			const int ra = GPR64OFFSET( X_RA(nativeInstr) );
 			const int rb = GPR64OFFSET( X_RB(nativeInstr) );
 
-			intermediates[0].BuildAdd( ra, rb, rt );
+			intermediates[0].BuildAdd( rt, ra, rb );
 			return 1;
 		}
 
@@ -134,9 +134,9 @@ int PowerPCIntermediateBuilder::BuildIntermediateSpecial( InterInstr *intermedia
 				                                               GPR64OFFSET(rb) );
 			}
 			else {
-				intermediates[instrCount++].BuildAdd( GPR64OFFSET(ra),
-				                                      GPR64OFFSET(rb),
-				                                      GPR64OFFSET(GPR_TEMP) );
+				intermediates[instrCount++].BuildAdd( GPR64OFFSET(GPR_TEMP),
+				                                      GPR64OFFSET(ra),
+				                                      GPR64OFFSET(rb) );
 				intermediates[instrCount++].BuildLoad32Linked( GPR32LOWOFFSET(rt),
 				                                               GPR64OFFSET(GPR_TEMP) );
 			}

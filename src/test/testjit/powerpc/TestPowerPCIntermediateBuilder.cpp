@@ -24,18 +24,23 @@ TEST(PowerPCIntermediateBuilder, Add)
 
 	// 00000000 : 7ca53214 : add      r5, r5, r6
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7ca53214, 0 ) );
-	EXPECT_EQ( InstrOp::ADD, instr[0].op );
-	EXPECT_EQ( 5 * sizeof(uint64_t), instr[0].args[0] );
-	EXPECT_EQ( 6 * sizeof(uint64_t), instr[0].args[1] );
-	EXPECT_EQ( 5 * sizeof(uint64_t), instr[0].args[2] );
+	EXPECT_EQ( InstrOp::ADD,         instr[0].op );
+	EXPECT_EQ( 5 * sizeof(uint64_t), *instr[0].threeReg.dest );
+	EXPECT_EQ( OpType::GPR64,        instr[0].threeReg.dest.type );
+	EXPECT_EQ( 5 * sizeof(uint64_t), *instr[0].threeReg.source1 );
+	EXPECT_EQ( OpType::GPR64,        instr[0].threeReg.source1.type );
+	EXPECT_EQ( 6 * sizeof(uint64_t), *instr[0].threeReg.source2 );
+	EXPECT_EQ( OpType::GPR64,        instr[0].threeReg.source2.type );
 
 	// 00000000 : 7fc0f214 : add      r30, r0, r30
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7fc0f214, 0 ) );
-	EXPECT_EQ( InstrOp::ADD, instr[0].op );
-	EXPECT_EQ( 0  * sizeof(uint64_t), instr[0].args[0] );
-	EXPECT_EQ( 30 * sizeof(uint64_t), instr[0].args[1] );
-	EXPECT_EQ( 30 * sizeof(uint64_t), instr[0].args[2] );
-	
+	EXPECT_EQ( InstrOp::ADD,          instr[0].op );
+	EXPECT_EQ( 30 * sizeof(uint64_t), *instr[0].threeReg.dest );
+	EXPECT_EQ( OpType::GPR64,         instr[0].threeReg.dest.type );
+	EXPECT_EQ( 0 * sizeof(uint64_t),  *instr[0].threeReg.source1 );
+	EXPECT_EQ( OpType::GPR64,         instr[0].threeReg.source1.type );
+	EXPECT_EQ( 30 * sizeof(uint64_t), *instr[0].threeReg.source2 );
+	EXPECT_EQ( OpType::GPR64,         instr[0].threeReg.source2.type );
 
 	// 00000000 : 7ca53215 : add.     r5, r5, r6
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7ca53215, 0 ) );
@@ -464,9 +469,12 @@ TEST(PowerPCIntermediateBuilder, Lwarx)
 	EXPECT_EQ( 3, builder.BuildIntermediate( instr, 0x7cc51828, 0x00000000 ) );
 
 	EXPECT_EQ( InstrOp::ADD,          instr[0].op );
-	EXPECT_EQ( 5  * sizeof(uint64_t), instr[0].args[0] );
-	EXPECT_EQ( 3  * sizeof(uint64_t), instr[0].args[1] );
-	EXPECT_EQ( 40 * sizeof(uint64_t), instr[0].args[2] );
+	EXPECT_EQ( 40 * sizeof(uint64_t), *instr[0].threeReg.dest );
+	EXPECT_EQ( OpType::GPR64,         instr[0].threeReg.dest.type );
+	EXPECT_EQ( 5  * sizeof(uint64_t), *instr[0].threeReg.source1 );
+	EXPECT_EQ( OpType::GPR64,         instr[0].threeReg.source1.type );
+	EXPECT_EQ( 3  * sizeof(uint64_t), *instr[0].threeReg.source2 );
+	EXPECT_EQ( OpType::GPR64,         instr[0].threeReg.source2.type );
 
 	EXPECT_EQ( InstrOp::LD_32_L,      instr[1].op );
 	EXPECT_EQ( 6  * sizeof(uint64_t), *instr[1].twoReg.dest );

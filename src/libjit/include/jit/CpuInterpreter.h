@@ -342,18 +342,20 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 
 	//Arithmetic
 		case ADD: {
-			const int sourceReg0 = instr.args[0];
-			const int sourceReg1 = instr.args[1];
-			const int destReg = instr.args[2];
+			uint64_t sourceValue1;
+			uint64_t sourceValue2;
 
-			uint64_t sourceValue0 = ReadGPR64( sourceReg0 );
-			uint64_t sourceValue1 = ReadGPR64( sourceReg1 );
+			if( !ReadReg(instr.threeReg.source1, sourceValue1) ) {
+				return false;
+			}
 
-			uint64_t result = sourceValue0 + sourceValue1;
+			if( !ReadReg(instr.threeReg.source2, sourceValue2) ) {
+				return false;
+			}
 
-			SetGPR64( destReg, result );
+			const uint64_t result = sourceValue1 + sourceValue2;
 
-			return true;
+			return SetReg( instr.threeReg.dest, result );
 		}
 
 		case ADD_IMM: {
