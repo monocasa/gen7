@@ -155,15 +155,6 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 			return SetSystemReg( *instr.imm64.dest, *instr.imm64.source );
 		}
 
-		case MOVE_REG64: {
-			const int destReg = instr.args[0];
-			const int sourceReg = instr.args[1];
-
-			uint64_t result = ReadGPR64( sourceReg );
-			SetGPR64( destReg, result );
-			return true;
-		}
-
 	//Branch
 		case BRANCH_ALWAYS: {
 			const uint64_t target = instr.args[0];

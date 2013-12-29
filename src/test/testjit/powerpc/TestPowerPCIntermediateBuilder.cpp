@@ -487,21 +487,27 @@ TEST(PowerPCIntermediateBuilder, Mtspr)
 
 	// 00000000 : 7C6803A6 : mtlr     r3
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7C6803A6, 0x00000000 ) );
-	EXPECT_EQ( InstrOp::MOVE_REG64, instr[0].op );
-	EXPECT_EQ( 32 * sizeof(uint64_t), instr[0].args[0] );
-	EXPECT_EQ( 3  * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( InstrOp::MOVE_REG,     instr[0].op );
+	EXPECT_EQ( 32 * sizeof(uint64_t), *instr[0].twoReg.dest );
+	EXPECT_EQ( OpType::GPR64,         instr[0].twoReg.dest.type );
+	EXPECT_EQ( 3  * sizeof(uint64_t), *instr[0].twoReg.source );
+	EXPECT_EQ( OpType::GPR64,         instr[0].twoReg.source.type );
 
 	// 00000000 : 7C8903A6 : mtctr    r4
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7C8903A6, 0x00000000 ) );
-	EXPECT_EQ( InstrOp::MOVE_REG64, instr[0].op );
-	EXPECT_EQ( 33 * sizeof(uint64_t), instr[0].args[0] );
-	EXPECT_EQ( 4  * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( InstrOp::MOVE_REG,     instr[0].op );
+	EXPECT_EQ( 33 * sizeof(uint64_t), *instr[0].twoReg.dest );
+	EXPECT_EQ( OpType::GPR64,         instr[0].twoReg.dest.type );
+	EXPECT_EQ( 4  * sizeof(uint64_t), *instr[0].twoReg.source );
+	EXPECT_EQ( OpType::GPR64,         instr[0].twoReg.source.type );
 
 	// 00000000 : 7C7143A6 : mtsprg1   r3
 	EXPECT_EQ( 1, builder.BuildIntermediate( instr, 0x7C7143A6, 0x00000000 ) );
-	EXPECT_EQ( InstrOp::MOVE_REG64, instr[0].op );
-	EXPECT_EQ( 35 * sizeof(uint64_t), instr[0].args[0] );
-	EXPECT_EQ( 3 * sizeof(uint64_t), instr[0].args[1] );
+	EXPECT_EQ( InstrOp::MOVE_REG,     instr[0].op );
+	EXPECT_EQ( 35 * sizeof(uint64_t), *instr[0].twoReg.dest );
+	EXPECT_EQ( OpType::GPR64,         instr[0].twoReg.dest.type );
+	EXPECT_EQ( 3  * sizeof(uint64_t), *instr[0].twoReg.source );
+	EXPECT_EQ( OpType::GPR64,         instr[0].twoReg.source.type );
 }
 
 TEST(PowerPCIntermediateBuilder, Mfcr)

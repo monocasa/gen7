@@ -103,9 +103,11 @@ TEST(InterInstr, MoveReg64)
 
 	instr.BuildMoveReg64( 20, 30 );
 
-	EXPECT_EQ( InstrOp::MOVE_REG64, instr.op );
-	EXPECT_EQ( 20, instr.args[0] );
-	EXPECT_EQ( 30, instr.args[1] );
+	EXPECT_EQ( InstrOp::MOVE_REG, instr.op );
+	EXPECT_EQ( 20,                *instr.twoReg.dest );
+	EXPECT_EQ( OpType::GPR64,     instr.twoReg.dest.type );
+	EXPECT_EQ( 30,                *instr.twoReg.source );
+	EXPECT_EQ( OpType::GPR64,     instr.twoReg.source.type );
 }
 
 TEST(InterInstr, BranchAlways)
