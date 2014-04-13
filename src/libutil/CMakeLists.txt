@@ -1,4 +1,4 @@
-ADD_DEFINITIONS( "-std=c++0x" )
+ADD_DEFINITIONS( "-std=c++1y" )
 
 ADD_EXECUTABLE( test_util test/Test_BitOps.cpp )
 

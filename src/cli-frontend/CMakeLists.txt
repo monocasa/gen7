@@ -1,4 +1,4 @@
-ADD_DEFINITIONS( -g -Wall -Wextra -Werror -std=c++0x )
+ADD_DEFINITIONS( -g -Wall -Wextra -Werror -std=c++1y )
 
 INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/host )
 INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/libjitpp/include )
