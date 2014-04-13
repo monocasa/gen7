@@ -22,7 +22,7 @@ ADD_SUBDIRECTORY( cli-frontend )
 ADD_SUBDIRECTORY( crossvmm )
 ADD_SUBDIRECTORY( host )
 ADD_SUBDIRECTORY( libjit )
+ADD_SUBDIRECTORY( libutil )
 ADD_SUBDIRECTORY( test/testrast )
-ADD_SUBDIRECTORY( test/testutil )
 ADD_SUBDIRECTORY( tools/xenosdis )
 
