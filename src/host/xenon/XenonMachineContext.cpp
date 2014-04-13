@@ -1,7 +1,7 @@
 #include "xenon/XenonMachineContext.h"
 #include "ElfLoader.h"
 
-#include "jit/powerpc/XenonCpuContext.h"
+#include "jitpp/powerpc/XenonCpuContext.h"
 
 #include <cstring>
 
@@ -18,7 +18,7 @@ void XenonMachineContext::LoadLibXenonExecutable( const char * exePath, uint64_t
 void XenonMachineContext::Load( const char *path )
 {
 	void * perThreadContext = crossVmm.GetPerThreadBase();
-	jit::XenonCpuContext *cpuContext = new (perThreadContext) jit::XenonCpuContext( 0 );
+	jitpp::XenonCpuContext *cpuContext = new (perThreadContext) jitpp::XenonCpuContext( 0 );
 
 	LoadLibXenonExecutable( path, &(cpuContext->pc) );
 	cpuContext->msr = 0;

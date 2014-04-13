@@ -6,5 +6,5 @@ INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/libutil/include" )
 
 TARGET_LINK_LIBRARIES( test_util util gtest gtest_main ${CMAKE_THREAD_LIBS_INIT} )
 
-ADD_TEST( NAME test_util COMMAND "${EXECUTABLE_OUTPUT_PATH}/test_jit" )
+ADD_TEST( NAME test_util COMMAND "${EXECUTABLE_OUTPUT_PATH}/test_util" )
 

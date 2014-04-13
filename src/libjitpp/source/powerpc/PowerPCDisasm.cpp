@@ -1,9 +1,9 @@
-#include "jit/powerpc/PowerPCDisasm.h"
-#include "jit/powerpc/PowerPCHelpers.h"
+#include "jitpp/powerpc/PowerPCDisasm.h"
+#include "jitpp/powerpc/PowerPCHelpers.h"
 
 #include <cstdio>
 
-namespace jit {
+namespace jitpp {
 
 void PowerPCDisasm::DisassembleBranch( uint32_t instruction, uint32_t pc, char *string )
 {
@@ -55,5 +55,5 @@ void PowerPCDisasm::Disassemble( uint8_t *instrBuffer, uint32_t pc, char *string
 	}
 }
 
-} //namespace jit
+} //namespace jitpp
 

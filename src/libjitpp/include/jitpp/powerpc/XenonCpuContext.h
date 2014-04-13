@@ -1,11 +1,11 @@
-#ifndef GEN7_LIBJIT_POWERPC_XENONCPUCONTEXT_H
-#define GEN7_LIBJIT_POWERPC_XENONCPUCONTEXT_H
+#ifndef GEN7_LIBJITPP_POWERPC_XENONCPUCONTEXT_H
+#define GEN7_LIBJITPP_POWERPC_XENONCPUCONTEXT_H
 
-#include "jit/CpuContext.h"
+#include "jitpp/CpuContext.h"
 
 #include <cstdint>
 
-namespace jit {
+namespace jitpp {
 
 struct VmxReg {
 	uint8_t bytes[ 16 ];
@@ -126,11 +126,11 @@ struct XenonCpuContext : public CpuContext {
 	}
 
 	XenonCpuContext( int coreNum )
-	  : CpuContext( jit::CpuType::XENON, coreNum )
+	  : CpuContext( CpuType::XENON, coreNum )
 	{ }
 };
 
-} //namespace jit
+} //namespace jitpp
 
-#endif //GEN7_LIBJIT_POWERPC_XENONCPUCONTEXT_H
+#endif //GEN7_LIBJITPP_POWERPC_XENONCPUCONTEXT_H
 

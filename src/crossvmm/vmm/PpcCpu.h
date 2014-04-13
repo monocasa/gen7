@@ -4,20 +4,20 @@
 #include "Cpu.h"
 #include "ThirtyTwoBitMemoryPolicy.h"
 
-#include "jit/powerpc/PowerPCIntermediateBuilder.h"
-#include "jit/powerpc/XenonCpuContext.h"
-#include "jit/CpuInterpreter.h"
-#include "jit/InterInstr.h"
+#include "jitpp/powerpc/PowerPCIntermediateBuilder.h"
+#include "jitpp/powerpc/XenonCpuContext.h"
+#include "jitpp/CpuInterpreter.h"
+#include "jitpp/InterInstr.h"
 
 #include <cstdio>
 #include <ucontext.h>
 
 class PpcCpu : public Cpu, 
-               public jit::CpuInterpreter<ThirtyTwoBitMemoryPolicy<true>>, 
-               private jit::PowerPCIntermediateBuilder
+               public jitpp::CpuInterpreter<ThirtyTwoBitMemoryPolicy<true>>, 
+               private jitpp::PowerPCIntermediateBuilder
 {
 private:
-	jit::XenonCpuContext &context;
+	jitpp::XenonCpuContext &context;
 
 	mcontext_t error_context;
 
@@ -51,7 +51,7 @@ private:
 		static const int NUM_IR32_PML2S = 4;
 		static const int NUM_IR32_PML1S = 1024;
 
-		jit::XenonCpuContext &context;
+		jitpp::XenonCpuContext &context;
 
 		uint64_t* hvRealModePml3s[ NUM_HVREALMODE_PML3S ];  //PML3s for Hypervisor Real Mode
 
@@ -90,7 +90,7 @@ private:
 
 		void WriteTlbRpn( uint64_t value );
 
-		MmuContext( jit::XenonCpuContext &context )
+		MmuContext( jitpp::XenonCpuContext &context )
 		  : context( context )
 		  , nextTlbHint( 0x3FF )
 		{ }
@@ -128,9 +128,9 @@ public:
 	virtual bool SetSystemReg( int sysReg, uint64_t value );
 	virtual bool ReadSystemReg( int sysReg, uint64_t &value );
 
-	virtual bool InterpretProcessorSpecific( jit::InterInstr &instr );
+	virtual bool InterpretProcessorSpecific( jitpp::InterInstr &instr );
 
-	PpcCpu( jit::XenonCpuContext &context )
+	PpcCpu( jitpp::XenonCpuContext &context )
 	  : CpuInterpreter( &context.gpr[0], context.isReserved, context.reservation )
 	  , context( context )
 	  , mmuContext( context )

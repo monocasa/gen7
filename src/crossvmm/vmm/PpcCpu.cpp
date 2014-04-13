@@ -241,63 +241,63 @@ void PpcCpu::SetPC( uint64_t pc )
 bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 {
 	switch( sysReg ) {
-		case jit::PowerPCHelpers::SPR_XER: {
+		case jitpp::PowerPCHelpers::SPR_XER: {
 			context.xer = value;
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_SRR0: {
+		case jitpp::PowerPCHelpers::SPR_SRR0: {
 			context.srr0 = value;
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_SRR1: {
+		case jitpp::PowerPCHelpers::SPR_SRR1: {
 			context.srr1 = value;
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_SPRG1: {
+		case jitpp::PowerPCHelpers::SPR_SPRG1: {
 			context.sprg1 = value;
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_HRMOR: {
+		case jitpp::PowerPCHelpers::SPR_HRMOR: {
 			printf( "PpcCpu:  HRMOR set to %016lx\n", value );
 			context.hrmor = value & 0x000003FFFFF00000;
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_LPCR: {
+		case jitpp::PowerPCHelpers::SPR_LPCR: {
 			printf( "PpcCpu:  LPCR set to %016lx\n", value );
 			context.lpcr = value;
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_LPIDR: {
+		case jitpp::PowerPCHelpers::SPR_LPIDR: {
 			printf( "PpcCpu:  LPIDR set to %016lx\n", value );
 			context.lpidr = value;
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_PPE_TLB_INDEX: {
+		case jitpp::PowerPCHelpers::SPR_PPE_TLB_INDEX: {
 			printf( "PpcCpu:  PPE_TLB_Index set to %016lx\n", value );
 			mmuContext.WriteTlbIndex( value );
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_PPE_TLB_VPN: {
+		case jitpp::PowerPCHelpers::SPR_PPE_TLB_VPN: {
 			printf( "PpcCpu:  PPE_TLB_Vpn set to %016lx\n", value );
 			mmuContext.WriteTlbVpn( value );
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_PPE_TLB_RPN: {
+		case jitpp::PowerPCHelpers::SPR_PPE_TLB_RPN: {
 			printf( "PpcCpu:  PPE_TLB_Rpn set to %016lx\n", value );
 			mmuContext.WriteTlbRpn( value );
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_HID6: {
+		case jitpp::PowerPCHelpers::SPR_HID6: {
 			printf( "PpcCpu:  HID6 set to %016lx\n", value );
 			context.hid6 = value;
 			return true;
@@ -313,42 +313,42 @@ bool PpcCpu::SetSystemReg( int sysReg, uint64_t value )
 bool PpcCpu::ReadSystemReg( int sysReg, uint64_t &value )
 {
 	switch( sysReg ) {
-		case jit::PowerPCHelpers::SPR_XER: {
+		case jitpp::PowerPCHelpers::SPR_XER: {
 			value = context.xer;
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_DAR: {
+		case jitpp::PowerPCHelpers::SPR_DAR: {
 			value = context.dar;
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_SRR0: {
+		case jitpp::PowerPCHelpers::SPR_SRR0: {
 			value = context.srr0;
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_LPCR: {
+		case jitpp::PowerPCHelpers::SPR_LPCR: {
 			value = context.lpcr;
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_PPE_TLB_INDEX_HINT: {
+		case jitpp::PowerPCHelpers::SPR_PPE_TLB_INDEX_HINT: {
 			value = mmuContext.GetTlbHint();
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_HID6: {
+		case jitpp::PowerPCHelpers::SPR_HID6: {
 			value = context.hid6;
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_PIR: {
+		case jitpp::PowerPCHelpers::SPR_PIR: {
 			value = context.coreNum;
 			return true;
 		}
 
-		case jit::PowerPCHelpers::SPR_MSR: {
+		case jitpp::PowerPCHelpers::SPR_MSR: {
 			value = context.msr;
 			return true;
 		}
@@ -360,15 +360,15 @@ bool PpcCpu::ReadSystemReg( int sysReg, uint64_t &value )
 	}
 }
 
-bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
+bool PpcCpu::InterpretProcessorSpecific( jitpp::InterInstr &instr )
 {
 	switch( instr.op ) {
-		case jit::PPC_SLBIA: {
+		case jitpp::PPC_SLBIA: {
 			printf( "SLBIA\n" );
 			return true;
 		}
 
-		case jit::PPC_SLBMTE: {
+		case jitpp::PPC_SLBMTE: {
 			const int rs = instr.args[0];
 			const int rb = instr.args[1];
 
@@ -376,7 +376,7 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
-		case jit::PPC_TLBIEL: {
+		case jitpp::PPC_TLBIEL: {
 			const int rb = instr.args[0];
 			const bool l = instr.args[1];
 
@@ -384,7 +384,7 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
-		case jit::PPC_STWCX: {
+		case jitpp::PPC_STWCX: {
 			const int addrReg = instr.args[0];
 			const int offsetReg = instr.args[1];
 			const int valueReg = instr.args[2];
@@ -407,7 +407,7 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
-		case jit::PPC_CMPD: {
+		case jitpp::PPC_CMPD: {
 			const int ra = instr.args[0];
 			const int rb = instr.args[1];
 			const int cr = instr.args[2];
@@ -432,7 +432,7 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
-		case jit::PPC_CMPDI: {
+		case jitpp::PPC_CMPDI: {
 			const int ra = instr.args[0];
 			const int cr = instr.args[1];
 			const int32_t imm = instr.args[2];
@@ -456,7 +456,7 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
-		case jit::PPC_CMPW: {
+		case jitpp::PPC_CMPW: {
 			const int ra = instr.args[0];
 			const int rb = instr.args[1];
 			const int cr = instr.args[2];
@@ -481,7 +481,7 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
-		case jit::PPC_CMPWI: {
+		case jitpp::PPC_CMPWI: {
 			const int ra = instr.args[0];
 			const int cr = instr.args[1];
 			const int32_t imm = instr.args[2];
@@ -505,7 +505,7 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
-		case jit::PPC_CMPLD: {
+		case jitpp::PPC_CMPLD: {
 			const int ra = instr.args[0];
 			const int rb = instr.args[1];
 			const int cr = instr.args[2];
@@ -530,7 +530,7 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
-		case jit::PPC_CMPLDI: {
+		case jitpp::PPC_CMPLDI: {
 			const int ra = instr.args[0];
 			const int cr = instr.args[1];
 			const uint32_t imm = instr.args[2];
@@ -554,7 +554,7 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
-		case jit::PPC_CMPLW: {
+		case jitpp::PPC_CMPLW: {
 			const int ra = instr.args[0];
 			const int rb = instr.args[1];
 			const int cr = instr.args[2];
@@ -579,7 +579,7 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
-		case jit::PPC_CMPLWI: {
+		case jitpp::PPC_CMPLWI: {
 			const int ra = instr.args[0];
 			const int cr = instr.args[1];
 			const uint32_t imm = instr.args[2];
@@ -603,14 +603,14 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
-		case jit::PPC_RFID: {
+		case jitpp::PPC_RFID: {
 			SetMsr( context.srr1 );
 			SetPC( context.srr0 );
 
 			return true;
 		}
 
-		case jit::PPC_SRAWI: {
+		case jitpp::PPC_SRAWI: {
 			const int rs = instr.args[0];
 			const int ra = instr.args[1];
 			const int sh = instr.args[2];
@@ -643,7 +643,7 @@ bool PpcCpu::InterpretProcessorSpecific( jit::InterInstr &instr )
 			return true;
 		}
 
-		case jit::PPC_SUBFIC: {
+		case jitpp::PPC_SUBFIC: {
 			const int rt = instr.args[0];
 			const int ra = instr.args[1];
 			const int64_t imm = instr.args[2];
@@ -676,7 +676,7 @@ void PpcCpu::Execute()
 {
 	bool running = true;
 
-	jit::InterInstr intermediates[ 10 ];
+	jitpp::InterInstr intermediates[ 10 ];
 
 	int status;
 

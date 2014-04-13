@@ -1,13 +1,13 @@
-#ifndef GEN7_LIBJIT_SH4A_SH4ACPUCONTEXT_H
-#define GEN7_LIBJIT_SH4A_SH4ACPUCONTEXT_H
+#ifndef GEN7_LIBJITPP_SH4A_SH4ACPUCONTEXT_H
+#define GEN7_LIBJITPP_SH4A_SH4ACPUCONTEXT_H
 
-#include "jit/CpuContext.h"
+#include "jitpp/CpuContext.h"
 
 #include <cstdint>
 
-namespace jit {
+namespace jitpp {
 
-struct Sh4aCpuContext : public jit::CpuContext {
+struct Sh4aCpuContext : public CpuContext {
 	uint32_t gpr[16];
 	uint32_t gpr_bank[8];
 	float fpr[16];
@@ -36,11 +36,11 @@ struct Sh4aCpuContext : public jit::CpuContext {
 	uint64_t reservation;
 
 	Sh4aCpuContext()
-	  : CpuContext( jit::CpuType::SH4A, 0 )
+	  : CpuContext( CpuType::SH4A, 0 )
 	{ }
 };
 
-} //namespace jit
+} //namespace jitpp
 
-#endif //GEN7_LIBJIT_SH4A_SH4ACPUCONTEXT_H
+#endif //GEN7_LIBJITPP_SH4A_SH4ACPUCONTEXT_H
 

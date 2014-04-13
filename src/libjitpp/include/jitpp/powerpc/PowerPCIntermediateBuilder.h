@@ -1,10 +1,10 @@
-#ifndef GEN7_LIBJIT_POWERPC_POWERPCINTERMEDIATEBUILDER_H
-#define GEN7_LIBJIT_POWERPC_POWERPCINTERMEDIATEBUILDER_H
+#ifndef GEN7_LIBJITPP_POWERPC_POWERPCINTERMEDIATEBUILDER_H
+#define GEN7_LIBJITPP_POWERPC_POWERPCINTERMEDIATEBUILDER_H
 
-#include "jit/powerpc/PowerPCHelpers.h"
-#include "jit/IntermediateBuilder.h"
+#include "jitpp/powerpc/PowerPCHelpers.h"
+#include "jitpp/IntermediateBuilder.h"
 
-namespace jit {
+namespace jitpp {
 
 class PowerPCIntermediateBuilder : public IntermediateBuilder<uint32_t>, private PowerPCHelpers
 {
@@ -29,7 +29,7 @@ public:
 	virtual int BuildIntermediate( InterInstr *intermediates, uint32_t nativeInstr, uint64_t pc );
 };
 
-}
+} //namespace jitpp
 
-#endif //GEN7_LIBJIT_POWERPC_POWERPCINTERMEDIATEBUILDER_H
+#endif //GEN7_LIBJITPP_POWERPC_POWERPCINTERMEDIATEBUILDER_H
 

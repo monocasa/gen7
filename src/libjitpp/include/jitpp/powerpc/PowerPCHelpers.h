@@ -1,11 +1,11 @@
-#ifndef GEN7_LIBJIT_POWERPC_POWERPCHELPERS_H
-#define GEN7_LIBJIT_POWERPC_POWERPCHELPERS_H
+#ifndef GEN7_LIBJITPP_POWERPC_POWERPCHELPERS_H
+#define GEN7_LIBJITPP_POWERPC_POWERPCHELPERS_H
 
-#include "jit/Disasm.h"
+#include "jitpp/Disasm.h"
 
 #include "util/BitOps.h"
 
-namespace jit {
+namespace jitpp {
 
 class PowerPCHelpers
 {
@@ -353,7 +353,7 @@ public:
 
 };
 
-} //namespace jit
+} //namespace jitpp
 
-#endif //GEN7_LIBJIT_POWERPC_POWERPCHELPERS_H
+#endif //GEN7_LIBJITPP_POWERPC_POWERPCHELPERS_H
 

@@ -1,9 +1,9 @@
-#ifndef GEN7_LIBJIT_DISASM_H
-#define GEN7_LIBJIT_DISASM_H
+#ifndef GEN7_LIBJITPP_DISASM_H
+#define GEN7_LIBJITPP_DISASM_H
 
 #include <cstdint>
 
-namespace jit {
+namespace jitpp {
 
 class Disasm
 {
@@ -13,7 +13,7 @@ public:
 	virtual void Disassemble( uint8_t *instrBuffer, uint32_t pc, char * string ) = 0;
 };
 
-} //namespace jit
+} //namespace jitpp
 
-#endif //GEN7_LIBJIT_DISASM_H
+#endif //GEN7_LIBJITPP_DISASM_H
 

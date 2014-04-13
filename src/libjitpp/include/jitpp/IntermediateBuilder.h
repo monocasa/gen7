@@ -1,9 +1,9 @@
-#ifndef GEN7_LIBJIT_INTERMEDIATEBUILDER_H
-#define GEN7_LIBJIT_INTERMEDIATEBUILDER_H
+#ifndef GEN7_LIBJITPP_INTERMEDIATEBUILDER_H
+#define GEN7_LIBJITPP_INTERMEDIATEBUILDER_H
 
 #include <cstdint>
 
-namespace jit {
+namespace jitpp {
 
 struct InterInstr;
 
@@ -14,7 +14,7 @@ public:
 	virtual int BuildIntermediate( InterInstr *intermediates, INSTR_FORMAT nativeInstr, uint64_t pc ) = 0;
 };
 
-}
+} //namespace jitpp
 
-#endif //GEN7_LIBJIT_INTERMEDIATEBUILDER_H
+#endif //GEN7_LIBJITPP_INTERMEDIATEBUILDER_H
 

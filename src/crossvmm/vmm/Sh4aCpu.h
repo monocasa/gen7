@@ -5,9 +5,9 @@
 #include "MemoryManager.h"
 #include "ThirtyTwoBitMemoryPolicy.h"
 
-#include "jit/sh4a/Sh4aCpuContext.h"
-#include "jit/CpuInterpreter.h"
-#include "jit/InterInstr.h"
+#include "jitpp/sh4a/Sh4aCpuContext.h"
+#include "jitpp/CpuInterpreter.h"
+#include "jitpp/InterInstr.h"
 
 #include <cstdio>
 
@@ -25,7 +25,7 @@ public:
 	virtual uint32_t Read32( uint64_t addr ) = 0;
 };
 
-class Sh4aCpu : public Cpu, public jit::CpuInterpreter<ThirtyTwoBitMemoryPolicy<false>>
+class Sh4aCpu : public Cpu, public jitpp::CpuInterpreter<ThirtyTwoBitMemoryPolicy<false>>
 {
 private:
 	static const uint32_t SR_T_BIT  = 0x00000001;
@@ -41,7 +41,7 @@ private:
 
 	static const uint32_t FPSCR_SZ_BIT = 0x00100000;
 
-	jit::Sh4aCpuContext &context;
+	jitpp::Sh4aCpuContext &context;
 
 	class MmuContext : public PageFaultHandler, MemoryEmulator
 	{
@@ -49,7 +49,7 @@ private:
 		static const int NUM_PML2S = 4;
 		static const int NUM_PML1S = 1024;
 
-		jit::Sh4aCpuContext &context;
+		jitpp::Sh4aCpuContext &context;
 		Sh4aCpu &cpu;
 
 		uint64_t* pml3;
@@ -81,7 +81,7 @@ private:
 		virtual void Write32( uint64_t addr, uint32_t data );
 		virtual uint32_t Read32( uint64_t addr );
 
-		MmuContext( jit::Sh4aCpuContext &context, Sh4aCpu &cpu )
+		MmuContext( jitpp::Sh4aCpuContext &context, Sh4aCpu &cpu )
 		  : context( context )
 		  , cpu( cpu )
 		{ }
@@ -110,12 +110,12 @@ public:
 		return false;
 	}
 
-	virtual bool InterpretProcessorSpecific( jit::InterInstr &instr ) {
+	virtual bool InterpretProcessorSpecific( jitpp::InterInstr &instr ) {
 		printf( "Todo:  InterpretProcessorSpecific( instr.op=%d )\n", instr.op );
 		return false;
 	}
 
-	Sh4aCpu( jit::Sh4aCpuContext &context )
+	Sh4aCpu( jitpp::Sh4aCpuContext &context )
 	  : CpuInterpreter( &context.gpr[0], context.isReserved, context.reservation )
 	  , context( context )
 	  , mmu( context, *this )

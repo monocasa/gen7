@@ -1,10 +1,10 @@
-#include "jit/powerpc/XenonCpuContext.h"
+#include "jitpp/powerpc/XenonCpuContext.h"
 
 #include <gtest/gtest.h>
 
 TEST(XenonCpuContext, ConditionRegister)
 {
-	jit::XenonCpuContext context( 0 );
+	jitpp::XenonCpuContext context( 0 );
 	context.cr = 0;
 
 	context.SetCrSo( 0 );
@@ -27,7 +27,7 @@ TEST(XenonCpuContext, ConditionRegister)
 
 TEST(XenonCpuContext, Xer)
 {
-	jit::XenonCpuContext context( 0 );
+	jitpp::XenonCpuContext context( 0 );
 	context.xer = 0;
 
 	context.SetXerSo();
@@ -51,7 +51,7 @@ TEST(XenonCpuContext, Xer)
 
 TEST(XenonCpuContext, Msr)
 {
-	jit::XenonCpuContext context( 0 );
+	jitpp::XenonCpuContext context( 0 );
 
 	context.msr = 0x0000000000000000UL;
 	EXPECT_FALSE( context.Is64Bit() );

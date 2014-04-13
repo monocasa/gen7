@@ -1,9 +1,9 @@
-#include "jit/powerpc/PowerPCIntermediateBuilder.h"
-#include "jit/InterInstr.h"
+#include "jitpp/powerpc/PowerPCIntermediateBuilder.h"
+#include "jitpp/InterInstr.h"
 
 #include <gtest/gtest.h>
 
-using namespace jit;
+using namespace jitpp;
 
 TEST(PowerPCIntermediateBuilder, Unknown)
 {

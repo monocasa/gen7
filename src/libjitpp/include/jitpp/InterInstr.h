@@ -1,9 +1,9 @@
-#ifndef GEN7_LIBJIT_INTERINSTR_H
-#define GEN7_LIBJIT_INTERINSTR_H
+#ifndef GEN7_LIBJITPP_INTERINSTR_H
+#define GEN7_LIBJITPP_INTERINSTR_H
 
 #include <cstdint>
 
-namespace jit {
+namespace jitpp {
 
 enum InstrOp
 {
@@ -567,7 +567,7 @@ struct InterInstr
 	}
 };
 
-} //namespace jit
+} //namespace jitpp
 
-#endif //GEN7_LIBJIT_INTERINSTR_H
+#endif //GEN7_LIBJITPP_INTERINSTR_H
 

@@ -1,10 +1,10 @@
-#ifndef GEN7_LIBJIT_POWERPC_POWERPCDISASM_H
-#define GEN7_LIBJIT_POWERPC_POWERPCDISASM_H
+#ifndef GEN7_LIBJITPP_POWERPC_POWERPCDISASM_H
+#define GEN7_LIBJITPP_POWERPC_POWERPCDISASM_H
 
-#include "jit/powerpc/PowerPCHelpers.h"
-#include "jit/Disasm.h"
+#include "jitpp/powerpc/PowerPCHelpers.h"
+#include "jitpp/Disasm.h"
 
-namespace jit {
+namespace jitpp {
 
 class PowerPCDisasm : public Disasm, private PowerPCHelpers
 {
@@ -15,7 +15,7 @@ public:
 	virtual void Disassemble( uint8_t *instrBuffer, uint32_t pc, char * string );
 };
 
-} //namespace jit
+} //namespace jitpp
 
-#endif //GEN7_LIBJIT_POWERPC_POWERPCDISASM_H
+#endif //GEN7_LIBJITPP_POWERPC_POWERPCDISASM_H
 

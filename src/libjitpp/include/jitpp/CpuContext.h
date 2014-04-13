@@ -1,9 +1,9 @@
-#ifndef GEN7_LIBJIT_CPUCONTEXT_H
-#define GEN7_LIBJIT_CPUCONTEXT_H
+#ifndef GEN7_LIBJITPP_CPUCONTEXT_H
+#define GEN7_LIBJITPP_CPUCONTEXT_H
 
 #include <cstdint>
 
-namespace jit {
+namespace jitpp {
 
 enum class CpuType : uint32_t {
 	UNSPECIFIED = 0,
@@ -23,7 +23,7 @@ struct CpuContext {
 	{ }
 };
 
-} //namespace jit
+} //namespace jitpp
 
-#endif //GEN7_LIBJIT_CPUCONTEXT_H
+#endif //GEN7_LIBJITPP_CPUCONTEXT_H
 

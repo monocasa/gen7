@@ -1,14 +1,14 @@
-#ifndef GEN7_LIBJIT_CPUINTERPRETER_H
-#define GEN7_LIBJIT_CPUINTERPRETER_H
+#ifndef GEN7_LIBJITPP_CPUINTERPRETER_H
+#define GEN7_LIBJITPP_CPUINTERPRETER_H
 
-#include "jit/InterInstr.h"
+#include "jitpp/InterInstr.h"
 
 #include "util/BitOps.h"
 
 #include <cstdint>
 #include <cstdio>
 
-namespace jit {
+namespace jitpp {
 
 template<class MemoryPolicy>
 class CpuInterpreter : public MemoryPolicy
@@ -112,9 +112,9 @@ public:
 	virtual bool SetSystemReg( int sysReg, uint64_t value ) = 0;
 	virtual bool ReadSystemReg( int sysReg, uint64_t &value ) = 0;
 
-	virtual bool InterpretProcessorSpecific( jit::InterInstr &instr ) = 0;
+	virtual bool InterpretProcessorSpecific( jitpp::InterInstr &instr ) = 0;
 
-	bool InterpretIntermediate( jit::InterInstr &instr );
+	bool InterpretIntermediate( jitpp::InterInstr &instr );
 
 	const char * GetErrorString() const {
 		return errorString;
@@ -611,7 +611,7 @@ bool CpuInterpreter<MemoryPolicy>::InterpretIntermediate( InterInstr &instr )
 	}
 }
 
-} //namespace jit
+} //namespace jitpp
 
-#endif //GEN7_LIBJIT_CPUINTERPRETER_H
+#endif //GEN7_LIBJITPP_CPUINTERPRETER_H
 

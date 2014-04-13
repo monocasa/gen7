@@ -1,12 +1,12 @@
-#include "jit/CpuInterpreter.h"
-#include "jit/InterInstr.h"
+#include "jitpp/CpuInterpreter.h"
+#include "jitpp/InterInstr.h"
 
 #include <gtest/gtest.h>
 
 #include <map>
 #include <vector>
 
-using namespace jit;
+using namespace jitpp;
 
 class TestMemoryPolicy
 {
@@ -119,7 +119,7 @@ public:
 		return false;
 	}
 
-	virtual bool InterpretProcessorSpecific( jit::InterInstr &/*instr*/ ) {
+	virtual bool InterpretProcessorSpecific( jitpp::InterInstr &/*instr*/ ) {
 		return true;
 	}
 

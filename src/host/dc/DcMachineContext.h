@@ -4,7 +4,7 @@
 #include "dc/DcPhysicalMemory.h"
 #include "MachineContext.h"
 
-#include "jit/sh4a/Sh4aCpuContext.h"
+#include "jitpp/sh4a/Sh4aCpuContext.h"
 
 #include <cassert>
 
@@ -50,8 +50,8 @@ private:
 		{ }
 	} machineMemory;
 
-	void LoadElf( const char *exePath, jit::Sh4aCpuContext &context );
-	void LoadBios( jit::Sh4aCpuContext &context );
+	void LoadElf( const char *exePath, jitpp::Sh4aCpuContext &context );
+	void LoadBios( jitpp::Sh4aCpuContext &context );
 
 public:
 	virtual void Load( const char *path );

@@ -1,4 +1,4 @@
-#include "jit/powerpc/PowerPCDisasm.h"
+#include "jitpp/powerpc/PowerPCDisasm.h"
 
 #include <gtest/gtest.h>
 
@@ -6,8 +6,8 @@
 
 void testDecode( const uint32_t opcode, const uint32_t pc, const char *expectedString )
 {
-	jit::PowerPCDisasm disasm;
-	uint8_t instrBuffer[ jit::Disasm::INSTR_BUFFER_SIZE ];
+	jitpp::PowerPCDisasm disasm;
+	uint8_t instrBuffer[ jitpp::Disasm::INSTR_BUFFER_SIZE ];
 	char string[ 512 ];
 	char opcodeString[ 20 ];
 

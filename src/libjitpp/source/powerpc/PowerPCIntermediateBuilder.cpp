@@ -1,9 +1,9 @@
-#include "jit/powerpc/PowerPCIntermediateBuilder.h"
-#include "jit/InterInstr.h"
+#include "jitpp/powerpc/PowerPCIntermediateBuilder.h"
+#include "jitpp/InterInstr.h"
 
 #include <cstdio>
 
-namespace jit {
+namespace jitpp {
 
 int PowerPCIntermediateBuilder::BuildIntermediateBcc( InterInstr *intermediates, uint32_t nativeInstr, const uint64_t pc )
 {
@@ -807,5 +807,5 @@ int PowerPCIntermediateBuilder::BuildIntermediate( InterInstr *intermediates, ui
 	}
 }
 
-} //namespace jit
+} //namespace jitpp
 

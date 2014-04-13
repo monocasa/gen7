@@ -1,8 +1,8 @@
-#include "jit/InterInstr.h"
+#include "jitpp/InterInstr.h"
 
 #include <gtest/gtest.h>
 
-using namespace jit;
+using namespace jitpp;
 
 TEST(InterInstr, Unknown)
 {

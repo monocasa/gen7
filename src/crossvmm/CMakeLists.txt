@@ -1,4 +1,4 @@
-SET( CMAKE_CXX_FLAGS "-m64 -mcmodel=kernel -std=c++0x -D__64BIT__ -I${PROJECT_SOURCE_DIR}/libjit/include -I${PROJECT_SOURCE_DIR}/libutil/include -I${CMAKE_CURRENT_LIST_DIR}/stdlib/include -I${CMAKE_CURRENT_LIST_DIR}/stdlib/newlib/libc/include -ffreestanding -nostdlib -mno-red-zone -fno-rtti -fno-exceptions -nostdinc -fno-stack-protector -Wall -Wextra -Werror" )
+SET( CMAKE_CXX_FLAGS "-m64 -mcmodel=kernel -std=c++0x -D__64BIT__ -I${PROJECT_SOURCE_DIR}/libjitpp/include -I${PROJECT_SOURCE_DIR}/libutil/include -I${CMAKE_CURRENT_LIST_DIR}/stdlib/include -I${CMAKE_CURRENT_LIST_DIR}/stdlib/newlib/libc/include -ffreestanding -nostdlib -mno-red-zone -fno-rtti -fno-exceptions -nostdinc -fno-stack-protector -Wall -Wextra -Werror" )
 SET( CMAKE_C_FLAGS "-m64 -mcmodel=kernel -D__64BIT__  -I${CMAKE_CURRENT_LIST_DIR}/stdlib/include -I${CMAKE_CURRENT_LIST_DIR}/stdlib/newlib/libc/include -ffreestanding -nostdlib -mno-red-zone -nostdinc -fno-stack-protector -Wall -Wextra -Werror" )
 SET( CMAKE_EXE_LINKER_FLAGS "-nodefaultlibs -T${CMAKE_CURRENT_LIST_DIR}/linker.ld" )
 SET( CMAKE_ASM_NASM_OBJECT_FORMAT "elf64" )
@@ -23,11 +23,11 @@ ADD_LIBRARY( crossvmm STATIC vmm/Boot.asm
                              vmm/Shtuff.asm
                              vmm/XenonRealMemory.cpp )
 
-TARGET_LINK_LIBRARIES( crossvmm vmmc vmmsyscall jit-vmm )
+TARGET_LINK_LIBRARIES( crossvmm vmmc vmmsyscall jitpp-vmm )
 
 SET( VMMLIBS ${PROJECT_BINARY_DIR}/lib/libcrossvmm.a
              ${PROJECT_BINARY_DIR}/lib/libvmmsyscall.a 
-             ${PROJECT_BINARY_DIR}/lib/libjit-vmm.a )
+             ${PROJECT_BINARY_DIR}/lib/libjitpp-vmm.a )
 
 ADD_CUSTOM_COMMAND( TARGET crossvmm
                     POST_BUILD
