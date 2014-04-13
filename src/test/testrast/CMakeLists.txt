@@ -1,4 +1,0 @@
-ADD_EXECUTABLE( testrast Main.cpp )
-
-TARGET_LINK_LIBRARIES( testrast ${OPENCL_LIBRARIES} )
-

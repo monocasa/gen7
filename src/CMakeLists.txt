@@ -23,6 +23,6 @@ ADD_SUBDIRECTORY( crossvmm )
 ADD_SUBDIRECTORY( host )
 ADD_SUBDIRECTORY( libjit )
 ADD_SUBDIRECTORY( libutil )
-ADD_SUBDIRECTORY( test/testrast )
+ADD_SUBDIRECTORY( tools/rastplayground )
 ADD_SUBDIRECTORY( tools/xenosdis )
 
