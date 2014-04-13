@@ -6,6 +6,16 @@ SET( LIBJIT_SOURCES source/powerpc/PowerPCDisasm.cpp
 
 ADD_LIBRARY( jit STATIC ${LIBJIT_SOURCES} )
 
+ADD_EXECUTABLE( testjit test/powerpc/TestPowerPCDisasm.cpp
+                        test/powerpc/TestPowerPCIntermediateBuilder.cpp
+                        test/powerpc/TestXenonCpuContext.cpp
+                        test/TestCpuInterpreter.cpp
+                        test/TestInterInstr.cpp )
+
+TARGET_LINK_LIBRARIES( testjit jit gtest gtest_main ${CMAKE_THREAD_LIBS_INIT} )
+
+ADD_TEST( NAME testjit COMMAND "${EXECUTABLE_OUTPUT_PATH}/testjit" )
+
 SET( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-m64 -mcmodel=kernel -std=c++0x -D__64BIT__ -mno-red-zone -fno-rtti -fno-exceptions -fno-stack-protector -Wall -Wextra -Werror" )
 
 ADD_LIBRARY( jit-vmm STATIC ${LIBJIT_SOURCES} )
