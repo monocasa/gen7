@@ -6,11 +6,11 @@ SET( LIBJIT_SOURCES source/powerpc/PowerPCDisasm.cpp
 
 ADD_LIBRARY( jit STATIC ${LIBJIT_SOURCES} )
 
-ADD_EXECUTABLE( test_jit test/powerpc/TestPowerPCDisasm.cpp
-                         test/powerpc/TestPowerPCIntermediateBuilder.cpp
-                         test/powerpc/TestXenonCpuContext.cpp
-                         test/TestCpuInterpreter.cpp
-                         test/TestInterInstr.cpp )
+ADD_EXECUTABLE( test_jit test/powerpc/Test_PowerPCDisasm.cpp
+                         test/powerpc/Test_PowerPCIntermediateBuilder.cpp
+                         test/powerpc/Test_XenonCpuContext.cpp
+                         test/Test_CpuInterpreter.cpp
+                         test/Test_InterInstr.cpp )
 
 TARGET_LINK_LIBRARIES( test_jit jit gtest gtest_main ${CMAKE_THREAD_LIBS_INIT} )
 

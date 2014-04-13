@@ -1,6 +1,6 @@
 ADD_DEFINITIONS( "-std=c++0x" )
 
-ADD_EXECUTABLE( test_util test/TestBitOps.cpp )
+ADD_EXECUTABLE( test_util test/Test_BitOps.cpp )
 
 INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/libutil/include" )
 
