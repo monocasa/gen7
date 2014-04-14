@@ -1,58 +1,44 @@
 #include "jitpp/powerpc/PowerPCDisasm.h"
-#include "jitpp/powerpc/PowerPCHelpers.h"
+
+#include "util/Compilers.h"
 
 #include <cstdio>
 
 namespace jitpp {
 
-void PowerPCDisasm::DisassembleBranch( uint32_t instruction, uint32_t pc, char *string )
+void PowerPCDisasm::OnUnknownInstruction( uint32_t instr, UnknownCode code, 
+	                                      int codeArg, uint64_t pc )
 {
-	const char *opcd;
+	UNUSED( pc );
 
-	if( B_LK(instruction) && B_AA(instruction) ) {
-		opcd = "bla";
+	switch( code ) {
+		case UnknownCode::OPCD: {
+			sprintf( buffer, "<UNKNOWN_%08x> OPCOD=%d", instr, codeArg );
+		}
+		break;
 	}
-	else if( B_LK(instruction) ) {
-		opcd = "bl";
-	}
-	else if( B_AA(instruction) ) {
-		opcd = "ba";
-	}
-	else {
-		opcd = "b";
-	}
+}
 
-	uint64_t target = B_LI(instruction);
-
-	if( !B_AA(instruction) ) {
-		target += pc;
-	}
-
-	sprintf( string, "%s\tloc_%lx", opcd, target );
+void PowerPCDisasm::OnBranch( uint64_t target, bool link, bool abs )
+{
+	sprintf( buffer, "b%s%s\tloc_%lx",
+	         (link ? "l" : "" ),
+	         (abs ? "a" : "" ),
+	         target );
 }
 
 void PowerPCDisasm::Disassemble( uint8_t *instrBuffer, uint32_t pc, char *string )
 {
-	uint32_t instruction;
+	uint32_t instr;
 
-	instruction = (instrBuffer[0])
-	            | (instrBuffer[1] << 8)
-	            | (instrBuffer[2] << 16)
-	            | (instrBuffer[3] << 24); 
+	instr = (instrBuffer[0])
+	      | (instrBuffer[1] << 8)
+	      | (instrBuffer[2] << 16)
+	      | (instrBuffer[3] << 24); 
 
-	int opcode = OPCD( instruction );
+	buffer = string;
 
-	switch( opcode ) {
-		case OPCD_BRANCH: {
-			DisassembleBranch( instruction, pc, string );
-			return;
-		}
-
-		default: {
-			sprintf( string, "<UNKNOWN_%08x> OPCOD=%d", instruction, opcode );
-			return;
-		}
-	}
+	DecodeInstruction( instr, pc );
 }
 
 } //namespace jitpp

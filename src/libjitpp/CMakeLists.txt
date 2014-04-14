@@ -1,7 +1,8 @@
 INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/libjitpp/include" )
 INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/libutil/include" )
 
-SET( LIBJIT_SOURCES source/powerpc/PowerPCDisasm.cpp
+SET( LIBJIT_SOURCES source/powerpc/PowerPCDecoder.cpp
+                    source/powerpc/PowerPCDisasm.cpp
                     source/powerpc/PowerPCIntermediateBuilder.cpp )
 
 ADD_LIBRARY( jitpp STATIC ${LIBJIT_SOURCES} )
