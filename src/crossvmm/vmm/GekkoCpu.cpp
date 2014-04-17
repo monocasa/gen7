@@ -1,6 +1,8 @@
 #include "GekkoCpu.h"
 #include "MemoryManager.h"
 
+#include "jitpp/powerpc/PowerPCDisasm.h"
+
 #include <cstdio>
 
 void GekkoCpu::PowerPC32Mmu::Init()
@@ -36,5 +38,16 @@ void GekkoCpu::Execute()
 {
 	printf( "PC:  %08x\n", context.pc );
 	printf( "OP:  %08x\n", *((uint32_t*)((uint64_t)context.pc)) );
+
+	for( uint64_t i = context.pc; i < (context.pc + 0x80); i += sizeof(uint32_t) ) {
+		jitpp::PowerPCDisasm disasm;
+		char strBuffer[64];
+		uint32_t opcode;
+
+		opcode = *((uint32_t*)i);
+
+		disasm.Disassemble( (uint8_t*)&opcode, i, strBuffer );
+		printf( "%08lx:  %08x - %s\n", i, opcode, strBuffer );
+	}
 }
 
