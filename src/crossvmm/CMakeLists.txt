@@ -11,6 +11,7 @@ ADD_LIBRARY( vmmsyscall STATIC stdlib/src/amd64/makecontext.asm
 ADD_LIBRARY( crossvmm STATIC vmm/Boot.asm
                              vmm/cxxabiv1.cpp
                              vmm/DcRealMemory.cpp
+                             vmm/GekkoCpu.cpp
                              vmm/Hypercall.asm
                              vmm/InterruptManager.cpp
                              vmm/Isr.asm
@@ -21,6 +22,7 @@ ADD_LIBRARY( crossvmm STATIC vmm/Boot.asm
                              vmm/printf.cpp
                              vmm/Sh4aCpu.cpp
                              vmm/Shtuff.asm
+                             vmm/WiiRealMemory.cpp
                              vmm/XenonRealMemory.cpp )
 
 TARGET_LINK_LIBRARIES( crossvmm vmmc vmmsyscall jitpp-vmm )

@@ -2,6 +2,7 @@
 #include "dc/DcMachineContext.h"
 #include "ps3/Ps3MachineContext.h"
 #include "sys/Exception.h"
+#include "wii/WiiMachineContext.h"
 #include "xenon/XenonMachineContext.h"
 #include "MachineContext.h"
 
@@ -35,6 +36,7 @@ enum Platform
 	XENON,
 	PS3,
 	DC,
+	WII,
 };
 
 Platform platform;
@@ -47,6 +49,7 @@ void PrintMachineList()
 	std::cerr << "\txenon - Xbox360" << std::endl;
 	std::cerr << "\tps3   - PlayStation3" << std::endl;
 	std::cerr << "\tdc    - Dreamcast" << std::endl;
+	std::cerr << "\twii   - Wii" << std::endl;
 }
 
 std::istream& operator>>( std::istream &in, Platform &platform )
@@ -67,6 +70,9 @@ std::istream& operator>>( std::istream &in, Platform &platform )
 	}
 	else if( "dc" == token ) {
 		platform = DC;
+	}
+	else if( "wii" == token ) {
+		platform = WII;
 	}
 	else {
 		throw po::validation_error( po::validation_error::invalid_option_value, token, "m" );
@@ -140,6 +146,11 @@ int main( int argc, char* argv[] )
 
 			case DC: {
 				context = new gen7::DcMachineContext();
+				break;
+			}
+
+			case WII: {
+				context = new gen7::WiiMachineContext();
 				break;
 			}
 

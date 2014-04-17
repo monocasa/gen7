@@ -11,6 +11,7 @@ enum class CpuType : uint32_t {
 	CELL_PPE    = 2,
 	CELL_SPE    = 3,
 	SH4A        = 4,
+	GEKKO       = 5,
 };
 
 struct CpuContext {
@@ -20,6 +21,11 @@ struct CpuContext {
 	CpuContext( CpuType type, int coreNum )
 	  : type( type )
 	  , coreNum( coreNum )
+	{ }
+
+	CpuContext( CpuType type )
+	  : type( type )
+	  , coreNum( 0 )
 	{ }
 };
 

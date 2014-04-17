@@ -13,6 +13,8 @@ ADD_LIBRARY( gen7 SHARED crossvmm/CrossVmm.cpp
                          dc/DcPhysicalMemory.cpp
                          ps3/Ps3PhysicalMemory.cpp
                          sys/Mem.cpp
+                         wii/WiiMachineContext.cpp
+                         wii/WiiPhysicalMemory.cpp
                          xenon/XenonMachineContext.cpp
                          xenon/XenonPhysicalMemory.cpp
                          xenon/Xenos.cpp

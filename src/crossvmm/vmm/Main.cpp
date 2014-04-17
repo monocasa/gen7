@@ -1,8 +1,10 @@
 #include "DcRealMemory.h"
+#include "GekkoCpu.h"
 #include "MemoryManager.h"
 #include "InterruptManager.h"
 #include "PpcCpu.h"
 #include "Sh4aCpu.h"
+#include "WiiRealMemory.h"
 #include "XenonRealMemory.h"
 
 #include "jitpp/powerpc/XenonCpuContext.h"
@@ -63,6 +65,14 @@ extern "C" void kmain()
 		case jitpp::CpuType::SH4A: {
 			dcReal.Init();
 			Sh4aCpu cpu( *static_cast<jitpp::Sh4aCpuContext*>( cpuContext ) );
+			cpu.Init();
+			cpu.Execute();
+			break;
+		}
+
+		case jitpp::CpuType::GEKKO: {
+			wiiReal.Init();
+			GekkoCpu cpu( *static_cast<jitpp::GekkoCpuContext*>( cpuContext ) );
 			cpu.Init();
 			cpu.Execute();
 			break;

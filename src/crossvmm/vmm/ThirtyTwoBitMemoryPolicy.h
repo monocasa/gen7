@@ -1,6 +1,8 @@
 #ifndef GEN7_CROSSVMM_VMM_THIRTYTWOBITMEMORYPOLICY_H
 #define GEN7_CROSSVMM_VMM_THIRTYTWOBITMEMORYPOLICY_H
 
+#include <cstdint>
+
 template<bool SwapEndian>
 class ThirtyTwoBitMemoryPolicy
 {
