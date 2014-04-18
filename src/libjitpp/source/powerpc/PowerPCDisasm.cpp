@@ -21,9 +21,14 @@ void PowerPCDisasm::OnUnknownInstruction( uint32_t instr, UnknownCode code,
 
 void PowerPCDisasm::OnBranch( uint64_t target, bool link, bool abs )
 {
-	sprintf( buffer, "b%s%s\tloc_%lx",
+	char opname[4];
+
+	sprintf( opname, "b%s%s",
 	         (link ? "l" : "" ),
-	         (abs ? "a" : "" ),
+	         (abs ? "a" : "" ) );
+
+	sprintf( buffer, "%-8s loc_%lx",
+	         opname,
 	         target );
 }
 
