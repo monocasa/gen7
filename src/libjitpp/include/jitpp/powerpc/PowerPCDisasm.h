@@ -14,7 +14,9 @@ private:
 	void OnUnknownInstruction( uint32_t instr, UnknownCode code, 
 	                           int codeArg, uint64_t pc ) override final;
 
+	void OnAddi( int rt, int ra, int16_t si ) override final;
 	void OnBranch( uint64_t target, bool link, bool abs ) override final;
+	void OnLi( int rt, int16_t si ) override final;
 
 public:
 	virtual void Disassemble( uint8_t *instrBuffer, uint32_t pc, char * string );

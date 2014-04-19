@@ -28,6 +28,15 @@ TEST(PowerPCDisasm, Unknown)
 	testDecode( 0x00000000, 0x00000000, "<UNKNOWN_00000000> OPCOD=0" );
 }
 
+TEST(PowerPCDisasm, Addi)
+{
+	// Test negative and sign extension
+	testDecode( 0x3821fffc, 0x00000000, "addi     r1, r1, -4" );
+
+	// Test li pseudo op
+	testDecode( 0x3be00000, 0x00000000, "li       r31, 0" );
+}
+
 TEST(PowerPCDisasm, Branch)
 {
 	// Test normal use case

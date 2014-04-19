@@ -19,6 +19,11 @@ void PowerPCDisasm::OnUnknownInstruction( uint32_t instr, UnknownCode code,
 	}
 }
 
+void PowerPCDisasm::OnAddi( int rt, int ra, int16_t si )
+{
+	sprintf( buffer, "addi     r%d, r%d, %d", rt, ra, si );
+}
+
 void PowerPCDisasm::OnBranch( uint64_t target, bool link, bool abs )
 {
 	char opname[4];
@@ -30,6 +35,11 @@ void PowerPCDisasm::OnBranch( uint64_t target, bool link, bool abs )
 	sprintf( buffer, "%-8s loc_%lx",
 	         opname,
 	         target );
+}
+
+void PowerPCDisasm::OnLi( int rt, int16_t si )
+{
+	sprintf( buffer, "li       r%d, %d", rt, si );
 }
 
 void PowerPCDisasm::Disassemble( uint8_t *instrBuffer, uint32_t pc, char *string )
