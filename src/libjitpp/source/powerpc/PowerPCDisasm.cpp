@@ -24,6 +24,11 @@ void PowerPCDisasm::OnAddi( int rt, int ra, int16_t si )
 	sprintf( buffer, "addi     r%d, r%d, %d", rt, ra, si );
 }
 
+void PowerPCDisasm::OnAddis( int rt, int ra, int16_t si )
+{
+	sprintf( buffer, "addis    r%d, r%d, %d", rt, ra, si );
+}
+
 void PowerPCDisasm::OnBranch( uint64_t target, bool link, bool abs )
 {
 	char opname[4];
@@ -40,6 +45,11 @@ void PowerPCDisasm::OnBranch( uint64_t target, bool link, bool abs )
 void PowerPCDisasm::OnLi( int rt, int16_t si )
 {
 	sprintf( buffer, "li       r%d, %d", rt, si );
+}
+
+void PowerPCDisasm::OnLis( int rt, int16_t si )
+{
+	sprintf( buffer, "lis      r%d, %d", rt, si );
 }
 
 void PowerPCDisasm::Disassemble( uint8_t *instrBuffer, uint32_t pc, char *string )

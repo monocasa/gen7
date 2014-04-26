@@ -17,6 +17,16 @@ void PowerPCDecoder::DecodeInstruction( uint32_t instr, uint64_t pc )
 		}
 		return;
 
+		case OPCD_ADDIS: {
+			if( RA(instr) != 0 ) {
+				OnAddis( RT(instr), RA(instr), D_SI(instr) );
+			}
+			else {
+				OnLis( RT(instr), D_SI(instr) );
+			}
+		}
+		return;
+
 		case OPCD_BRANCH: {
 			const bool link = B_LK( instr );
 			const bool abs = B_AA( instr );

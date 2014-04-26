@@ -32,6 +32,7 @@ public:
 
 	enum {
 		OPCD_ADDI   = 14,
+		OPCD_ADDIS  = 15,
 		OPCD_BRANCH = 18,
 	};
 
@@ -78,8 +79,10 @@ protected:
 	                                   int codeArg, uint64_t pc ) = 0;
 
 	virtual void OnAddi( int rt, int ra, int16_t si ) = 0;
+	virtual void OnAddis( int rt, int ra, int16_t si ) = 0;
 	virtual void OnBranch( uint64_t target, bool link, bool abs ) = 0;
 	virtual void OnLi( int rt, int16_t si ) = 0;
+	virtual void OnLis( int rt, int16_t si ) = 0;
 };
 
 } //namespace jitpp

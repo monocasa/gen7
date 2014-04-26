@@ -37,6 +37,11 @@ TEST(PowerPCDisasm, Addi)
 	testDecode( 0x3be00000, 0x00000000, "li       r31, 0" );
 }
 
+TEST(PowerPCDisasm, Addis)
+{
+	testDecode( 0x3c600000, 0x00000000, "lis      r3, 0" );
+}
+
 TEST(PowerPCDisasm, Branch)
 {
 	// Test normal use case
