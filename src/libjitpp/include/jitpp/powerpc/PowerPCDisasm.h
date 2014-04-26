@@ -19,6 +19,7 @@ private:
 	void OnBranch( uint64_t target, bool link, bool abs ) override final;
 	void OnLi( int rt, int16_t si ) override final;
 	void OnLis( int rt, int16_t si ) override final;
+	void OnOri( int ra, int rs, uint16_t ui ) override final;
 
 public:
 	virtual void Disassemble( uint8_t *instrBuffer, uint32_t pc, char * string );

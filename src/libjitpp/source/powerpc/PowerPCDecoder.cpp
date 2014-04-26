@@ -37,6 +37,11 @@ void PowerPCDecoder::DecodeInstruction( uint32_t instr, uint64_t pc )
 		}
 		return;
 
+		case OPCD_ORI: {
+			OnOri( RA(instr), RS(instr), D_UI(instr) );
+		}
+		return;
+
 		default: {
 			OnUnknownInstruction( instr, UnknownCode::OPCD, OPCD(instr), pc );
 		}

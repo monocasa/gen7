@@ -56,3 +56,8 @@ TEST(PowerPCDisasm, Branch)
 	testDecode( 0x4BFFFFFC, 0x00002000, "b        loc_1ffc" );
 }
 
+TEST(PowerPCDisasm, Ori)
+{
+	testDecode( 0x60630000, 0x00000000, "ori      r3, r3, 0x0000" );
+}
+
