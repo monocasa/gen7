@@ -13,7 +13,7 @@ void PowerPCDisasm::OnUnknownInstruction( uint32_t instr, UnknownCode code,
 
 	switch( code ) {
 		case UnknownCode::OPCD: {
-			sprintf( buffer, "<UNKNOWN_%08x> OPCOD=%d", instr, codeArg );
+			sprintf( buffer, "<UNKNOWN_%08x> OPCD=%d", instr, codeArg );
 		}
 		break;
 	}

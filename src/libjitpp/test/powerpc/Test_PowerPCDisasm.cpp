@@ -25,7 +25,7 @@ void testDecode( const uint32_t opcode, const uint32_t pc, const char *expectedS
 
 TEST(PowerPCDisasm, Unknown)
 {
-	testDecode( 0x00000000, 0x00000000, "<UNKNOWN_00000000> OPCOD=0" );
+	testDecode( 0x00000000, 0x00000000, "<UNKNOWN_00000000> OPCD=0" );
 }
 
 TEST(PowerPCDisasm, Addi)
