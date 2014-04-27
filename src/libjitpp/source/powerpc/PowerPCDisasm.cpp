@@ -42,6 +42,26 @@ void PowerPCDisasm::OnBranch( uint64_t target, bool link, bool abs )
 	         target );
 }
 
+void PowerPCDisasm::OnCmpldi( int bf, int ra, uint16_t ui )
+{
+	if( 0 == bf ) {
+		sprintf( buffer, "cmpldi   r%d, 0x%04x", ra, ui );
+	}
+	else {
+		sprintf( buffer, "cmpldi   cr%d, r%d, 0x%04x", bf, ra, ui );
+	}
+}
+
+void PowerPCDisasm::OnCmplwi( int bf, int ra, uint16_t ui )
+{
+	if( 0 == bf ) {
+		sprintf( buffer, "cmplwi   r%d, 0x%04x", ra, ui );
+	}
+	else {
+		sprintf( buffer, "cmplwi   cr%d, r%d, 0x%04x", bf, ra, ui );
+	}
+}
+
 void PowerPCDisasm::OnLi( int rt, int16_t si )
 {
 	sprintf( buffer, "li       r%d, %d", rt, si );

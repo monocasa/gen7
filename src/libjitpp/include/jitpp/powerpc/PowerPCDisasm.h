@@ -17,6 +17,8 @@ private:
 	void OnAddi( int rt, int ra, int16_t si ) override final;
 	void OnAddis( int rt, int ra, int16_t si ) override final;
 	void OnBranch( uint64_t target, bool link, bool abs ) override final;
+	void OnCmpldi( int bf, int ra, uint16_t ui ) override final;
+	void OnCmplwi( int bf, int ra, uint16_t ui ) override final;
 	void OnLi( int rt, int16_t si ) override final;
 	void OnLis( int rt, int16_t si ) override final;
 	void OnOri( int ra, int rs, uint16_t ui ) override final;

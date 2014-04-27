@@ -26,11 +26,18 @@ public:
 	static const uint32_t D_IMM_MASK = 0x0000FFFF;
 	static const int D_IMM_BITS = 16;
 
+	static const int D_L_SHIFT = 21;
+	static const uint32_t D_L_MASK = 0x00000001;
+
+	static const int D_BF_SHIFT = 23;
+	static const uint32_t D_BF_MASK = 0x00000007;
+
 	enum class UnknownCode {
 		OPCD,
 	};
 
 	enum {
+		OPCD_CMPLI  = 10,
 		OPCD_ADDI   = 14,
 		OPCD_ADDIS  = 15,
 		OPCD_BRANCH = 18,
@@ -69,6 +76,14 @@ public:
 		return util::SignExtend<int16_t,D_IMM_BITS>( instruction & D_IMM_MASK );
 	}
 
+	constexpr bool D_L( const uint32_t instruction ) {
+		return (instruction >> D_L_SHIFT) & D_L_MASK;
+	}
+
+	constexpr int D_BF( const uint32_t instruction ) {
+		return (instruction >> D_BF_SHIFT) & D_BF_MASK;
+	}
+
 	constexpr uint16_t D_UI( const uint32_t instruction ) {
 		return instruction & D_IMM_MASK;
 	}
@@ -82,6 +97,8 @@ protected:
 	virtual void OnAddi( int rt, int ra, int16_t si ) = 0;
 	virtual void OnAddis( int rt, int ra, int16_t si ) = 0;
 	virtual void OnBranch( uint64_t target, bool link, bool abs ) = 0;
+	virtual void OnCmpldi( int bf, int ra, uint16_t ui ) = 0;
+	virtual void OnCmplwi( int bf, int ra, uint16_t ui ) = 0;
 	virtual void OnLi( int rt, int16_t si ) = 0;
 	virtual void OnLis( int rt, int16_t si ) = 0;
 	virtual void OnOri( int ra, int rs, uint16_t ui ) = 0;

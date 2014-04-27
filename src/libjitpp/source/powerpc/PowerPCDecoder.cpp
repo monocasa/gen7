@@ -37,6 +37,16 @@ void PowerPCDecoder::DecodeInstruction( uint32_t instr, uint64_t pc )
 		}
 		return;
 
+		case OPCD_CMPLI: {
+			if( D_L(instr) ) {
+				OnCmpldi( D_BF(instr), RA(instr), D_UI(instr) );
+			}
+			else {
+				OnCmplwi( D_BF(instr), RA(instr), D_UI(instr) );
+			}
+		}
+		return;
+
 		case OPCD_ORI: {
 			OnOri( RA(instr), RS(instr), D_UI(instr) );
 		}
