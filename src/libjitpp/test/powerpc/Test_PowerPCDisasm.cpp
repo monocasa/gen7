@@ -23,23 +23,28 @@ void testDecode( const uint32_t opcode, const uint32_t pc, const char *expectedS
 	EXPECT_STREQ( expectedString, string ) << opcodeString;
 }
 
+void testDecode( const uint32_t opcode, const char *expectedString )
+{
+	testDecode( opcode, 0x00000000, expectedString );
+}
+
 TEST(PowerPCDisasm, Unknown)
 {
-	testDecode( 0x00000000, 0x00000000, "<UNKNOWN_00000000> OPCD=0" );
+	testDecode( 0x00000000, "<UNKNOWN_00000000> OPCD=0" );
 }
 
 TEST(PowerPCDisasm, Addi)
 {
 	// Test negative and sign extension
-	testDecode( 0x3821fffc, 0x00000000, "addi     r1, r1, -4" );
+	testDecode( 0x3821fffc, "addi     r1, r1, -4" );
 
 	// Test li pseudo op
-	testDecode( 0x3be00000, 0x00000000, "li       r31, 0" );
+	testDecode( 0x3be00000, "li       r31, 0" );
 }
 
 TEST(PowerPCDisasm, Addis)
 {
-	testDecode( 0x3c600000, 0x00000000, "lis      r3, 0" );
+	testDecode( 0x3c600000, "lis      r3, 0" );
 }
 
 TEST(PowerPCDisasm, Branch)
@@ -58,11 +63,11 @@ TEST(PowerPCDisasm, Branch)
 
 TEST(PowerPCDisasm, Cmplwi)
 {
-	testDecode( 0x28030000, 0x00000000, "cmplwi   r3, 0x0000" );
+	testDecode( 0x28030000, "cmplwi   r3, 0x0000" );
 }
 
 TEST(PowerPCDisasm, Ori)
 {
-	testDecode( 0x60630000, 0x00000000, "ori      r3, r3, 0x0000" );
+	testDecode( 0x60630000, "ori      r3, r3, 0x0000" );
 }
 
