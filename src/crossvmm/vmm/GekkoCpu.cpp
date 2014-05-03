@@ -103,6 +103,7 @@ void GekkoCpu::Execute()
 						printf( "~~~~ Position ~~~~\n" );
 						DumpPosition();
 						executing = false;
+						break;
 					}
 				}
 			}
