@@ -77,14 +77,10 @@ void GekkoCpu::Execute()
 			uint32_t opcode = *((uint32_t*)(uint64_t)context.pc);
 
 			numOps = translator.BuildOps( ops, opcode, context.pc );
-		}
-
-		{ //executionPhase
-			context.pc += sizeof(uint32_t);
 
 			if( numOps == 0 ) {
 				printf( "==== F A I L U R E ====\n" );
-				printf( "Op creation failed\n" );
+				printf( "Op fetch failed\n" );
 				context.pc -= 4;
 				printf( "~~~~ State ~~~~\n" );
 				DumpState();
@@ -92,19 +88,23 @@ void GekkoCpu::Execute()
 				DumpPosition();
 				executing = false;
 			}
-			else {
-				for( int i = 0; i < numOps; i++ ) {
-					if( !ExecuteOp(ops[i]) ) {
-						printf( "==== F A I L U R E ====\n" );
-						printf( "Interpretation failed:  %s\n", GetErrorString() );
-						context.pc -= 4;
-						printf( "~~~~ State ~~~~\n" );
-						DumpState();
-						printf( "~~~~ Position ~~~~\n" );
-						DumpPosition();
-						executing = false;
-						break;
-					}
+		}
+
+		{ //executionPhase
+			context.pc += sizeof(uint32_t);
+
+
+			for( int i = 0; i < numOps; i++ ) {
+				if( !ExecuteOp(ops[i]) ) {
+					printf( "==== F A I L U R E ====\n" );
+					printf( "Interpretation failed:  %s\n", GetErrorString() );
+					context.pc -= 4;
+					printf( "~~~~ State ~~~~\n" );
+					DumpState();
+					printf( "~~~~ Position ~~~~\n" );
+					DumpPosition();
+					executing = false;
+					break;
 				}
 			}
 		}
