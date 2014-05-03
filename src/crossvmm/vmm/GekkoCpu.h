@@ -41,12 +41,16 @@ private:
 		switch( addr >> 28 ) {
 			case 0x8:
 			case 0x9:
+			case 0xA:
+			case 0xB:
 				guestPhys = addr - 0x80000000;
 				break;
 
-			case 0xA:
-			case 0xB:
-				guestPhys = addr - 0xA0000000;
+			case 0xC:
+			case 0xD:
+			case 0xE:
+			case 0xF:
+				guestPhys = addr - 0xC0000000;
 				break;
 		}
 
