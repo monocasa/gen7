@@ -5,11 +5,12 @@
 #include "ThirtyTwoBitMemoryPolicy.h"
 
 #include "jitpp/powerpc/GekkoCpuContext.h"
-#include "jitpp/CpuInterpreter.h"
+#include "jitpp/CommonOpInterpreter.h"
 
 #include "util/Compilers.h"
 
-class GekkoCpu : public Cpu, public jitpp::CpuInterpreter<ThirtyTwoBitMemoryPolicy<true>>
+class GekkoCpu : public Cpu, 
+                 private jitpp::CommonOpInterpreter<ThirtyTwoBitMemoryPolicy<true>>
 {
 private:
 	class PowerPC32Mmu
@@ -29,28 +30,8 @@ private:
 
 	jitpp::GekkoCpuContext &context;
 
-	void SetPC( uint64_t pc ) override final {
+	void SetPc( uint64_t pc ) override final {
 		context.pc = pc;
-	}
-
-	bool SetSystemReg( int sysReg, uint64_t value ) override final {
-		UNUSED( sysReg );
-		UNUSED( value );
-
-		return false;
-	}
-
-	bool ReadSystemReg( int sysReg, uint64_t &value ) override final {
-		UNUSED( sysReg );
-		UNUSED( value );
-
-		return false;
-	}
-
-	bool InterpretProcessorSpecific( jitpp::InterInstr &instr ) override final {
-		UNUSED( instr );
-
-		return false;
 	}
 
 	template<typename T>
@@ -72,12 +53,15 @@ private:
 		return reinterpret_cast<T*>( 0xFFFFFFFD00000000UL | guestPhys );
 	}
 
+	void DumpState();
+	void DumpPosition();
+
 public:
 	void Init() override final;
 	void Execute() override final;
 
 	GekkoCpu( jitpp::GekkoCpuContext &context )
-	  : CpuInterpreter( &context.gpr[0], isReserved, reservation )
+	  : CommonOpInterpreter( &context.gpr[0] )
 	  , context( context )
 	{ }
 };

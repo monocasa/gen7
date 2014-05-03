@@ -1,15 +1,19 @@
 INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/libjitpp/include" )
 INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/libutil/include" )
 
-SET( LIBJIT_SOURCES source/powerpc/PowerPCDecoder.cpp
+SET( LIBJIT_SOURCES source/powerpc/GekkoTranslator.cpp
+                    source/powerpc/PowerPCDecoder.cpp
                     source/powerpc/PowerPCDisasm.cpp
                     source/powerpc/PowerPCIntermediateBuilder.cpp )
 
 ADD_LIBRARY( jitpp STATIC ${LIBJIT_SOURCES} )
 
-ADD_EXECUTABLE( test_jitpp test/powerpc/Test_PowerPCDisasm.cpp
+ADD_EXECUTABLE( test_jitpp test/powerpc/Test_GekkoTranslator.cpp
+                           test/powerpc/Test_PowerPCDisasm.cpp
                            test/powerpc/Test_PowerPCIntermediateBuilder.cpp
                            test/powerpc/Test_XenonCpuContext.cpp
+                           test/Test_CommonOp.cpp
+                           test/Test_CommonOpInterpreter.cpp
                            test/Test_CpuInterpreter.cpp
                            test/Test_InterInstr.cpp )
 

@@ -9,6 +9,11 @@ namespace jitpp {
 
 struct GekkoCpuContext : public CpuContext
 {
+	enum MiscGprs {
+		GPR_LR   = 32,
+		NUM_GPRS = 33,
+	};
+
 	uint32_t gpr[32];
 	uint32_t lr;
 
