@@ -81,7 +81,6 @@ void GekkoCpu::Execute()
 			if( numOps == 0 ) {
 				printf( "==== F A I L U R E ====\n" );
 				printf( "Op fetch failed\n" );
-				context.pc -= 4;
 				printf( "~~~~ State ~~~~\n" );
 				DumpState();
 				printf( "~~~~ Position ~~~~\n" );
