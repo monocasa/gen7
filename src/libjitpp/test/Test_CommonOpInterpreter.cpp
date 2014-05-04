@@ -20,6 +20,8 @@ public:
 
 	uint8_t gprs[ GPR_SIZE ];
 
+	uint32_t *gpr32;
+
 	uint32_t ReadGpr32( int reg ) {
 		uint32_t *gpr32 = (uint32_t*)gprs;
 		return gpr32[ reg ];
@@ -36,6 +38,7 @@ public:
 
 	TestCommonOpInterpreter()
 	  : CommonOpInterpreter( gprs )
+	  , gpr32( reinterpret_cast<uint32_t*>(gprs) )
 	{
 		Reset();
 	}
@@ -50,7 +53,20 @@ TEST(CommonOpInterpreter, Uninitialized)
 	EXPECT_STREQ( "Unknown CommonOp::Type:  0", interp.GetErrorString() );
 }
 
-TEST(CommonOpInterpreter, LoadReg)
+TEST(CommonOpInterpreter, LoadRegGpr32Gpr32)
+{
+	TestCommonOpInterpreter interp;
+	CommonOp op = CommonOp::BuildLoadRegGpr32Gpr32( 4, 5 );
+
+	interp.gpr32[4] = 0x00000000;
+	interp.gpr32[5] = 0xFEDCBA98;
+
+	EXPECT_TRUE( interp.ExecuteOp(op) );
+	EXPECT_EQ( 0xFEDCBA98, interp.ReadGpr32(4) );
+	EXPECT_EQ( 0xFEDCBA98, interp.ReadGpr32(5) );
+}
+
+TEST(CommonOpInterpreter, LoadRegGpr32ImmU32)
 {
 	TestCommonOpInterpreter interp;
 	CommonOp op = CommonOp::BuildLoadRegGpr32ImmU32( 4, 0xFEDCBA98 );

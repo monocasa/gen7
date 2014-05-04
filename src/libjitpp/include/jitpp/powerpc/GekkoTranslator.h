@@ -29,6 +29,7 @@ private:
 	void OnCmplwi( int bf, int ra, uint16_t ui ) override final;
 	void OnLi( int rt, int16_t si ) override final;
 	void OnLis( int rt, int16_t si ) override final;
+	void OnMflr( int rt ) override final;
 	void OnOri( int ra, int rs, uint16_t ui ) override final;
 
 public:

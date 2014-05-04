@@ -65,6 +65,11 @@ void GekkoTranslator::OnLis( int rt, int16_t si )
 	UNUSED(si);
 }
 
+void GekkoTranslator::OnMflr( int rt )
+{
+	PushOp( CommonOp::BuildLoadRegGpr32Gpr32(rt, GekkoCpuContext::GPR_LR) );
+}
+
 void GekkoTranslator::OnOri( int ra, int rs, uint16_t ui )
 {
 	UNUSED(ra);

@@ -119,6 +119,15 @@ struct CommonOp {
 		return op;
 	}
 
+	static CommonOp BuildLoadRegGpr32Gpr32( int targetGpr, int sourceGpr ) {
+		CommonOp op( LOAD_REG );
+
+		op.args[0].SetGpr32( targetGpr );
+		op.args[1].SetGpr32( sourceGpr );
+
+		return op;
+	}
+
 	static CommonOp BuildBranch( uint64_t target ) {
 		CommonOp op( BRANCH );
 

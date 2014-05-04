@@ -11,12 +11,15 @@ void PowerPCDisasm::OnUnknownInstruction( uint32_t instr, UnknownCode code,
 {
 	UNUSED( pc );
 
+	const char * codeStr;
+
 	switch( code ) {
-		case UnknownCode::OPCD: {
-			sprintf( buffer, "<UNKNOWN_%08x> OPCD=%d", instr, codeArg );
-		}
-		break;
+		case UnknownCode::OPCD:             codeStr = "OPCD";             break;
+		case UnknownCode::SPECIAL:          codeStr = "SPECIAL";          break;
+		case UnknownCode::UNKNOWN_SPR_READ: codeStr = "UNKNOWN_SPR_READ"; break;
 	}
+
+	sprintf( buffer, "<UNKNOWN_%08x> %s=%d", instr, codeStr, codeArg );
 }
 
 void PowerPCDisasm::OnAddi( int rt, int ra, int16_t si )
@@ -70,6 +73,11 @@ void PowerPCDisasm::OnLi( int rt, int16_t si )
 void PowerPCDisasm::OnLis( int rt, int16_t si )
 {
 	sprintf( buffer, "lis      r%d, %d", rt, si );
+}
+
+void PowerPCDisasm::OnMflr( int rt )
+{
+	sprintf( buffer, "mflr     r%d", rt );
 }
 
 void PowerPCDisasm::OnOri( int ra, int rs, uint16_t ui )

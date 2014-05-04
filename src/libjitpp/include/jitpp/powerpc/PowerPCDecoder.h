@@ -32,16 +32,35 @@ public:
 	static const int D_BF_SHIFT = 23;
 	static const uint32_t D_BF_MASK = 0x00000007;
 
+	static const uint32_t X_XO_MASK = 0x3FF;
+	static const int X_XO_SHIFT = 1;
+
+	static const uint32_t XFX_SPR_LO_MASK = 0x01F;
+	static const int XFX_SPR_LO_SHIFT = 16;
+	static const uint32_t XFX_SPR_HI_MASK = 0x3E0;
+	static const int XFX_SPR_HI_SHIFT = 6;
+
 	enum class UnknownCode {
 		OPCD,
+		SPECIAL,
+		UNKNOWN_SPR_READ,
 	};
 
 	enum {
-		OPCD_CMPLI  = 10,
-		OPCD_ADDI   = 14,
-		OPCD_ADDIS  = 15,
-		OPCD_BRANCH = 18,
-		OPCD_ORI    = 24,
+		SPR_LR = 8,
+	};
+
+	enum {
+		OPCD_CMPLI   = 10,
+		OPCD_ADDI    = 14,
+		OPCD_ADDIS   = 15,
+		OPCD_BRANCH  = 18,
+		OPCD_ORI     = 24,
+		OPCD_SPECIAL = 31,
+	};
+
+	enum {
+		SPECIAL_XO_MFSPR = 339,
 	};
 
 	constexpr int OPCD( const uint32_t instruction ) {
@@ -88,6 +107,17 @@ public:
 		return instruction & D_IMM_MASK;
 	}
 
+	constexpr int X_XO( const uint32_t instruction ) {
+		return (instruction >> X_XO_SHIFT) & X_XO_MASK;
+	}
+
+	constexpr int XFX_SPR( const uint32_t instruction ) {
+		return ((instruction >> XFX_SPR_LO_SHIFT) & XFX_SPR_LO_MASK) | 
+		       ((instruction >> XFX_SPR_HI_SHIFT) & XFX_SPR_HI_MASK);
+	}
+
+	void DecodeSpecial( uint32_t instr, uint64_t pc );
+
 protected:
 	void DecodeInstruction( uint32_t instr, uint64_t pc );
 
@@ -101,6 +131,7 @@ protected:
 	virtual void OnCmplwi( int bf, int ra, uint16_t ui ) = 0;
 	virtual void OnLi( int rt, int16_t si ) = 0;
 	virtual void OnLis( int rt, int16_t si ) = 0;
+	virtual void OnMflr( int rt ) = 0;
 	virtual void OnOri( int ra, int rs, uint16_t ui ) = 0;
 };
 

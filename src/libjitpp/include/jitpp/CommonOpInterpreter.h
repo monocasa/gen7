@@ -24,6 +24,12 @@ private:
 		((uint32_t*)gprPtr)[ reg ] = value;
 	}
 
+	template<typename T>
+	T ReadGpr32( int reg ) {
+		static_assert( sizeof(T) == sizeof(uint32_t), "Gpr32 needs to be a multiple of four bytes" );
+		return ((T*)gprPtr)[ reg ];
+	}
+
 public:
 	virtual void SetPc( uint64_t newPc ) = 0;
 
@@ -51,6 +57,12 @@ bool CommonOpInterpreter<MemoryPolicy>::ExecuteOp( const jitpp::CommonOp &op )
 			if( (op.args[0].type == CommonOp::Arg::GPR_32) && 
 			    (op.args[1].type == CommonOp::Arg::IMM_U32) ) {
 				SetGpr32<uint32_t>( op.args[0].reg, op.args[1].u32 );
+				return true;
+			}
+			else if( (op.args[0].type == CommonOp::Arg::GPR_32) && 
+			         (op.args[1].type == CommonOp::Arg::GPR_32) ) {
+				SetGpr32<uint32_t>( op.args[0].reg, 
+				                    ReadGpr32<uint32_t>(op.args[1].reg) );
 				return true;
 			}
 			sprintf( errorString, "Unknown LOAD_REG combination:  %d <- %d", 

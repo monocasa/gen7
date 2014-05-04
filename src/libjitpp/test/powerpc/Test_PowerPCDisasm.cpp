@@ -66,6 +66,11 @@ TEST(PowerPCDisasm, Cmplwi)
 	testDecode( 0x28030000, "cmplwi   r3, 0x0000" );
 }
 
+TEST(PowerPCDisasm, Mflr)
+{
+	testDecode( 0x7FE802A6, "mflr     r31" );
+}
+
 TEST(PowerPCDisasm, Ori)
 {
 	testDecode( 0x60630000, "ori      r3, r3, 0x0000" );
