@@ -31,6 +31,7 @@ private:
 	void OnLis( int rt, int16_t si ) override final;
 	void OnMflr( int rt ) override final;
 	void OnOri( int ra, int rs, uint16_t ui ) override final;
+	void OnOris( int ra, int rs, uint16_t ui ) override final;
 
 public:
 	virtual int BuildOps( CommonOp *commonOps, uint32_t nativeInstr, uint64_t pc );

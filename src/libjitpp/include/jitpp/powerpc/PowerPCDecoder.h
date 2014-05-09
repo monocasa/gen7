@@ -56,6 +56,7 @@ public:
 		OPCD_ADDIS   = 15,
 		OPCD_BRANCH  = 18,
 		OPCD_ORI     = 24,
+		OPCD_ORIS    = 25,
 		OPCD_SPECIAL = 31,
 	};
 
@@ -133,6 +134,7 @@ protected:
 	virtual void OnLis( int rt, int16_t si ) = 0;
 	virtual void OnMflr( int rt ) = 0;
 	virtual void OnOri( int ra, int rs, uint16_t ui ) = 0;
+	virtual void OnOris( int ra, int rs, uint16_t ui ) = 0;
 };
 
 } //namespace jitpp

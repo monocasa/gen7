@@ -77,6 +77,11 @@ void PowerPCDecoder::DecodeInstruction( uint32_t instr, uint64_t pc )
 		}
 		return;
 
+		case OPCD_ORIS: {
+			OnOris( RA(instr), RS(instr), D_UI(instr) );
+		}
+		return;
+
 		case OPCD_SPECIAL: {
 			DecodeSpecial( instr, pc );
 		}

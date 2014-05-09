@@ -71,6 +71,17 @@ bool CommonOpInterpreter<MemoryPolicy>::ExecuteOp( const jitpp::CommonOp &op )
 			return false;
 		}
 
+		case CommonOp::OR: {
+			if( (op.args[0].type == CommonOp::Arg::GPR_32) && 
+			    (op.args[1].type == CommonOp::Arg::GPR_32) &&
+			    (op.args[2].type == CommonOp::Arg::IMM_U32) ) {
+				const uint32_t result = ReadGpr32<uint32_t>( op.args[1].reg ) | op.args[2].u32;
+				SetGpr32<uint32_t>( op.args[0].reg, result );
+				return true;
+			}
+			return false;
+		}
+
 		default: {
 			sprintf( errorString, "Unknown CommonOp::Type:  %d", op.type );
 			return false;

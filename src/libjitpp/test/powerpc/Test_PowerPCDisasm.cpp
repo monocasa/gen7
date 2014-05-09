@@ -76,3 +76,8 @@ TEST(PowerPCDisasm, Ori)
 	testDecode( 0x60630000, "ori      r3, r3, 0x0000" );
 }
 
+TEST(PowerPCDisasm, Oris)
+{
+	testDecode( 0x67FF8000, "oris     r31, r31, 0x8000" );
+}
+

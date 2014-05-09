@@ -48,3 +48,20 @@ TEST(GekkoTranslator, Mflr)
 	EXPECT_EQ( GekkoCpuContext::GPR_LR, ops[0].args[1].u32 );
 }
 
+TEST(GekkoTranslator, Oris)
+{
+	GekkoTranslator translator;
+	CommonOp ops[10];
+
+	// oris     r31, r32, 0x8000
+	ASSERT_EQ( 1, translator.BuildOps(ops, 0x67ff8000, 0x00000000) );
+
+	EXPECT_EQ( CommonOp::OR,            ops[0].type );
+	EXPECT_EQ( CommonOp::Arg::GPR_32,   ops[0].args[0].type );
+	EXPECT_EQ( 31,                      ops[0].args[0].reg );
+	EXPECT_EQ( CommonOp::Arg::GPR_32,   ops[0].args[1].type );
+	EXPECT_EQ( 31,                      ops[0].args[1].reg );
+	EXPECT_EQ( CommonOp::Arg::IMM_U32,  ops[0].args[2].type );
+	EXPECT_EQ( 0x80000000,              ops[0].args[2].u32 );
+}
+

@@ -52,3 +52,17 @@ TEST(CommonOp, Branch)
 	EXPECT_EQ( 0x0123456789abcdefUL, op.args[0].addr );
 }
 
+TEST(CommonOp, OrImm32)
+{
+	CommonOp op = CommonOp::BuildOrImm32( 1, 2, 0xFFAABBCC );
+	EXPECT_EQ( CommonOp::OR, op.type );
+	EXPECT_EQ( nullptr, op.next );
+
+	EXPECT_EQ( CommonOp::Arg::GPR_32,  op.args[0].type );
+	EXPECT_EQ( 1,                      op.args[0].reg );
+	EXPECT_EQ( CommonOp::Arg::GPR_32,  op.args[1].type );
+	EXPECT_EQ( 2,                      op.args[1].reg );
+	EXPECT_EQ( CommonOp::Arg::IMM_U32, op.args[2].type );
+	EXPECT_EQ( 0xFFAABBCC,             op.args[2].u32 );
+}
+

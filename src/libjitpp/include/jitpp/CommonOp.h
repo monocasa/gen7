@@ -15,6 +15,8 @@ struct CommonOp {
 		LOAD_REG,
 
 		BRANCH = 200,
+
+		OR = 300,
 	} type;
 
 	CommonOp *next;
@@ -132,6 +134,16 @@ struct CommonOp {
 		CommonOp op( BRANCH );
 
 		op.args[0].SetAddr( target );
+
+		return op;
+	}
+
+	static CommonOp BuildOrImm32( int targetGpr, int sourceGpr, uint32_t imm ) {
+		CommonOp op( OR );
+
+		op.args[0].SetGpr32( targetGpr );
+		op.args[1].SetGpr32( sourceGpr );
+		op.args[2].SetU32( imm );
 
 		return op;
 	}

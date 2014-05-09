@@ -77,6 +77,11 @@ void GekkoTranslator::OnOri( int ra, int rs, uint16_t ui )
 	UNUSED(ui);
 }
 
+void GekkoTranslator::OnOris( int ra, int rs, uint16_t ui )
+{
+	PushOp( CommonOp::BuildOrImm32(ra, rs, ui << 16) );
+}
+
 int GekkoTranslator::BuildOps( CommonOp *commonOps, uint32_t nativeInstr, uint64_t pc )
 {
 	numOps = 0;

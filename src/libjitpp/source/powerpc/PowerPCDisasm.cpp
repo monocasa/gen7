@@ -85,6 +85,11 @@ void PowerPCDisasm::OnOri( int ra, int rs, uint16_t ui )
 	sprintf( buffer, "ori      r%d, r%d, 0x%04x", ra, rs, ui );
 }
 
+void PowerPCDisasm::OnOris( int ra, int rs, uint16_t ui )
+{
+	sprintf( buffer, "oris     r%d, r%d, 0x%04x", ra, rs, ui );
+}
+
 void PowerPCDisasm::Disassemble( uint8_t *instrBuffer, uint32_t pc, char *string )
 {
 	uint32_t instr;

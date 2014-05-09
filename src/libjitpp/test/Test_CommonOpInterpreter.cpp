@@ -23,7 +23,6 @@ public:
 	uint32_t *gpr32;
 
 	uint32_t ReadGpr32( int reg ) {
-		uint32_t *gpr32 = (uint32_t*)gprs;
 		return gpr32[ reg ];
 	}
 
@@ -83,5 +82,18 @@ TEST(CommonOpInterpreter, Branch)
 	EXPECT_TRUE( interp.ExecuteOp(op) );
 	ASSERT_EQ( 1, interp.branches.size() );
 	EXPECT_EQ( 0x1100, interp.branches[0] );
+}
+
+TEST(CommonOpInterpreter, OrImm32)
+{
+	TestCommonOpInterpreter interp;
+	CommonOp op = CommonOp::BuildOrImm32( 4, 5, 0x0000BA98 );
+
+	interp.gpr32[4] = 0x00000000;
+	interp.gpr32[5] = 0xFEDC0000;
+
+	EXPECT_TRUE( interp.ExecuteOp(op) );
+	EXPECT_EQ( 0xFEDCBA98, interp.ReadGpr32(4) );
+	EXPECT_EQ( 0xFEDC0000, interp.ReadGpr32(5) );
 }
 
