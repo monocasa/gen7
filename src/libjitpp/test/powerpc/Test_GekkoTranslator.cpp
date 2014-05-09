@@ -33,6 +33,20 @@ TEST(GekkoTranslator, Branch)
 	EXPECT_EQ( 0x00001100,          ops[1].args[0].addr );
 }
 
+TEST(GekkoTranslator, Lis)
+{
+	GekkoTranslator translator;
+	CommonOp ops[10];
+
+	ASSERT_EQ( 1, translator.BuildOps(ops, 0x3c608000, 0x00000000) );
+
+	EXPECT_EQ( CommonOp::LOAD_REG,     ops[0].type );
+	EXPECT_EQ( CommonOp::Arg::GPR_32,  ops[0].args[0].type );
+	EXPECT_EQ( 3,                      ops[0].args[0].reg );
+	EXPECT_EQ( CommonOp::Arg::IMM_U32, ops[0].args[1].type );
+	EXPECT_EQ( 0x80000000,             ops[0].args[1].u32 );
+}
+
 TEST(GekkoTranslator, Mflr)
 {
 	GekkoTranslator translator;

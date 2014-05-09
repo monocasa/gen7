@@ -61,8 +61,9 @@ void GekkoTranslator::OnLi( int rt, int16_t si )
 
 void GekkoTranslator::OnLis( int rt, int16_t si )
 {
-	UNUSED(rt);
-	UNUSED(si);
+	const int32_t shiftedSi = si << 16;
+
+	PushOp( CommonOp::BuildLoadRegGpr32ImmU32(rt, shiftedSi) );
 }
 
 void GekkoTranslator::OnMflr( int rt )
