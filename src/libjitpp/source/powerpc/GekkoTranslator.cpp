@@ -73,9 +73,7 @@ void GekkoTranslator::OnMflr( int rt )
 
 void GekkoTranslator::OnOri( int ra, int rs, uint16_t ui )
 {
-	UNUSED(ra);
-	UNUSED(rs);
-	UNUSED(ui);
+	PushOp( CommonOp::BuildOrImm32(ra, rs, ui) );
 }
 
 void GekkoTranslator::OnOris( int ra, int rs, uint16_t ui )
